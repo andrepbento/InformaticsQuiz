@@ -1,6 +1,8 @@
 package activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,8 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.andre.informaticsquiz.PublicConstantValues;
 import com.example.andre.informaticsquiz.R;
+
+import java.io.File;
 
 import data.PlayerData;
 
@@ -115,6 +121,25 @@ public class PlayerProfileActivity extends Activity {
     }
 
     private void deletePlayerData() {
-        // LANCAR DIALOG BOX A PERGUNTAR SE TEM A CERTEZA
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Tens a certeza?").setPositiveButton("Sim", dialogClickListener)
+                .setNegativeButton("Não", dialogClickListener).show();
     }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    File playerData = new File(getFilesDir(), PublicConstantValues.playerFileName);
+                    boolean delete = playerData.delete();
+                    Toast.makeText(getApplication(), "D:"+delete, Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    break;
+            }
+        }
+    };
 }

@@ -32,6 +32,11 @@ public class MainMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         if(loadPlayerData(this)) {
             if(player.getPhoto() != null)

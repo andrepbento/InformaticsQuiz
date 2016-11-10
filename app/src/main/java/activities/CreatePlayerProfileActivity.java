@@ -120,6 +120,7 @@ public class CreatePlayerProfileActivity extends Activity {
             String ocupation = etOcupationSpecif.getText().toString();
             PlayerData player = new PlayerData(playerBitmap, name, sexId, sex, age, ocupationId, ocupation);
             player.saveData(getApplicationContext());
+            finish();
         } else {
             Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
                     Toast.LENGTH_SHORT).show();
