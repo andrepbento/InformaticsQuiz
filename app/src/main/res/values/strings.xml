@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Informatics Quiz</string>
+    <string name="perguntas_text_view">Perguntas:</string>
+    <string name="configuracao_do_jogo_text_view">Configuração do jogo:</string>
+    <string name="dificuldade_text_view">Dificuldade</string>
+    <string name="numero_de_perguntas_text_view">Número de perguntas:</string>
+    <string name="pergunta_numero_text">Pergunta número:</string>
+    <string name="tv_estudante_text">"Curso: "</string>
+    <string name="tv_trabalhador_text">"Profissão: "</string>
+    <string name="tv_outro_text">"Outro: "</string>
+</resources>
