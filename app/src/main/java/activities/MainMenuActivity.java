@@ -3,14 +3,13 @@ package activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.PublicConstantValues;
@@ -28,21 +27,36 @@ public class MainMenuActivity extends Activity {
     private PlayerData player;
     private Menu menu;
 
+    private Button btnMultiPlayer, btnPlayerStatisctic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        player = null;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        btnMultiPlayer = (Button) findViewById(R.id.btn_multi_player);
+        btnPlayerStatisctic = (Button) findViewById(R.id.btn_player_statistics);
+
         if(loadPlayerData(this)) {
-            if(player.getPhoto() != null)
-                menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
+            btnMultiPlayer.setEnabled(true);
+            btnPlayerStatisctic.setEnabled(true);
+            //if(player.getPhoto() != null)
+            //    menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
+            //else
+            //    menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
         } else {
             player = null;
+            btnMultiPlayer.setEnabled(false);
+            btnPlayerStatisctic.setEnabled(false);
+            Toast.makeText(getApplicationContext(), "Não existe conta criada, todos os dados serão perdidos," +
+                    " se quiseres que se guardem cria uma conta pff", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -96,6 +110,9 @@ public class MainMenuActivity extends Activity {
                 break;
             case R.id.btn_multi_player:
                 Toast.makeText(getApplicationContext(), "Por implementar...", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_player_statistics:
+                startActivity(new Intent(MainMenuActivity.this, PlayerStatiscticsActivity.class));
                 break;
         }
     }

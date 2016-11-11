@@ -21,7 +21,8 @@
         <activity android:name="activities.SinglePlayerGameResultActivity" />
         <activity android:name="activities.CreatePlayerProfileActivity" />
         <activity android:name="activities.PlayerProfileActivity" />
-        <activity android:name="activities.CameraActivity"></activity>
+        <activity android:name="activities.CameraActivity" />
+        <activity android:name="activities.PlayerStatiscticsActivity"></activity>
     </application>
 
 </manifest>

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.andre.informaticsquiz.R;
 
+import org.xmlpull.v1.XmlPullParser;
+
 public class SinglePlayerGameResultActivity extends Activity {
 
     @Override
@@ -23,23 +25,16 @@ public class SinglePlayerGameResultActivity extends Activity {
         int nWrongQuestions = gameResultIntent.getIntExtra("nWrongQuestions",0);
         int gameTotalQuestions = gameResultIntent.getIntExtra("gameTotalQuestions",0);
 
-        /*
-         *  ALTERAR O FUNDO CONSOANTE VITORIA OU DERROTA
-         *
         View layout = (View) this.getWindow().getDecorView();
 
-        if(result) {
-            layout.setBackground(R.drawable.green_white_gradient); // Green
-        } else {
-            layout.setBackground(); // Red
-        }
-        */
-
         TextView tvGameResult = (TextView) findViewById(R.id.tv_game_result);
-        if(result)
+        if(result) {
             tvGameResult.setText("PASSAS-TE! Parabéns");
-        else
+            layout.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
+        } else {
             tvGameResult.setText("CHUMBAS-TE! Tens que te esforçar mais...");
+            layout.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
+        }
 
         TextView tvGameResultDescription = (TextView) findViewById(R.id.tv_game_result_description);
         tvGameResultDescription.setText("Conseguiste obter " + score + " pontos\n"
@@ -48,6 +43,8 @@ public class SinglePlayerGameResultActivity extends Activity {
     }
 
     public void onButtonGoToInicialMenu(View view) {
+
+
         finish();
     }
 }
