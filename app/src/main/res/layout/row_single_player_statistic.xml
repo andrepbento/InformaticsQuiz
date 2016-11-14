@@ -1,38 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_game_result"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="activities.SinglePlayerGameResultActivity">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Resultado do jogo"
-            android:layout_gravity="left"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
-
-        <ImageView
-            android:id="@+id/iv_game_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"/>
-
-    </FrameLayout>
+    android:id="@+id/single_player_details_line">
 
     <TextView
         android:id="@+id/tv_game_result"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
@@ -51,16 +26,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pontuação:"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
@@ -69,7 +42,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
     </LinearLayout>
@@ -77,16 +50,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Respostas certas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
@@ -94,31 +66,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
             android:id="@+id/tv_perc_right_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Respostas erradas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
@@ -126,31 +96,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
             android:id="@+id/tv_perc_wrong_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Número de perguntas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
         <TextView
@@ -158,24 +126,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dificuldade:"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:text="Dificuldade"
+            android:textSize="16sp"
             android:typeface="serif" />
 
         <TextView
@@ -183,16 +150,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:typeface="serif" />
 
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voltar ao menu incial"
-        android:layout_gravity="center"
-        android:onClick="onButtonGoToInicialMenu"/>
 
 </LinearLayout>

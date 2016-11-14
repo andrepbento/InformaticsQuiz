@@ -55,7 +55,7 @@ public class GameConfigActivity extends Activity {
             int nQuestions = dbI.getAllQuestions().size();
 
             tvnQuestions = (TextView)findViewById(R.id.tv_num_perguntas);
-            tvnQuestions.setText(getResources().getString(R.string.numero_de_perguntas_text_view)
+            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number)
                     + "1");
 
             seekBar = (SeekBar)findViewById(R.id.seek_bar_n_perguntas);
@@ -79,7 +79,7 @@ public class GameConfigActivity extends Activity {
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            tvnQuestions.setText(getResources().getString(R.string.numero_de_perguntas_text_view) + " " + progress);
+            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number) + " " + progress);
         }
 
         @Override

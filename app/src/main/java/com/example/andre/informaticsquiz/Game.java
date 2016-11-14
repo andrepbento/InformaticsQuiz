@@ -1,5 +1,6 @@
 package com.example.andre.informaticsquiz;
 
+import android.app.Application;
 import android.content.Context;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import helper.InformaticsQuizHelper;
  * Created by andre on 02/11/2016.
  */
 
-public class Game implements Serializable {
+public class Game extends Application implements Serializable {
     private static Integer[] easyGameValues = {60, 30, 10};
     private static Integer easyGameTime = 90;
     private static Integer[] moderateGameValues = {30, 40, 30};
@@ -24,6 +25,7 @@ public class Game implements Serializable {
     private InformaticsQuizHelper dbI;
 
     private String difficulty;
+    private int difficultyInt;
     private int nQuestions;
     private int currentQuestionNum = 0;
     private int score = 0;
@@ -47,13 +49,16 @@ public class Game implements Serializable {
             diffArray = context.getResources().getStringArray(R.array.difficulty);
 
             if(this.difficulty.equals(diffArray[0])) {
+                this.difficultyInt = 0;
                 fillQuestionsList(nQuestions, 0);
                 setQuestionTime(easyGameTime);
             } else if(this.difficulty.equals(diffArray[1])) {
+                this.difficultyInt = 1;
                 fillQuestionsList(nQuestions, 1);
                 setQuestionTime(moderateGameTime);
             } else {
                 fillQuestionsList(nQuestions, 2);
+                this.difficultyInt = 2;
                 setQuestionTime(hardGameTime);
             }
         }
@@ -62,6 +67,8 @@ public class Game implements Serializable {
     public String getDifficulty() {
         return difficulty;
     }
+
+    public int getDifficultyInt() { return difficultyInt; }
 
     public int getnQuestions() {
         return nQuestions;

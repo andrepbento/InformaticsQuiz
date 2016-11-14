@@ -1,10 +1,14 @@
 package data;
 
+import android.util.Log;
+
+import java.io.Serializable;
+
 /**
  * Created by andre on 27/10/2016.
  */
 
-public class Question {
+public class Question implements Serializable {
 
     private int questionId;
     private String questionDesc;
@@ -87,7 +91,15 @@ public class Question {
         return questionDif;
     }
 
-    public Integer getQuestionDifInteger() { return Integer.parseInt(questionDif); }
+    public Integer getQuestionDifInteger() {
+        Integer ret = 0;
+        try {
+            ret = Integer.parseInt(questionDif);
+        } catch (NumberFormatException e) {
+            Log.e("Question", "NumberFormatException");
+        }
+        return ret;
+    }
 
     public void setQuestionDif(String questionDif) {
         this.questionDif = questionDif;

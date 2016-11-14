@@ -48,9 +48,9 @@ public class MainMenuActivity extends Activity {
             btnMultiPlayer.setEnabled(true);
             btnPlayerStatisctic.setEnabled(true);
             //if(player.getPhoto() != null)
-            //    menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
+            //    main_menu_menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
             //else
-            //    menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
+            //    main_menu_menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
         } else {
             player = null;
             btnMultiPlayer.setEnabled(false);
@@ -63,7 +63,7 @@ public class MainMenuActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.main_menu_menu, menu);
         this.menu = menu;
         return true;
     }
@@ -81,9 +81,11 @@ public class MainMenuActivity extends Activity {
                 }
                 break;
             case R.id.item_opt_bd:
-                Intent intent_bd = new Intent(MainMenuActivity.this, DataBaseActivity.class);
-                startActivity(intent_bd);
-                return true;
+                startActivity(new Intent(MainMenuActivity.this, QuestionsViewerActivity.class));
+                break;
+            case R.id.item_tutorial:
+                startActivity(new Intent(MainMenuActivity.this, HowToPlayActivity.class));
+                break;
             case R.id.item_preferencias:
                 /*
                 Intent intent_preferences = new Intent(MainMenuActivity.this, SettingsActivity.class);
@@ -92,10 +94,8 @@ public class MainMenuActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Por implementar...", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.item_acerca_de:
-                Toast.makeText(getApplicationContext(), "Por implementar...", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                startActivity(new Intent(MainMenuActivity.this, AboutTheAppActivity.class));
+                break;
         }
 
         return super.onOptionsItemSelected(item);

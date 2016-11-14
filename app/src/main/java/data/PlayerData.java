@@ -71,6 +71,34 @@ public class PlayerData implements Serializable {
         return ocupation;
     }
 
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSexId(int sexId) {
+        this.sexId = sexId;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setOcupationId(int ocupationId) {
+        this.ocupationId = ocupationId;
+    }
+
+    public void setOcupation(String ocupation) {
+        this.ocupation = ocupation;
+    }
+
     public int getPontuation() {
         return pontuation;
     }

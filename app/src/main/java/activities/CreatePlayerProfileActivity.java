@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,8 +33,11 @@ public class CreatePlayerProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_player_profile);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         ivPlayerImage = (ImageView) findViewById(R.id.iv_player_image);
         ivPlayerImage.setOnClickListener(onPlayerImageClick);
+        //ivPlayerImage.setImageResource(R.drawable.drawable_user);
 
         etPlayerName = (EditText) findViewById(R.id.et_player_name);
 
@@ -85,13 +89,6 @@ public class CreatePlayerProfileActivity extends Activity {
         }
     };
 
-    AdapterView.OnItemClickListener onSpinnerPlayerOcupationClick = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        }
-    };
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -105,6 +102,16 @@ public class CreatePlayerProfileActivity extends Activity {
                 Log.e("CameraActivityResult", "Error");
             }
         }
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+
+        return super.onMenuItemSelected(featureId, item);
     }
 
     public void onButtonCreatePlayerProfileClick(View view) {

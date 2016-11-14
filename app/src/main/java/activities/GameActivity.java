@@ -5,16 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.Game;
 import com.example.andre.informaticsquiz.R;
+import com.example.andre.informaticsquiz.SoundEffect;
 
 import data.Question;
 
 public class GameActivity extends Activity {
 
+    ImageView ivGreenCircle,  ivYellowCircle, ivRedCircle;
     TextView tvQuestionNumber, tvQuestionDesc;
     Button btnAnswerA, btnAnswerB, btnAnswerC, btnAnswerD;
 
@@ -27,6 +29,11 @@ public class GameActivity extends Activity {
 
         getActionBar().hide();
 
+        new SoundEffect(this);
+
+        ivGreenCircle = (ImageView) findViewById(R.id.iv_green_circle);
+        ivYellowCircle = (ImageView) findViewById(R.id.iv_yellow_circle);
+        ivRedCircle = (ImageView) findViewById(R.id.iv_red_circle);
         tvQuestionNumber = (TextView)findViewById(R.id.tvQuestionNumber);
         tvQuestionDesc = (TextView)findViewById(R.id.tvQuestionDescription);
         btnAnswerA = (Button)findViewById(R.id.btnAnswerA);
@@ -49,38 +56,30 @@ public class GameActivity extends Activity {
         switch (v.getId()) {
             case R.id.btnAnswerA:
                 if(game.checkAnswer("A")){
-                    Toast.makeText(GameActivity.this, "CERTO " + "+" + game.getQuestionDifficulty()
-                            + " pontos", Toast.LENGTH_SHORT).show();
+                    SoundEffect.playRightAnswerSound();
                 } else {
-                    Toast.makeText(GameActivity.this, "ERRADO", Toast.LENGTH_SHORT).show();
-                    //Thread.sleep(3 * 1000);
+                    SoundEffect.playWrongAnswerSound();
                 }
                 break;
             case R.id.btnAnswerB:
                 if(game.checkAnswer("B")){
-                    Toast.makeText(GameActivity.this, "CERTO " + "+" + game.getQuestionDifficulty()
-                            + " pontos", Toast.LENGTH_SHORT).show();
+                    SoundEffect.playRightAnswerSound();
                 } else {
-                    Toast.makeText(GameActivity.this, "ERRADO", Toast.LENGTH_SHORT).show();
-                    //Thread.sleep(3 * 1000);
+                    SoundEffect.playWrongAnswerSound();
                 }
                 break;
             case R.id.btnAnswerC:
                 if(game.checkAnswer("C")){
-                    Toast.makeText(GameActivity.this, "CERTO " + "+" + game.getQuestionDifficulty()
-                            + " pontos", Toast.LENGTH_SHORT).show();
+                    SoundEffect.playRightAnswerSound();
                 } else {
-                    Toast.makeText(GameActivity.this, "ERRADO", Toast.LENGTH_SHORT).show();
-                    //Thread.sleep(3 * 1000);
+                    SoundEffect.playWrongAnswerSound();
                 }
                 break;
             case R.id.btnAnswerD:
                 if(game.checkAnswer("D")){
-                    Toast.makeText(GameActivity.this, "CERTO " + "+" + game.getQuestionDifficulty()
-                            + " pontos", Toast.LENGTH_SHORT).show();
+                    SoundEffect.playRightAnswerSound();
                 } else {
-                    Toast.makeText(GameActivity.this, "ERRADO", Toast.LENGTH_SHORT).show();
-                    //Thread.sleep(3 * 1000);
+                    SoundEffect.playWrongAnswerSound();
                 }
                 break;
         }
@@ -91,11 +90,12 @@ public class GameActivity extends Activity {
     public void proximaPergunta() {
         if(game.checkEnd()) {
             Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerGameResultActivity.class);
-            gameResultIntent.putExtra("result",game.getResult());
-            gameResultIntent.putExtra("score",game.getScore());
-            gameResultIntent.putExtra("nRightQuestions",game.getnRightQuestions());
-            gameResultIntent.putExtra("nWrongQuestions",game.getnWrongQuestions());
-            gameResultIntent.putExtra("gameTotalQuestions",game.getnQuestions());
+            gameResultIntent.putExtra("gameResult", game.getResult());
+            gameResultIntent.putExtra("gameTotalQuestions", game.getnQuestions());
+            gameResultIntent.putExtra("gameScore", game.getScore());
+            gameResultIntent.putExtra("nRightAnswers", game.getnRightQuestions());
+            gameResultIntent.putExtra("nWrongAnswers", game.getnWrongQuestions());
+            gameResultIntent.putExtra("gameDifficulty", game.getDifficultyInt());
             startActivity(gameResultIntent);
             finish();
         } else {
@@ -105,6 +105,22 @@ public class GameActivity extends Activity {
 
     private void actualizaInterface() {
         Question question = game.getNextQuestion();
+
+        ivGreenCircle.setVisibility(View.INVISIBLE);
+        ivYellowCircle.setVisibility(View.INVISIBLE);
+        ivRedCircle.setVisibility(View.INVISIBLE);
+
+        switch (game.getCurrentQuestion().getQuestionDifInteger()) {
+            case 1:
+                ivGreenCircle.setVisibility(View.VISIBLE); break;
+            case 2:
+                ivGreenCircle.setVisibility(View.VISIBLE);
+                ivYellowCircle.setVisibility(View.VISIBLE); break;
+            case 3:
+                ivGreenCircle.setVisibility(View.VISIBLE);
+                ivYellowCircle.setVisibility(View.VISIBLE);
+                ivRedCircle.setVisibility(View.VISIBLE); break;
+        }
 
         int questionNumViewValue = game.getCurrentQuestionNum()+1;
         tvQuestionNumber.setText(getResources().getString(R.string.pergunta_numero_text)
@@ -121,26 +137,7 @@ public class GameActivity extends Activity {
         finish();
     }
 
-    /*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        int questionNumViewValue = game.getCurrentQuestionNum()+1;
-        tvQuestionNumber.setText(getResources().getString(R.string.pergunta_numero_text)
-                + " " + questionNumViewValue);
-        tvQuestionDesc.setText(game.getCurrentQuestion().getQuestionDesc());
-        btnAnswerA.setText("A: " + game.getCurrentQuestion().getAnswerA());
-        btnAnswerB.setText("B: " + game.getCurrentQuestion().getAnswerB());
-        btnAnswerC.setText("C: " + game.getCurrentQuestion().getAnswerC());
-        btnAnswerD.setText("D: " + game.getCurrentQuestion().getAnswerD());
-    }
-    */
-
     @Override
     public void onBackPressed() {
-        /*
-         *  The user can't go back when the game is runnig,
-         *  he can only give up!
-        */
     }
 }

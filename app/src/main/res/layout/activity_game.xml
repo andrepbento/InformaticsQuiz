@@ -8,12 +8,40 @@
     android:orientation="vertical"
     tools:context="activities.GameActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.25"
-        android:gravity="right"
-        android:text="TIMER..." />
+        android:orientation="horizontal"
+        android:layout_weight="0.25">
+
+        <ImageView
+            android:id="@+id/iv_green_circle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/green_circle"/>
+
+        <ImageView
+            android:id="@+id/iv_yellow_circle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/yellow_circle"/>
+
+        <ImageView
+            android:id="@+id/iv_red_circle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/red_circle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="TIMER..." />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tvQuestionNumber"
