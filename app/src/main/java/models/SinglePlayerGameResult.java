@@ -1,4 +1,4 @@
-package data;
+package models;
 
 import java.util.Date;
 
@@ -11,21 +11,16 @@ public class SinglePlayerGameResult extends GameResult {
     private boolean gameResult;
     private int gameScore;
     private int nRightAnswers;
-    private double pRightAnswers;
     private int nWrongAnswers;
-    private double pWrongAnswers;
 
-    public SinglePlayerGameResult(Date gameDate, int gameNQuestions, int gameDifficulty, int gameId,
-                                  boolean gameResult, int gameScore, int nRightAnswers, double pRightAnswers,
-                                  int nWrongAnswers, double pWrongAnswers) {
-        super(gameDate, gameNQuestions, gameDifficulty);
+    public SinglePlayerGameResult(Date gameDate, int gameDifficulty, int gameId, boolean gameResult,
+                                  int gameScore, int nRightAnswers, int nWrongAnswers) {
+        super(gameDate, nRightAnswers + nWrongAnswers, gameDifficulty);
         this.gameId = gameId;
         this.gameResult = gameResult;
         this.gameScore = gameScore;
         this.nRightAnswers = nRightAnswers;
-        this.pRightAnswers = pRightAnswers;
         this.nWrongAnswers = nWrongAnswers;
-        this.pWrongAnswers = pWrongAnswers;
     }
 
     public int getGameId() {
@@ -44,15 +39,11 @@ public class SinglePlayerGameResult extends GameResult {
         return nRightAnswers;
     }
 
-    public double getpRightAnswers() {
-        return pRightAnswers;
-    }
-
     public int getnWrongAnswers() {
         return nWrongAnswers;
     }
 
-    public double getpWrongAnswers() {
-        return pWrongAnswers;
-    }
+    public double getpRightAnswers() { return Math.round((double)nRightAnswers / gameNQuestions * 100.0); }
+
+    public double getpWrongAnswers() { return Math.round((double)nWrongAnswers / gameNQuestions * 100.0); }
 }

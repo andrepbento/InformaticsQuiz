@@ -2,6 +2,7 @@ package fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
-import com.example.andre.informaticsquiz.Updateable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,8 +22,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import data.SinglePlayerGameResult;
-import helper.InformaticsQuizHelper;
+import interfaces.Updateable;
+import models.SinglePlayerGameResult;
+import utils.InformaticsQuizHelper;
 
 public class SinglePlayerStatisticsFragment extends Fragment implements Updateable {
 
@@ -82,9 +83,9 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
                 String str_gameDifficulty = "";
                 String[] difficulties = getResources().getStringArray(R.array.difficulty);
                 switch (spgr.getGameDifficulty()) {
-                    case 1: str_gameDifficulty = difficulties[0]; break;
-                    case 2: str_gameDifficulty = difficulties[1]; break;
-                    case 3: str_gameDifficulty = difficulties[2]; break;
+                    case 0: str_gameDifficulty = difficulties[0]; break;
+                    case 1: str_gameDifficulty = difficulties[1]; break;
+                    case 2: str_gameDifficulty = difficulties[2]; break;
                 }
                 addValuesToAdapter(spgr.getGameResult(), spgr.getGameDate(), spgr.getGameScore(),
                         spgr.getnRightAnswers(), spgr.getpRightAnswers(), spgr.getnWrongAnswers(),
@@ -94,10 +95,18 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             dbI.close();
         }
 
-        ListView lvMultiPlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
-        lvMultiPlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
+        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
+        if(data.isEmpty()) {
+            TextView tv = new TextView(getActivity());
+            tv.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            tv.setGravity(Gravity.CENTER);
+            tv.setText("NO DATA");
+            lvSinglePlayerDetails.setEmptyView(tv);
+        } else
+            lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
 
-        lvMultiPlayerDetails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvSinglePlayerDetails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getActivity(), "Clicked on element n." + i, Toast.LENGTH_SHORT).show();
@@ -126,6 +135,8 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
         public View getView(int i, View view, ViewGroup viewGroup) {
             View layout = getActivity().getLayoutInflater().inflate(R.layout.row_single_player_statistic, null);
 
+            LinearLayout ll = (LinearLayout)layout.findViewById(R.id.single_player_details_line);
+
             boolean gameResult = (boolean) data.get(i).get(GAME_RESULT);
             Date gameDate = (Date) data.get(i).get(GAME_DATE);
             int scoreAdded = (int) data.get(i).get(SCORE_ADDED);
@@ -135,8 +146,6 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             double pWrongAnswers = (double) data.get(i).get(P_WRONG_ANSWERS);
             int gameNQuestions = (int) data.get(i).get(GAME_N_QUESTIONS);
             String gameDifficulty = (String) data.get(i).get(GAME_DIFFICULTY);
-
-            LinearLayout ll = (LinearLayout)layout.findViewById(R.id.single_player_details_line);
 
             if(gameResult) {
                 ((TextView) layout.findViewById(R.id.tv_game_result)).setText("VITORIA");

@@ -1,25 +1,25 @@
-package com.example.andre.informaticsquiz;
+package models;
 
-import android.app.Application;
 import android.content.Context;
+
+import com.example.andre.informaticsquiz.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.Question;
-import helper.InformaticsQuizHelper;
+import utils.InformaticsQuizHelper;
 
 /**
  * Created by andre on 02/11/2016.
  */
 
-public class Game extends Application implements Serializable {
+public class Game implements Serializable {
     private static Integer[] easyGameValues = {60, 30, 10};
-    private static Integer easyGameTime = 90;
     private static Integer[] moderateGameValues = {30, 40, 30};
-    private static Integer moderateGameTime = 60;
     private static Integer[] hardGameValues = {10, 30, 60};
+    private static Integer easyGameTime = 90; // seconds
+    private static Integer moderateGameTime = 60;
     private static Integer hardGameTime = 30;
 
     private InformaticsQuizHelper dbI;
@@ -31,7 +31,7 @@ public class Game extends Application implements Serializable {
     private int score = 0;
     private int nRightQuestions = 0;
     private int nWrongQuestions = 0;
-    private int questionTime;
+    private long questionTime;
 
     private String[] diffArray;
 
@@ -51,15 +51,15 @@ public class Game extends Application implements Serializable {
             if(this.difficulty.equals(diffArray[0])) {
                 this.difficultyInt = 0;
                 fillQuestionsList(nQuestions, 0);
-                setQuestionTime(easyGameTime);
+                setQuestionTime(easyGameTime * 1000);
             } else if(this.difficulty.equals(diffArray[1])) {
                 this.difficultyInt = 1;
                 fillQuestionsList(nQuestions, 1);
-                setQuestionTime(moderateGameTime);
+                setQuestionTime(moderateGameTime * 1000);
             } else {
                 fillQuestionsList(nQuestions, 2);
                 this.difficultyInt = 2;
-                setQuestionTime(hardGameTime);
+                setQuestionTime(hardGameTime * 1000);
             }
         }
     }
@@ -88,11 +88,11 @@ public class Game extends Application implements Serializable {
 
     public int getnWrongQuestions() { return nWrongQuestions; }
 
-    public int getQuestionTime() {
+    public long getQuestionTime() {
         return this.questionTime;
     }
 
-    private void setQuestionTime(int valor) {
+    private void setQuestionTime(long valor) {
         this.questionTime = valor;
     }
 
@@ -163,21 +163,13 @@ public class Game extends Application implements Serializable {
         return (int)(Math.random() * range) + (min <= max ? min : max);
     }
 
-    private Question getQuestion(int questionNumb) {
-        return questionsList.get(questionNumb);
-    }
-
-    public int getQuestionDifficulty() {
-        return Integer.parseInt(questionsList.get(currentQuestionNum).getQuestionDif());
-    }
-
     public Question getNextQuestion() {
         return questionsList.get(currentQuestionNum);
     }
 
     public boolean checkAnswer(String answerLeter) {
         if(questionsList.get(currentQuestionNum).getRightAnswerLeter().equals(answerLeter)) {
-            score += questionsList.get(currentQuestionNum).getQuestionDifInteger();
+            score += questionsList.get(currentQuestionNum).getQuestionValue();
             nRightQuestions++;
             return true;
         }
@@ -197,10 +189,10 @@ public class Game extends Application implements Serializable {
         return getTotalScore() / 2 < score;
     }
 
-    private int getTotalScore() {
+    public int getTotalScore() {
         int totalScore = 0;
         for(Question q : questionsList)
-            totalScore += q.getQuestionDifInteger();
+            totalScore += q.getQuestionValue();
         return totalScore;
     }
 }

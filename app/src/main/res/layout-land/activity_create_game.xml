@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    tools:context="activities.GameConfigActivity">
+    tools:context="activities.CreateGameActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="@string/configuracao_do_jogo_text_view"
+        android:text="@string/tv_game_config_text"
         android:textSize="24sp"
         android:textStyle="bold"
         android:typeface="serif"/>
@@ -22,20 +21,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:text="@string/dificuldade_text_view"
+            android:text="@string/tv_difficulty_text"
             android:textSize="20sp"/>
 
         <Spinner
             android:id="@+id/spinner_dificuldade"
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
 
     </LinearLayout>
 
@@ -50,11 +53,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:id="@+id/tv_num_perguntas"
-            android:text="@string/tv_questions_number"
+            android:text="@string/tv_questions_number_text"
             android:textSize="20sp"/>
 
         <SeekBar
-            android:id="@+id/seek_bar_n_perguntas"
+            android:id="@+id/sb_n_questions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"/>

@@ -5,14 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:orientation="vertical"
     tools:context="activities.CameraActivity">
 
-    <TextView
+    <SurfaceView
+        android:id="@+id/camera_view"
         android:layout_width="match_parent"
+        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/code_info"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="POR IMPLEMENTAR..."
-        android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:textSize="20sp"
+        android:text="Nothing to read." />
 
 </LinearLayout>

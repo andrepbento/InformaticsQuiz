@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import com.example.andre.informaticsquiz.R;
 
 import adapter.TabsPagerAdapter;
-import helper.InformaticsQuizHelper;
+import utils.InformaticsQuizHelper;
 
-public class PlayerStatiscticsActivity extends FragmentActivity implements ActionBar.TabListener {
+public class PlayerResultsActivity extends FragmentActivity implements ActionBar.TabListener {
 
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
@@ -25,7 +25,7 @@ public class PlayerStatiscticsActivity extends FragmentActivity implements Actio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player_statisctics);
+        setContentView(R.layout.activity_player_results);
 
         actionBar = getActionBar();
 

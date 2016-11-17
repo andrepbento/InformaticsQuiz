@@ -1,9 +1,9 @@
-package com.example.andre.informaticsquiz;
+package interfaces;
 
 /**
  * Created by andre on 14/11/2016.
  */
 
 public interface Updateable {
-    public void update();
+    void update();
 }

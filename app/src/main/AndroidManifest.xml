@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.andre.informaticsquiz">
 
+    <meta-data
+        android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,15 +22,15 @@
             </intent-filter>
         </activity>
         <activity android:name="activities.QuestionsViewerActivity" />
-        <activity android:name="activities.GameConfigActivity" />
+        <activity android:name="activities.CreateGameActivity" />
         <activity android:name="activities.GameActivity" />
         <activity android:name="activities.SinglePlayerGameResultActivity" />
-        <activity android:name="activities.CreatePlayerProfileActivity" />
         <activity android:name="activities.PlayerProfileActivity" />
         <activity android:name="activities.CameraActivity" />
-        <activity android:name="activities.PlayerStatiscticsActivity" />
+        <activity android:name="activities.PlayerResultsActivity" />
         <activity android:name="activities.HowToPlayActivity" />
-        <activity android:name="activities.AboutTheAppActivity"></activity>
+        <activity android:name="activities.AboutTheAppActivity" />
+        <activity android:name="activities.QRCodeActivity"></activity>
     </application>
 
 </manifest>

@@ -1,12 +1,16 @@
-package data;
+package models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
-import com.example.andre.informaticsquiz.PublicConstantValues;
+import interfaces.PublicConstantValues;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
@@ -27,6 +31,9 @@ public class PlayerData implements Serializable {
     private int nRightAnswers;
     private int nWrongAnswers;
     private int totalAnswers;
+    private int singlePlayerGamesPlayed;
+    private int winSinglePlayerGames;
+    private int loseSinglePlayerGames;
 
     public PlayerData(Bitmap photo, String name, int sexId, String sex, int age, int ocupationId,
                       String ocupation) {
@@ -115,6 +122,25 @@ public class PlayerData implements Serializable {
         return totalAnswers;
     }
 
+    public void setPontuation(int pontuation) {
+        if(pontuation <= 0)
+            this.pontuation = 0;
+        else
+            this.pontuation = pontuation;
+    }
+
+    public void setnRightAnswers(int nRightAnswers) {
+        this.nRightAnswers = nRightAnswers;
+    }
+
+    public void setnWrongAnswers(int nWrongAnswers) {
+        this.nWrongAnswers = nWrongAnswers;
+    }
+
+    public void setTotalAnswers(int totalAnswers) {
+        this.totalAnswers = totalAnswers;
+    }
+
     public void saveData(Context context) {
         FileOutputStream fos = null;
         try {
@@ -126,6 +152,33 @@ public class PlayerData implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static PlayerData loadData(Context context) {
+        PlayerData playerData = null;
+
+        FileInputStream fis = null;
+        try {
+            fis = context.openFileInput(PublicConstantValues.playerFileName);
+        } catch (FileNotFoundException e) {
+            Log.e("MainMenuActivity", "FileNotFoundException " + e.getMessage());
+            return playerData;
+        }
+        ObjectInputStream is = null;
+        try {
+            is = new ObjectInputStream(fis);
+            playerData = (PlayerData) is.readObject();
+            is.close();
+            fis.close();
+        } catch (IOException e) {
+            Log.e("MainMenuActivity", "IOException " + e.getMessage());
+            return playerData;
+        } catch (ClassNotFoundException e) {
+            Log.e("MainMenuActivity", "ClassNotFoundException " + e.getMessage());
+            return playerData;
+        }
+
+        return playerData;
     }
 
 }

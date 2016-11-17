@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,13 +17,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.andre.informaticsquiz.PublicConstantValues;
 import com.example.andre.informaticsquiz.R;
 
 import java.io.File;
 
-import data.PlayerData;
-import helper.InformaticsQuizHelper;
+import interfaces.PublicConstantValues;
+import models.PlayerData;
+import utils.InformaticsQuizHelper;
 
 public class PlayerProfileActivity extends Activity {
 
@@ -39,40 +42,45 @@ public class PlayerProfileActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-        playerData = (PlayerData) intent.getSerializableExtra("playerData");
-
         ivPlayerImage = (ImageView) findViewById(R.id.iv_player_image);
         ivPlayerImage.setOnClickListener(onPlayerImageClick);
-        if(playerData.getPhoto() != null)
-            ivPlayerImage.setImageBitmap(playerData.getPhoto());
-        else
-            ivPlayerImage.setImageResource(R.drawable.drawable_user);
-
         etPlayerName = (EditText) findViewById(R.id.et_player_name);
-        etPlayerName.setText(playerData.getName());
-
         spinnerPlayerSex = (Spinner) findViewById(R.id.spinner_player_sex);
         ArrayAdapter<CharSequence> adapterSex = ArrayAdapter.createFromResource(this,
                 R.array.sex, android.R.layout.simple_spinner_item);
         adapterSex.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlayerSex.setAdapter(adapterSex);
-        spinnerPlayerSex.setSelection(playerData.getSexId());
-
         etPlayerAge = (EditText) findViewById(R.id.et_player_age);
-        etPlayerAge.setText(String.valueOf(playerData.getAge()));
-
         spinnerPlayerOcupation = (Spinner) findViewById(R.id.spinner_player_ocupation);
         ArrayAdapter<CharSequence> adapterOcupation = ArrayAdapter.createFromResource(this,
                 R.array.ocupation, android.R.layout.simple_spinner_item);
         adapterOcupation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlayerOcupation.setAdapter(adapterOcupation);
-        spinnerPlayerOcupation.setSelection(playerData.getOcupationId());
-
         etOcupationSpecif = (EditText) findViewById(R.id.et_ocupation_specification);
-        etOcupationSpecif.setText(playerData.getOcupation());
 
-        disableAllViewElements();
+        ViewStub stub = (ViewStub) findViewById(R.id.viewStub);
+
+        playerData = PlayerData.loadData(this);
+
+        if(playerData != null) {
+            stub.setLayoutResource(R.layout.footer_edit_player_profile);
+
+            if (playerData.getPhoto() != null)
+                ivPlayerImage.setImageBitmap(playerData.getPhoto());
+            else
+                ivPlayerImage.setImageResource(R.drawable.drawable_user);
+
+            etPlayerName.setText(playerData.getName());
+            spinnerPlayerSex.setSelection(playerData.getSexId());
+            etPlayerAge.setText(String.valueOf(playerData.getAge()));
+            spinnerPlayerOcupation.setSelection(playerData.getOcupationId());
+            etOcupationSpecif.setText(playerData.getOcupation());
+
+            disableAllViewElements();
+        } else {
+            stub.setLayoutResource(R.layout.footer_create_player_profile);
+        }
+        stub.inflate();
     }
 
     @Override
@@ -94,8 +102,11 @@ public class PlayerProfileActivity extends Activity {
 
     public void onButtonPlayerProfileClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_create_player_profile:
+                createPlayerProfile();
+                break;
             case R.id.btn_edit_player_data:
-                editPlayerData(view);
+                editPlayerProfile(view);
                 break;
             case R.id.btn_delete_player_data:
                 deletePlayerData();
@@ -103,24 +114,60 @@ public class PlayerProfileActivity extends Activity {
         }
     }
 
-    private void editPlayerData(View view) {
+    public void createPlayerProfile() {
+        if(infoIsFilled()) {
+            Bitmap playerBitmap = null;
+            if(ivPlayerImage.getDrawable() != null)
+                playerBitmap = ((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap();
+            String name = etPlayerName.getText().toString();
+            int sexId = spinnerPlayerSex.getSelectedItemPosition();
+            String sex = spinnerPlayerSex.getSelectedItem().toString();
+            int age = Integer.parseInt(etPlayerAge.getText().toString());
+            int ocupationId = spinnerPlayerOcupation.getSelectedItemPosition();
+            String ocupation = etOcupationSpecif.getText().toString();
+            PlayerData player = new PlayerData(playerBitmap, name, sexId, sex, age, ocupationId, ocupation);
+            player.saveData(getApplicationContext());
+            finish();
+        } else {
+            Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void editPlayerProfile(View view) {
         if(!edit) {
             edit = true;
             ((Button)view).setText("Guardar dados");
             enableAllViewElements();
         } else {
-            edit = false;
             ((Button)view).setText("Editar dados");
-            //playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());
-            playerData.setName(etPlayerName.getText().toString());
-            playerData.setSexId(spinnerPlayerSex.getSelectedItemPosition());
-            playerData.setSex(spinnerPlayerSex.getSelectedItem().toString());
-            playerData.setAge(Integer.parseInt(etPlayerAge.getText().toString()));
-            playerData.setOcupationId(spinnerPlayerOcupation.getSelectedItemPosition());
-            playerData.setOcupation(etOcupationSpecif.getText().toString());
-            playerData.saveData(this);
-            disableAllViewElements();
+            if(infoIsFilled()) {
+                edit = false;
+                //playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());
+                playerData.setName(etPlayerName.getText().toString());
+                playerData.setSexId(spinnerPlayerSex.getSelectedItemPosition());
+                playerData.setSex(spinnerPlayerSex.getSelectedItem().toString());
+                playerData.setAge(Integer.parseInt(etPlayerAge.getText().toString()));
+                playerData.setOcupationId(spinnerPlayerOcupation.getSelectedItemPosition());
+                playerData.setOcupation(etOcupationSpecif.getText().toString());
+                playerData.saveData(this);
+                disableAllViewElements();
+            } else {
+                Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    private boolean infoIsFilled() {
+        if(etPlayerName.getText().toString().isEmpty())
+            return false;
+        if(etPlayerAge.getText().toString().isEmpty() &&
+                Integer.parseInt(etPlayerAge.getText().toString()) >= 7) // Only players with age >= 7 are alowed to play
+            return false;
+        if(etOcupationSpecif.getText().toString().isEmpty())
+            return false;
+        return true;
     }
 
     private void enableAllViewElements() {

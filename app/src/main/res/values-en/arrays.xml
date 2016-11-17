@@ -5,4 +5,10 @@
         <item>Moderate</item>
         <item>Hard</item>
     </string-array>
+
+    <string-array name="ocupation">
+        <item>Student</item>
+        <item>Employer</item>
+        <item>Other</item>
+    </string-array>
 </resources>

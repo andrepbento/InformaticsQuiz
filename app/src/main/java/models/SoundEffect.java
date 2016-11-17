@@ -1,9 +1,11 @@
-package com.example.andre.informaticsquiz;
+package models;
 
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+
+import com.example.andre.informaticsquiz.R;
 
 import activities.GameActivity;
 
@@ -19,20 +21,14 @@ public class SoundEffect {
     private static SoundPool soundPool;
     private static int soundIdArray[];
 
-    public SoundEffect(Game game) {
-        initSoundPool();
-        soundIdArray = new int[9];
-        soundIdArray[0] =  soundPool.load(game, R.raw.right_answer_sound,1);
-        soundIdArray[1] =  soundPool.load(game,R.raw.wrong_answer_sound,1);
-        soundIdArray[3] =  soundPool.load(game,R.raw.lose_game_sad_trombone,1);
-    }
-
     public SoundEffect(GameActivity gameActivity) {
         initSoundPool();
         soundIdArray = new int[9];
-        soundIdArray[0] =  soundPool.load(gameActivity, R.raw.right_answer_sound,1);
-        soundIdArray[1] =  soundPool.load(gameActivity,R.raw.wrong_answer_sound,1);
-        soundIdArray[3] =  soundPool.load(gameActivity,R.raw.lose_game_sad_trombone,1);
+        soundIdArray[0] = soundPool.load(gameActivity, R.raw.right_answer_sound,1);
+        soundIdArray[1] = soundPool.load(gameActivity,R.raw.wrong_answer_sound,1);
+        soundIdArray[2] = soundPool.load(gameActivity,R.raw.win_game_audience_aplause,1);
+        soundIdArray[3] = soundPool.load(gameActivity,R.raw.lose_game_sad_trombone,1);
+        soundIdArray[4] = soundPool.load(gameActivity,R.raw.tick_sound,1);
     }
 
     private void initSoundPool() {
@@ -46,7 +42,15 @@ public class SoundEffect {
             soundPoolBuilder.setAudioAttributes(atributes);
             soundPool = soundPoolBuilder.build();
         } else
-            soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC,0);
+            soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC,0);
+
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId,
+                                       int status) {
+                boolean loaded = true;
+            }
+        });
     }
 
     public static void playSound(int soundId) {
@@ -71,7 +75,16 @@ public class SoundEffect {
         soundPool.play(soundIdArray[1], 1, 1, 0, 0, 1);
     }
 
+    public static void playWinGameSound() { soundPool.play(soundIdArray[2], 1, 1, 0, 0, 1); }
+
     public static void playLoseGameSound() {
         soundPool.play(soundIdArray[3], 1, 1, 0, 0, 1);
+    }
+
+    public static void playTickSound() { soundPool.play(soundIdArray[4], 1, 1, 0, 0, 1); }
+
+    public static void stopAllSounds() {
+        for(int i : soundIdArray)
+            soundPool.stop(i);
     }
 }

@@ -4,8 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -14,9 +16,10 @@ import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
-import helper.InformaticsQuizHelper;
+import interfaces.PublicConstantValues;
+import utils.InformaticsQuizHelper;
 
-public class GameConfigActivity extends Activity {
+public class CreateGameActivity extends Activity {
 
     protected InformaticsQuizHelper dbI;
 
@@ -27,41 +30,48 @@ public class GameConfigActivity extends Activity {
     TextView tvnQuestions;
     SeekBar seekBar;
 
+    private int gameMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_config);
+        setContentView(R.layout.activity_create_game);
 
         dbI = new InformaticsQuizHelper(this);
 
         dbI.create();
 
-        if(!dbI.open()){
-            Toast.makeText(getApplicationContext(), "Erro BD", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
+        if(dbI.open()) {
             actionBar = getActionBar();
-            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
 
             spinner = (Spinner) findViewById(R.id.spinner_dificuldade);
-            // Criar um ArrayAdapter usando um String[] e um default Spinner layout
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                     R.array.difficulty, android.R.layout.simple_spinner_item);
-            // Especificar o layout a user quando a lista de escolhas aparecer
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Aplicar o adapter ao Spinner
             spinner.setAdapter(adapter);
 
-            int nQuestions = dbI.getAllQuestions().size();
-
             tvnQuestions = (TextView)findViewById(R.id.tv_num_perguntas);
-            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number)
+            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number_text)
                     + "1");
 
-            seekBar = (SeekBar)findViewById(R.id.seek_bar_n_perguntas);
+            seekBar = (SeekBar)findViewById(R.id.sb_n_questions);
             seekBar.setProgress(1);
-            seekBar.setMax(15);
+            seekBar.setMax(PublicConstantValues.MAX_GAME_N_QUESTIONS_SIZE);
             seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
+
+            Intent intent = getIntent();
+            gameMode = intent.getIntExtra("mode", 0);
+            if(gameMode == PublicConstantValues.MP_MODE) {
+                ViewStub stub = (ViewStub) findViewById(R.id.viewStub);
+                stub.setLayoutResource(R.layout.footer_create_multi_player_game);
+                stub.inflate();
+            }
+            gameMode = PublicConstantValues.SP_MODE;
+
+        } else {
+            Log.e("DB", "Could not open()");
+            finish();
         }
     }
 
@@ -79,7 +89,7 @@ public class GameConfigActivity extends Activity {
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number) + " " + progress);
+            tvnQuestions.setText(getResources().getString(R.string.tv_questions_number_text) + " " + progress);
         }
 
         @Override
@@ -92,22 +102,34 @@ public class GameConfigActivity extends Activity {
     };
 
     public void onButtonComecarClick(View view) {
-        // Obter difficulty e nQuestions
         if(seekBar.getProgress() == 0){
             Toast.makeText(getApplicationContext(), "Falta escolher o número de perguntas...", Toast.LENGTH_SHORT).show();
-        } else {
-            String [] dificuldade = getResources().getStringArray(R.array.difficulty);
-            int n_perguntas = seekBar.getProgress();
+            return;
+        }
 
-            Toast.makeText(getApplicationContext(), "Iniciar o game com dif:"
-                            + dificuldade[spinner.getSelectedItemPosition()] + ", n_per:"
-                            + n_perguntas, Toast.LENGTH_SHORT).show();
+        String [] difficultyArray = getResources().getStringArray(R.array.difficulty);
+        int difficultyId = spinner.getSelectedItemPosition();
+        int n_perguntas = seekBar.getProgress();
 
-            Intent intent_inicia_jogo = new Intent(GameConfigActivity.this, GameActivity.class);
-            intent_inicia_jogo.putExtra("difficulty",dificuldade[spinner.getSelectedItemPosition()]);
+        if(gameMode == PublicConstantValues.SP_MODE) {
+            Intent intent_inicia_jogo = new Intent(CreateGameActivity.this, GameActivity.class);
+            intent_inicia_jogo.putExtra("difficulty",difficultyArray[difficultyId]);
             intent_inicia_jogo.putExtra("nQuestions",n_perguntas);
             startActivity(intent_inicia_jogo);
             finish();
+        } else if(gameMode == PublicConstantValues.MP_MODE) {
+            SeekBar seekBar = (SeekBar) findViewById(R.id.sb_n_players);
+            int nPlayers = seekBar.getProgress();
+
+            //Server server = new Server();
+
+            // Obter o número de jogadores...
+
+
+            //Intent intent = new Intent(CreateGameActivity.this, QRCodeActivity.class);
+            //intent.putExtra("server", )
+
+            Toast.makeText(this, "Implementar criação de jogo multiplayer", Toast.LENGTH_SHORT).show();
         }
     }
 }

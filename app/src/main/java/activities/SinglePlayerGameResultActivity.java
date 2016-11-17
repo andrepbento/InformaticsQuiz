@@ -3,7 +3,6 @@ package activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,8 +10,10 @@ import com.example.andre.informaticsquiz.R;
 
 import java.util.Date;
 
-import data.SinglePlayerGameResult;
-import helper.InformaticsQuizHelper;
+import models.PlayerData;
+import models.SinglePlayerGameResult;
+import models.SoundEffect;
+import utils.InformaticsQuizHelper;
 
 public class SinglePlayerGameResultActivity extends Activity {
 
@@ -42,10 +43,12 @@ public class SinglePlayerGameResultActivity extends Activity {
             tvGameResult.setText("PASSAS-TE! Parabéns");
             layout.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
             tvScoreAdded.setText("+ " + String.valueOf(gameScore));
+            SoundEffect.playWinGameSound();
         } else {
             tvGameResult.setText("CHUMBAS-TE! Tens que te esforçar mais...");
             layout.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
-            tvScoreAdded.setText("- " + String.valueOf(gameScore));
+            tvScoreAdded.setText(String.valueOf(gameScore));
+            SoundEffect.playLoseGameSound();
         }
 
         ((TextView) findViewById(R.id.tv_game_date)).setText(gameDate.toString());
@@ -58,26 +61,33 @@ public class SinglePlayerGameResultActivity extends Activity {
         String[] diffArray = this.getResources().getStringArray(R.array.difficulty);
         ((TextView) findViewById(R.id.tv_game_difficulty)).setText(diffArray[gameDifficulty]);
 
-        InformaticsQuizHelper dbI = new InformaticsQuizHelper(this);
+        PlayerData playerData = PlayerData.loadData(this);
+        if(playerData != null) {
+            playerData.setPontuation(playerData.getPontuation() + gameScore);
+            playerData.setnRightAnswers(playerData.getnRightAnswers() + nRightAnswers);
+            playerData.setnWrongAnswers(playerData.getnWrongAnswers() + nWrongAnswers);
+            playerData.setTotalAnswers(playerData.getTotalAnswers() + gameTotalQuestions);
+            playerData.saveData(this);
 
-        dbI.create();
+            InformaticsQuizHelper dbI = new InformaticsQuizHelper(this);
 
-        if(dbI.open()) {
-            int gameId = (dbI.getLastSinglePlayerGameId() + 1);
+            dbI.create();
 
-            SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameTotalQuestions,
-                    gameDifficulty, gameId, gameResult, gameScore, nRightAnswers, pRightAnswers,
-                    nWrongAnswers, pWrongAnswers);
+            if (dbI.open()) {
+                int gameId = (dbI.getLastSinglePlayerGameId() + 1);
 
-            dbI.insertSinglePlayerGameResult(spgr);
+                SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameDifficulty, gameId,
+                        gameResult, gameScore, nRightAnswers, nWrongAnswers);
 
-            dbI.close();
-        } else {
-            Log.e("SPlGResActivity", "dbI Error");
+                dbI.insertSinglePlayerGameResult(spgr);
+
+                dbI.close();
+            }
         }
     }
 
     public void onButtonGoToInicialMenu(View view) {
+        SoundEffect.stopAllSounds();
         onBackPressed();
     }
 }

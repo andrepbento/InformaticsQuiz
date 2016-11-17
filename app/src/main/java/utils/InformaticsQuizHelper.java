@@ -1,4 +1,4 @@
-package helper;
+package utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import data.Question;
-import data.SinglePlayerGameResult;
+import models.Question;
+import models.SinglePlayerGameResult;
 
 /**
  * Created by andre on 26/10/2016.
@@ -32,6 +32,7 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
     private static String QUESTIONS_PT_TABLE = "Questions_PT";
     private static String QUESTIONS_EN_TABLE = "Questions_EN";
     private static String SINGLE_PLAYER_STATISTICS_TABLE = "SinglePlayerStatistics";
+    private static String MULTI_PLAYER_STATISTICS_TABLE = "MultiPlayerStatistics";
     private static String DIFFICULTY_COLUMN = "Difficulty";
     private static String EASY_DIFFICULTY = "1";
     private static String MODERATE_DIFFICULTY = "2";
@@ -63,14 +64,12 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
         }
     }
 
-    // Verifica se a base de dados existe para evitar re-copiar os dados
     private boolean checkDataBase() {
         SQLiteDatabase checkDB = null;
         try {
             String path = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
         } catch (SQLiteException e) {
-            // A base de dados ainda não existe
             e.printStackTrace();
         }
 
@@ -126,14 +125,6 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
 
     }
 
-    public String getVersao() {
-        return String.valueOf(DB_VERSION);
-    }
-
-    /*
-    * CRIAR CODIGO DAS FUNCIONALIDADES DA BASE DE DADOS
-    **/
-    // QUESTIONS
     private List<Question> getQuestions(String query_arg) {
         List<Question> questions = new ArrayList<>();
 
@@ -155,7 +146,7 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
                 String answerC = cursor.getString(4);
                 String answerD = cursor.getString(5);
                 int rightAnswer = Integer.parseInt(cursor.getString(6));
-                String questionDif = cursor.getString(7);
+                int questionDif = Integer.parseInt(cursor.getString(7));
 
                 Question question = new Question(questionId, questionDesc, answerA,
                         answerB, answerC, answerD, rightAnswer, questionDif);
@@ -163,7 +154,7 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
                 questions.add(question);
             }
         } catch (Exception e) {
-            Log.e("DB", e.getMessage());
+            Log.e("InfQuizHelper", e.getMessage());
         }
 
         return questions;
@@ -188,7 +179,6 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
                 + " where " + DIFFICULTY_COLUMN + " = " + HARD_DIFFICULTY + ";");
     }
 
-    // SINGLE_PLAYER_GAME_STATISTICS
     private List<SinglePlayerGameResult> getSinglePlayerGameResults(String query_arg) {
         List<SinglePlayerGameResult> results = new ArrayList<>();
 
@@ -212,15 +202,11 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
                 Date gameDate = new Date(l_gameDate);
                 int gameScore = cursor.getInt(3);
                 int nRightAnswers = cursor.getInt(4);
-                double pRightAnswers = Double.parseDouble(cursor.getString(5));
-                int nWrongAnswers = cursor.getInt(6);
-                double pWrongAnswers = Double.parseDouble(cursor.getString(7));
-                int gameTotalQuestions = cursor.getInt(8);
-                int gameDifficulty = cursor.getInt(9);
+                int nWrongAnswers = cursor.getInt(5);
+                int gameDifficulty = cursor.getInt(6);
 
-                SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameTotalQuestions,
-                        gameDifficulty, gameId, gameResult, gameScore, nRightAnswers, pRightAnswers,
-                        nWrongAnswers, pWrongAnswers);
+                SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameDifficulty,
+                        gameId, gameResult, gameScore, nRightAnswers, nWrongAnswers);
 
                 results.add(spgr);
             }
@@ -245,20 +231,18 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
 
         try {
             String sql_query = "INSERT or replace INTO " + SINGLE_PLAYER_STATISTICS_TABLE
-                    + " (Id, gameResult, gameDate, gameScore, nRightAnswers, pRightAnswers, nWrongAnswers,"
-                    + "pWrongAnswers, gameNQuestions, gameDifficulty) VALUES('" + spgr.getGameId()
-                    + "', '";
+                    + " (Id, gameResult, gameDate, gameScore, nRightAnswers, nWrongAnswers,"
+                    + "gameDifficulty) VALUES('" + spgr.getGameId() + "', '";
             if (spgr.getGameResult())
                 sql_query += 1;
             else
                 sql_query += 0;
             sql_query += "', '" + spgr.getGameDate().getTime() + "', '" + spgr.getGameScore() + "', '"
-                    + spgr.getnRightAnswers() + "', '" + spgr.getpRightAnswers() + "', '" + spgr.getnWrongAnswers()
-                    + "', '" + spgr.getpWrongAnswers() + "', '" + spgr.getGameNQuestions() + "', '"
+                    + spgr.getnRightAnswers() + "', '" + spgr.getnWrongAnswers() + "', '"
                     + spgr.getGameDifficulty() + "')";
             db.execSQL(sql_query);
         } catch (Exception e) {
-            Log.e("Helper", "Exception");
+            Log.e("DB", e.getMessage());
         }
     }
 
@@ -269,7 +253,7 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializa
             String sql_query = "delete from " + SINGLE_PLAYER_STATISTICS_TABLE + ";";
             db.execSQL(sql_query);
         } catch (Exception e) {
-            Log.e("Helper", "Exception");
+            Log.e("DB", e.getMessage());
         }
     }
 

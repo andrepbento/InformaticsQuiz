@@ -1,31 +1,26 @@
 package activities;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.andre.informaticsquiz.PublicConstantValues;
 import com.example.andre.informaticsquiz.R;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
-import data.PlayerData;
+import interfaces.PublicConstantValues;
+import models.PlayerData;
 
 public class MainMenuActivity extends Activity {
 
     private PlayerData player;
-    private Menu menu;
 
     private Button btnMultiPlayer, btnPlayerStatisctic;
 
@@ -44,7 +39,9 @@ public class MainMenuActivity extends Activity {
         btnMultiPlayer = (Button) findViewById(R.id.btn_multi_player);
         btnPlayerStatisctic = (Button) findViewById(R.id.btn_player_statistics);
 
-        if(loadPlayerData(this)) {
+        player = PlayerData.loadData(this);
+
+        if(player != null) {
             btnMultiPlayer.setEnabled(true);
             btnPlayerStatisctic.setEnabled(true);
             //if(player.getPhoto() != null)
@@ -64,7 +61,7 @@ public class MainMenuActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu_menu, menu);
-        this.menu = menu;
+        //this.menu = menu;
         return true;
     }
 
@@ -72,13 +69,7 @@ public class MainMenuActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_user:
-                if(player == null) {
-                    startActivity(new Intent(MainMenuActivity.this, CreatePlayerProfileActivity.class));
-                } else {
-                    Intent intent = new Intent(MainMenuActivity.this, PlayerProfileActivity.class);
-                    intent.putExtra("playerData", player);
-                    startActivity(intent);
-                }
+                startActivity(new Intent(MainMenuActivity.this, PlayerProfileActivity.class));
                 break;
             case R.id.item_opt_bd:
                 startActivity(new Intent(MainMenuActivity.this, QuestionsViewerActivity.class));
@@ -106,39 +97,63 @@ public class MainMenuActivity extends Activity {
 
         switch (view_id) {
             case R.id.btn_single_player:
-                startActivity(new Intent(MainMenuActivity.this, GameConfigActivity.class));
+                Intent spIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
+                spIntent.putExtra("mode", PublicConstantValues.SP_MODE);
+                startActivity(spIntent);
                 break;
             case R.id.btn_multi_player:
-                Toast.makeText(getApplicationContext(), "Por implementar...", Toast.LENGTH_SHORT).show();
+                setUpMultiPlayerDialogBox();
                 break;
             case R.id.btn_player_statistics:
-                startActivity(new Intent(MainMenuActivity.this, PlayerStatiscticsActivity.class));
+                startActivity(new Intent(MainMenuActivity.this, PlayerResultsActivity.class));
                 break;
         }
     }
 
-    private boolean loadPlayerData(Context context) {
-        FileInputStream fis = null;
-        try {
-            fis = context.openFileInput(PublicConstantValues.playerFileName);
-        } catch (FileNotFoundException e) {
-            Log.e("MainMenuActivity", "FileNotFoundException " + e.getMessage());
-            return false;
-        }
-        ObjectInputStream is = null;
-        try {
-            is = new ObjectInputStream(fis);
-            player = (PlayerData) is.readObject();
-            is.close();
-            fis.close();
-        } catch (IOException e) {
-            Log.e("MainMenuActivity", "IOException " + e.getMessage());
-            return false;
-        } catch (ClassNotFoundException e) {
-            Log.e("MainMenuActivity", "ClassNotFoundException " + e.getMessage());
-            return false;
-        }
+    private void setUpMultiPlayerDialogBox() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainMenuActivity.this);
+        //builderSingle.setIcon(R.drawable.ic_launcher);
+        builderSingle.setTitle("How?");
 
-        return true;
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainMenuActivity.this,
+                android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("Create game");
+        arrayAdapter.add("Join game");
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which) {
+                    case 0:
+                        Intent mpIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
+                        mpIntent.putExtra("mode", PublicConstantValues.MP_MODE);
+                        startActivity(mpIntent);
+                        break;
+                    case 1:
+                        /*
+                        Intent jgIntent = new Intent(MainMenuActivity.this, CameraActivity.class);
+                        jgIntent.putExtra("cameraMode", PublicConstantValues.QRCODE_PHOTO);
+                        startActivityForResult(jgIntent, QRCode_Intent_Result);
+                        */
+                }
+
+            }
+        });
+
+        builderSingle.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        /*
+        if(resultCode == QRCode_Intent_Result) {
+            //Colocar uma progress bar em que o jogador fica à espera que o jogo começe...
+            //Vibrar quando começar
+            //Pensar se uma nova Activity faz sentido aqui
+            Toast.makeText(this, "CONSEGUI O RESULT!", Toast.LENGTH_SHORT).show();
+        }
+        */
     }
 }

@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.25"
         android:orientation="horizontal">
 
         <ImageView
@@ -44,12 +44,12 @@
             android:typeface="serif"/>
 
     </LinearLayout>
-
+    
     <TextView
         android:id="@+id/tvQuestionNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:gravity="center" />
 
     <TextView
@@ -60,51 +60,72 @@
         style="@style/pergunta_ambiente_jogo"
         android:gravity="center"/>
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/btnAnswerA"
-        android:gravity="left|center_vertical"
-        android:typeface="serif"
-        android:onClick="onButtonRespostaClick"/>
+        android:orientation="horizontal">
 
-    <Button
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/btnAnswerA"
+            android:gravity="left|center_vertical"
+            android:typeface="serif"
+            android:onClick="onButtonRespostaClick"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/btnAnswerB"
+            android:gravity="left|center_vertical"
+            android:typeface="serif"
+            android:onClick="onButtonRespostaClick"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/btnAnswerB"
-        android:gravity="left|center_vertical"
-        android:typeface="serif"
-        android:onClick="onButtonRespostaClick"/>
+        android:orientation="horizontal">
 
-    <Button
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/btnAnswerC"
+            android:gravity="left|center_vertical"
+            android:typeface="serif"
+            android:onClick="onButtonRespostaClick"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/btnAnswerD"
+            android:gravity="left|center_vertical"
+            android:typeface="serif"
+            android:onClick="onButtonRespostaClick"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/btnAnswerC"
-        android:gravity="left|center_vertical"
-        android:typeface="serif"
-        android:onClick="onButtonRespostaClick"/>
+        android:layout_weight="0.2"
+        android:gravity="center">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnAnswerD"
-        android:gravity="left|center_vertical"
-        android:typeface="serif"
-        android:onClick="onButtonRespostaClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desistir"
+            android:background="#ff0000"
+            android:layout_gravity="center"
+            android:onClick="onButtonGiveUp"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:layout_marginTop="10dp"
-        android:padding="5dp"
-        android:text="Desistir"
-        android:background="#ff0000"
-        android:layout_gravity="center"
-        android:onClick="onButtonGiveUp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import data.Question;
-import helper.InformaticsQuizHelper;
+import models.Question;
+import utils.InformaticsQuizHelper;
 
 public class QuestionsViewerActivity extends Activity {
 
@@ -86,7 +86,7 @@ public class QuestionsViewerActivity extends Activity {
                             questionsList.get(i).getAnswerC(),
                             questionsList.get(i).getAnswerD(),
                             questionsList.get(i).getRightAnswerLeter(),
-                            questionsList.get(i).getQuestionDifInteger());
+                            questionsList.get(i).getQuestionDif());
 
             ListView listView = (ListView) findViewById(R.id.listView);
             listView.setAdapter(new QuestionsListAdapter());
