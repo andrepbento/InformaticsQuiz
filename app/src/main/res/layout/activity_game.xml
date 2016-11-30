@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/tvQuestionDescription"
-        style="@style/pergunta_ambiente_jogo"
+        style="@style/MediumCustomText"
         android:gravity="center"/>
 
     <Button

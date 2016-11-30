@@ -1,10 +1,13 @@
 package activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.andre.informaticsquiz.R;
 import com.google.zxing.BarcodeFormat;
@@ -12,32 +15,48 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import models.Game;
+import network.Client;
+import network.Server;
+
 public class QRCodeActivity extends Activity {
 
-    ImageView ivQRCode;
-
-    String QRcode;
+    public final static int HEIGHT=500;
     public final static int WIDTH=500;
+
+    ImageView ivQRCode;
+    String QRcode;
+
+    public TextView tvPlayersConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode);
 
-        getActionBar().hide();
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent receivedIntent = getIntent();
+        int nPlayers = receivedIntent.getIntExtra("nPlayers", 0);
+        Game game = (Game) receivedIntent.getSerializableExtra("game");
+
+        final Server server = new Server(this, nPlayers, game);
+        server.execute();
 
         final ImageView ivQRCode = (ImageView) findViewById(R.id.iv_qr_code);
+        final TextView tvServerDetails = (TextView) findViewById(R.id.tv_server_details);
+        tvPlayersConnected = (TextView) findViewById(R.id.tv_players_connected);
+        tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
 
         // create thread to avoid ANR Exception
         Thread t = new Thread(new Runnable() {
             public void run() {
                 // this is the msg which will be encode in QRcode
-                QRcode="Test for the Bitmap";
+                QRcode = server.getLocalIpAddress() + " " + server.getListeningPort();
 
                 try {
                     synchronized (this) {
-                        wait(5000);
-                        // runOnUiThread method used to do UI task in main thread.
+                        wait(100);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -47,29 +66,30 @@ public class QRCodeActivity extends Activity {
                                     bitmap = encodeAsBitmap(QRcode);
                                     ivQRCode.setImageBitmap(bitmap);
 
+                                    tvServerDetails.setText("IP: " + server.getLocalIpAddress()
+                                            + "   Port: " + server.getListeningPort());
+
                                 } catch (WriterException e) {
                                     e.printStackTrace();
-                                } // end of catch block
-
+                                }
                             } // end of run method
                         });
-
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-
-
             }
         });
         t.start();
+
+        Client client = new Client(this, server.getLocalIpAddress(), server.getListeningPort());
+        client.execute();
     }
 
     private Bitmap encodeAsBitmap(String str) throws WriterException {
         BitMatrix result;
         try {
-            result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
+            result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, HEIGHT, WIDTH, null);
             int w = result.getWidth();
             int h = result.getHeight();
             int[] pixels = new int[w * h];
@@ -78,7 +98,6 @@ public class QRCodeActivity extends Activity {
                 for (int x = 0; x < w; x++)
                     pixels[offset + x] = result.get(x, y) ?
                             getResources().getColor(R.color.black) : getResources().getColor(R.color.white);
-
             }
             Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, 500, 0, 0, w, h);
@@ -91,5 +110,17 @@ public class QRCodeActivity extends Activity {
             Log.e("QRCode", e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

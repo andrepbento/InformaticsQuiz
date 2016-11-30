@@ -26,7 +26,7 @@ public class GameActivity extends Activity {
     TextView tvQuestionTimer, tvQuestionNumber, tvQuestionDesc;
     Button btnAnswerA, btnAnswerB, btnAnswerC, btnAnswerD;
 
-    Game game;
+    private Game game;
 
     private CountDownTimer cdt;
 
@@ -52,10 +52,8 @@ public class GameActivity extends Activity {
 
         Intent received_intent = getIntent();
         if(received_intent != null) {
-            String difficulty = received_intent.getStringExtra("difficulty");
-            int nQuestions = received_intent.getIntExtra("nQuestions",0);
 
-            game = new Game(this, difficulty, nQuestions);
+            game = (Game) received_intent.getSerializableExtra("game");
 
             actualizaInterface();
         }
@@ -97,23 +95,11 @@ public class GameActivity extends Activity {
     }
 
     public void nextQuestion() {
-        cdt.cancel();
+        if(game.getTimer())
+            cdt.cancel();
 
         if(game.checkEnd()) {
-            Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerGameResultActivity.class);
-            gameResultIntent.putExtra("gameResult", game.getResult());
-            gameResultIntent.putExtra("gameTotalQuestions", game.getnQuestions());
-            if(game.getResult())
-                gameResultIntent.putExtra("gameScore", game.getScore());
-            else {
-                double halfScore = game.getTotalScore() / 2;
-                int loseScore = ((int)halfScore - game.getScore()) * (-1);
-                gameResultIntent.putExtra("gameScore", loseScore);
-            }
-            gameResultIntent.putExtra("nRightAnswers", game.getnRightQuestions());
-            gameResultIntent.putExtra("nWrongAnswers", game.getnWrongQuestions());
-            gameResultIntent.putExtra("gameDifficulty", game.getDifficultyInt());
-            startActivity(gameResultIntent);
+            setSinglePlayerGameResult();
             finish();
         } else {
             actualizaInterface();
@@ -149,34 +135,57 @@ public class GameActivity extends Activity {
         btnAnswerC.setText("C: " + question.getAnswerC());
         btnAnswerD.setText("D: " + question.getAnswerD());
 
-        cdt = new CountDownTimer(game.getQuestionTime(), PublicConstantValues.tickTime) {
+        if(game.getTimer()) {
+            cdt = new CountDownTimer(game.getQuestionTime(), PublicConstantValues.tickTime) {
 
-            public void onTick(long millisUntilFinished) {
-                long millis = millisUntilFinished;
-                if(millis / 1000 <= 10)
-                    tvQuestionTimer.setTextColor(Color.RED);
-                else
-                    tvQuestionTimer.setTextColor(Color.BLACK);
-                String hms = String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(millis));
-                tvQuestionTimer.setText("Time: "+ hms);
-                SoundEffect.playTickSound();
-            }
+                public void onTick(long millisUntilFinished) {
+                    long millis = millisUntilFinished;
+                    if(millis / 1000 <= 10)
+                        tvQuestionTimer.setTextColor(Color.RED);
+                    else
+                        tvQuestionTimer.setTextColor(Color.BLACK);
+                    String hms = String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(millis));
+                    tvQuestionTimer.setText("Time: "+ hms);
+                    SoundEffect.playTickSound();
+                }
 
-            public void onFinish() {
-                Toast.makeText(getApplication(), "Times over!", Toast.LENGTH_SHORT).show();
-                game.checkAnswer("timeOver");
-                nextQuestion();
-            }
-        }.start();
+                public void onFinish() {
+                    Toast.makeText(getApplication(), "Times over!", Toast.LENGTH_SHORT).show();
+                    game.checkAnswer("timeOver");
+                    nextQuestion();
+                }
+            }.start();
+        }
     }
 
     public void onButtonGiveUp(View view) {
-        cdt.cancel();
+        if(game.getTimer())
+            cdt.cancel();
+        setSinglePlayerGameResult();
         finish();
     }
 
     @Override
     public void onBackPressed() {
 
+    }
+
+    public void setSinglePlayerGameResult() {
+        Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerGameResultActivity.class);
+        gameResultIntent.putExtra("gameResult", game.getResult());
+        gameResultIntent.putExtra("gamePlayerScore", game.getScore());
+        gameResultIntent.putExtra("gameTotalScore", game.getTotalScore());
+        if(game.getResult())
+            gameResultIntent.putExtra("gameScore", game.getScore());
+        else {
+            double halfScore = game.getTotalScore() / 2;
+            int loseScore = ((int)halfScore - game.getScore()) * (-1);
+            gameResultIntent.putExtra("gameScore", loseScore);
+        }
+        gameResultIntent.putExtra("nRightAnswers", game.getnRightQuestions());
+        gameResultIntent.putExtra("nWrongAnswers", game.getnWrongQuestions());
+        gameResultIntent.putExtra("gameDifficulty", game.getDifficultyId());
+        gameResultIntent.putExtra("gameTotalQuestions", game.getnQuestions());
+        startActivity(gameResultIntent);
     }
 }

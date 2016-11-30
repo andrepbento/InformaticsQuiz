@@ -4,12 +4,30 @@
     android:id="@+id/activity_qrcode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="activities.QRCodeActivity">
 
     <ImageView
         android:id="@+id/iv_qr_code"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_server_details"
+        android:layout_width="match_parent"
+        android:layout_weight=".3"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_players_connected"
+        android:layout_width="match_parent"
+        android:layout_weight=".3"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="16sp" />
 
 </LinearLayout>

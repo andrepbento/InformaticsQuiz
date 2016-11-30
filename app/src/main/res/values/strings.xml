@@ -8,4 +8,10 @@
     <string name="tv_course_text">"Curso"</string>
     <string name="tv_profession_text">"Profissão"</string>
     <string name="tv_other_text">"Outro"</string>
+
+    <string name="about_the_app_credits_text">Créditos</string>
+    <string name="about_the_app_programador_text">Programador e Designer:\n\tAndré Bento nº21240008</string>
+    <string name="about_the_app_amov_text">Arquiteturas Móveis 14/15</string>
+    <string name="about_the_app_images_text">Imagens: Google</string>
+
 </resources>

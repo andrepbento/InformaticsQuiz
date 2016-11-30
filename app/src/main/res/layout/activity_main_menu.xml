@@ -14,9 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Informatics Quiz"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:typeface="serif"
+        style="@style/LargeCustomText"
         android:gravity="center_horizontal"/>
 
     <FrameLayout

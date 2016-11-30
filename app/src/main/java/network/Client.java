@@ -1,11 +1,13 @@
 package network;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import models.Game;
@@ -16,7 +18,7 @@ import models.PlayerData;
  * Created by andre on 16/11/2016.
  */
 
-public class Client extends Thread {
+public class Client extends AsyncTask<Void, String, Void> {
 
     private String serverIp;
     private int serverPort;
@@ -27,22 +29,23 @@ public class Client extends Thread {
 
     private PlayerData playerData;
 
+    //private Game game;
+
     boolean running;
 
     public Client(Context context, String serverIp, int serverPort) {
         this.serverIp = serverIp;
         this.serverPort = serverPort;
-        clientSocket = null;
 
         playerData = PlayerData.loadData(context);
     }
 
     @Override
-    public void run() {
+    protected Void doInBackground(Void... params) {
         running = true;
 
         try {
-            clientSocket = new Socket(serverIp, serverPort);
+            clientSocket = new Socket(InetAddress.getByName(serverIp), serverPort);
 
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             in = new ObjectInputStream(clientSocket.getInputStream());
@@ -57,7 +60,8 @@ public class Client extends Thread {
                     String str = (String) read;
                     // Comando qualquer
                 } else if (read instanceof Game) {
-                    Game game = (Game) read;
+                    //game = (Game) read;
+                    this.publishProgress("startGame");
                     // recebeu o jogo arracnar com o mesmo e no final enviar estatisticas
                 } else if (read instanceof MultiPlayerGameResult) {
                     MultiPlayerGameResult mpgr = (MultiPlayerGameResult) read;
@@ -79,6 +83,12 @@ public class Client extends Thread {
                     Log.e("Client", e.getMessage());
                 }
         }
+        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... args) {
+
     }
 
     private void stopReceiving() { running = false; }
