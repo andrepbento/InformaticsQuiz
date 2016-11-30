@@ -19,7 +19,6 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    private Menu menu;
     private String[] tabs = { "Single-Player", "Player", "Multi-Player" };
 
     @Override
@@ -66,9 +65,7 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.player_statistics_menu, menu);
-        this.menu = menu;
-
+        inflater.inflate(R.menu.menu_player_statistics, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

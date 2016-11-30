@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +22,7 @@ import models.SinglePlayerGameResult;
  * Created by andre on 26/10/2016.
  */
 
-public class InformaticsQuizHelper extends SQLiteOpenHelper implements Serializable{
+public class InformaticsQuizHelper extends SQLiteOpenHelper {
 
     private static String DB_PATH = "";
     private static String DB_NAME = "informaticsQuiz.db";

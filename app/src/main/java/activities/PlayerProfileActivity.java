@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -32,6 +32,8 @@ public class PlayerProfileActivity extends Activity {
     Spinner spinnerPlayerSex, spinnerPlayerOcupation;
 
     PlayerData playerData;
+
+    Menu menu;
 
     boolean edit = false;
 
@@ -58,13 +60,9 @@ public class PlayerProfileActivity extends Activity {
         spinnerPlayerOcupation.setAdapter(adapterOcupation);
         etOcupationSpecif = (EditText) findViewById(R.id.et_ocupation_specification);
 
-        ViewStub stub = (ViewStub) findViewById(R.id.viewStub);
-
         playerData = PlayerData.loadData(this);
 
         if(playerData != null) {
-            stub.setLayoutResource(R.layout.footer_edit_player_profile);
-
             if (playerData.getPhoto() != null)
                 ivPlayerImage.setImageBitmap(playerData.getPhoto());
             else
@@ -77,10 +75,18 @@ public class PlayerProfileActivity extends Activity {
             etOcupationSpecif.setText(playerData.getOcupation());
 
             disableAllViewElements();
-        } else {
-            stub.setLayoutResource(R.layout.footer_create_player_profile);
         }
-        stub.inflate();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if(playerData != null)
+            inflater.inflate(R.menu.menu_edit_player_profile, menu);
+        else
+            inflater.inflate(R.menu.menu_create_player_profile, menu);
+        this.menu = menu;
+        return true;
     }
 
     @Override
@@ -88,6 +94,16 @@ public class PlayerProfileActivity extends Activity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+            case R.id.item_create_user:
+                createPlayerProfile();
+                break;
+            case R.id.item_edit_player_data:
+                editPlayerProfile();
+                break;
+            case R.id.item_delete_player_data:
+                deletePlayerData();
+                break;
         }
         return super.onMenuItemSelected(featureId, item);
     }
@@ -96,20 +112,21 @@ public class PlayerProfileActivity extends Activity {
         @Override
         public void onClick(View v) {
             Intent takePlayerPhoto = new Intent(PlayerProfileActivity.this, CameraActivity.class);
-            startActivityForResult(takePlayerPhoto, 1);
+            takePlayerPhoto.putExtra("cameraMode", PublicConstantValues.PROFILE_PHOTO);
+            startActivityForResult(takePlayerPhoto, PublicConstantValues.PROFILE_PHOTO);
         }
     };
 
-    public void onButtonPlayerProfileClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_create_player_profile:
-                createPlayerProfile();
-                break;
-            case R.id.btn_edit_player_data:
-                editPlayerProfile(view);
-                break;
-            case R.id.btn_delete_player_data:
-                deletePlayerData();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PublicConstantValues.PROFILE_PHOTO:
+                if(resultCode == RESULT_OK) {
+                    Toast.makeText(this, "Implementar o que fazer com a foto", Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    Toast.makeText(this, "Error taking photo", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -134,13 +151,13 @@ public class PlayerProfileActivity extends Activity {
         }
     }
 
-    private void editPlayerProfile(View view) {
+    private void editPlayerProfile() {
         if(!edit) {
             edit = true;
-            ((Button)view).setText("Guardar dados");
+            menu.getItem(0).setTitle("Guardar dados");
             enableAllViewElements();
         } else {
-            ((Button)view).setText("Editar dados");
+            menu.getItem(0).setTitle("Editar dados");
             if(infoIsFilled()) {
                 edit = false;
                 //playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());

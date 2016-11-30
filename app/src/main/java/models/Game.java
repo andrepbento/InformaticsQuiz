@@ -1,13 +1,10 @@
 package models;
 
-import android.content.Context;
-
-import com.example.andre.informaticsquiz.R;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import interfaces.PublicConstantValues;
 import utils.InformaticsQuizHelper;
 
 /**
@@ -15,52 +12,41 @@ import utils.InformaticsQuizHelper;
  */
 
 public class Game implements Serializable {
-    private static Integer[] easyGameValues = {60, 30, 10};
-    private static Integer[] moderateGameValues = {30, 40, 30};
-    private static Integer[] hardGameValues = {10, 30, 60};
-    private static Integer easyGameTime = 90; // seconds
-    private static Integer moderateGameTime = 60;
-    private static Integer hardGameTime = 30;
 
-    private InformaticsQuizHelper dbI;
+    private transient InformaticsQuizHelper dbI;
 
     private String difficulty;
-    private int difficultyInt;
+    private int difficultyId;
     private int nQuestions;
     private int currentQuestionNum = 0;
     private int score = 0;
     private int nRightQuestions = 0;
     private int nWrongQuestions = 0;
     private long questionTime;
+    private boolean timer;
 
     private String[] diffArray;
 
     private ArrayList<Question> questionsList;
 
-    public Game(Context context, String difficulty, int nQuestions) {
-        dbI = new InformaticsQuizHelper(context);
+    public Game(InformaticsQuizHelper dbI, String[] diffArray, int difficultyId, int nQuestions, boolean timer) {
+        this.dbI = dbI;
 
-        dbI.create();
+        this.diffArray = diffArray;
+        this.difficultyId = difficultyId;
+        this.difficulty = this.diffArray[difficultyId];
+        this.nQuestions = nQuestions;
+        this.timer = timer;
 
-        if(dbI.open()){
-            this.difficulty = difficulty;
-            this.nQuestions = nQuestions;
-
-            diffArray = context.getResources().getStringArray(R.array.difficulty);
-
-            if(this.difficulty.equals(diffArray[0])) {
-                this.difficultyInt = 0;
-                fillQuestionsList(nQuestions, 0);
-                setQuestionTime(easyGameTime * 1000);
-            } else if(this.difficulty.equals(diffArray[1])) {
-                this.difficultyInt = 1;
-                fillQuestionsList(nQuestions, 1);
-                setQuestionTime(moderateGameTime * 1000);
-            } else {
-                fillQuestionsList(nQuestions, 2);
-                this.difficultyInt = 2;
-                setQuestionTime(hardGameTime * 1000);
-            }
+        if(this.difficulty.equals(diffArray[0])) {
+            fillQuestionsList(nQuestions, 0);
+            setQuestionTime(PublicConstantValues.easyGameTime * 1000);
+        } else if(this.difficulty.equals(diffArray[1])) {
+            fillQuestionsList(nQuestions, 1);
+            setQuestionTime(PublicConstantValues.moderateGameTime * 1000);
+        } else {
+            fillQuestionsList(nQuestions, 2);
+            setQuestionTime(PublicConstantValues.hardGameTime * 1000);
         }
     }
 
@@ -68,7 +54,7 @@ public class Game implements Serializable {
         return difficulty;
     }
 
-    public int getDifficultyInt() { return difficultyInt; }
+    public int getDifficultyId() { return difficultyId; }
 
     public int getnQuestions() {
         return nQuestions;
@@ -92,6 +78,8 @@ public class Game implements Serializable {
         return this.questionTime;
     }
 
+    public boolean getTimer() { return timer; }
+
     private void setQuestionTime(long valor) {
         this.questionTime = valor;
     }
@@ -105,27 +93,27 @@ public class Game implements Serializable {
 
         switch(gameDifficulty) {
             case 0:
-                nEasyQuestions = (int)Math.ceil(nQuestions*(easyGameValues[0] /100.0f));
-                nModerateQuestions = (int)(nQuestions*(easyGameValues[1] /100.0f));
-                nHardQuestions = (int)(nQuestions*(easyGameValues[2] /100.0f));
+                nEasyQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.easyGameValues[0] /100.0f));
+                nModerateQuestions = (int)(nQuestions*(PublicConstantValues.easyGameValues[1] /100.0f));
+                nHardQuestions = (int)(nQuestions*(PublicConstantValues.easyGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nEasyQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
                     nHardQuestions--;
                 break;
             case 1:
-                nEasyQuestions = (int)(nQuestions*(moderateGameValues[0] /100.0f));
-                nModerateQuestions = (int)Math.ceil(nQuestions*(moderateGameValues[1] /100.0f));
-                nHardQuestions = (int)(nQuestions*(moderateGameValues[2] /100.0f));
+                nEasyQuestions = (int)(nQuestions*(PublicConstantValues.moderateGameValues[0] /100.0f));
+                nModerateQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.moderateGameValues[1] /100.0f));
+                nHardQuestions = (int)(nQuestions*(PublicConstantValues.moderateGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nModerateQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
                     nHardQuestions--;
                 break;
             case 2:
-                nEasyQuestions = (int)(nQuestions*(hardGameValues[0] /100.0f));
-                nModerateQuestions = (int)(nQuestions*(hardGameValues[1] /100.0f));
-                nHardQuestions = (int)Math.ceil(nQuestions*(hardGameValues[2] /100.0f));
+                nEasyQuestions = (int)(nQuestions*(PublicConstantValues.hardGameValues[0] /100.0f));
+                nModerateQuestions = (int)(nQuestions*(PublicConstantValues.hardGameValues[1] /100.0f));
+                nHardQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.hardGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nHardQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
@@ -186,7 +174,7 @@ public class Game implements Serializable {
         if(score == 0)
             return false;
 
-        return getTotalScore() / 2 < score;
+        return getTotalScore() / 2 <= score;
     }
 
     public int getTotalScore() {

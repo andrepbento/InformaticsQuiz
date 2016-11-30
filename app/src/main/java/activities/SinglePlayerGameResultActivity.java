@@ -33,6 +33,9 @@ public class SinglePlayerGameResultActivity extends Activity {
         double pWrongAnswers = Math.round((double)nWrongAnswers / gameTotalQuestions * 100.0);
         int gameDifficulty = gameResultIntent.getIntExtra("gameDifficulty", 0);
 
+        int gamePlayerScore = gameResultIntent.getIntExtra("gamePlayerScore",0);
+        int gameTotalScore = gameResultIntent.getIntExtra("gameTotalScore",0);
+
         View layout = this.getWindow().getDecorView();
 
         //         android:id="@+id/iv_game_result" ************************************************
@@ -50,6 +53,7 @@ public class SinglePlayerGameResultActivity extends Activity {
             tvScoreAdded.setText(String.valueOf(gameScore));
             SoundEffect.playLoseGameSound();
         }
+        tvScoreAdded.setText(tvScoreAdded.getText() + "   " + gamePlayerScore + "/" + gameTotalScore);
 
         ((TextView) findViewById(R.id.tv_game_date)).setText(gameDate.toString());
         ((TextView) findViewById(R.id.tv_n_right_answers)).setText(String.valueOf(nRightAnswers));

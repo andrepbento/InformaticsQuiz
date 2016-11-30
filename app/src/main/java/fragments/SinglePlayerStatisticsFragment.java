@@ -62,7 +62,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_single_player_statistics, container, false);
+        rootView = inflater.inflate(R.layout.fragment_statistics_list_view, container, false);
 
         return rootView;
     }
@@ -95,7 +95,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             dbI.close();
         }
 
-        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
+        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_game_details);
         if(data.isEmpty()) {
             TextView tv = new TextView(getActivity());
             tv.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -150,11 +150,11 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             if(gameResult) {
                 ((TextView) layout.findViewById(R.id.tv_game_result)).setText("VITORIA");
                 ll.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
-                ((TextView)layout.findViewById(R.id.tv_score_added)).setText("+" + scoreAdded);
+                ((TextView) layout.findViewById(R.id.tv_score_added)).setText("+" + scoreAdded);
             } else {
                 ((TextView) layout.findViewById(R.id.tv_game_result)).setText("DERROTA");
                 ll.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
-                ((TextView)layout.findViewById(R.id.tv_score_added)).setText("-" + scoreAdded);
+                ((TextView) layout.findViewById(R.id.tv_score_added)).setText(scoreAdded);
             }
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy - HH:mm") ;

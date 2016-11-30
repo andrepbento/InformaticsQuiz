@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_how_to_play"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:orientation="vertical"
     tools:context="activities.AboutTheAppActivity">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="POR IMPLEMENTAR..."
-        android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:layout_height="wrap_content"
+        android:keepScreenOn="true"
+        android:textColor="#00b4f0"
+        android:textStyle="bold"
+        android:textSize="40sp"
+        android:gravity="top|center"
+        android:text="@string/about_the_app_credits_text"
+        android:layout_marginTop="10dp"/>
 
-</LinearLayout>
+
+    <TextView
+        android:layout_below="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/about_the_app_programador_text"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentStart="false"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/isec_logo"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

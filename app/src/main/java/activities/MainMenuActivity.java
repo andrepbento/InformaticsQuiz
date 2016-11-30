@@ -17,6 +17,7 @@ import com.example.andre.informaticsquiz.R;
 
 import interfaces.PublicConstantValues;
 import models.PlayerData;
+import network.Client;
 
 public class MainMenuActivity extends Activity {
 
@@ -45,9 +46,9 @@ public class MainMenuActivity extends Activity {
             btnMultiPlayer.setEnabled(true);
             btnPlayerStatisctic.setEnabled(true);
             //if(player.getPhoto() != null)
-            //    main_menu_menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
+            //    menu_main_menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
             //else
-            //    main_menu_menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
+            //    menu_main_menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
         } else {
             player = null;
             btnMultiPlayer.setEnabled(false);
@@ -60,8 +61,7 @@ public class MainMenuActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu_menu, menu);
-        //this.menu = menu;
+        inflater.inflate(R.menu.menu_main_menu, menu);
         return true;
     }
 
@@ -130,13 +130,38 @@ public class MainMenuActivity extends Activity {
                         startActivity(mpIntent);
                         break;
                     case 1:
-                        /*
+                        setUpJoinGameMethod();
+                }
+            }
+        });
+
+        builderSingle.show();
+    }
+
+    private void setUpJoinGameMethod() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainMenuActivity.this);
+        //builderSingle.setIcon(R.drawable.ic_launcher);
+        builderSingle.setTitle("Join method:");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainMenuActivity.this,
+                android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("IP:Port");
+        arrayAdapter.add("QRCode");
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which) {
+                    case 0:
+                        //setUpConnectionDetails();
+                        Client client = new Client(MainMenuActivity.this, "192.168.1.75", 9800);
+                        client.execute();
+                        break;
+                    case 1:
                         Intent jgIntent = new Intent(MainMenuActivity.this, CameraActivity.class);
                         jgIntent.putExtra("cameraMode", PublicConstantValues.QRCODE_PHOTO);
-                        startActivityForResult(jgIntent, QRCode_Intent_Result);
-                        */
+                        startActivityForResult(jgIntent, PublicConstantValues.QRCODE_PHOTO);
                 }
-
             }
         });
 
@@ -145,15 +170,20 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        /*
-        if(resultCode == QRCode_Intent_Result) {
-            //Colocar uma progress bar em que o jogador fica à espera que o jogo começe...
-            //Vibrar quando começar
-            //Pensar se uma nova Activity faz sentido aqui
-            Toast.makeText(this, "CONSEGUI O RESULT!", Toast.LENGTH_SHORT).show();
+        switch (requestCode) {
+            case PublicConstantValues.QRCODE_PHOTO:
+                if(resultCode == RESULT_OK) {
+                    String connectionDetails = data.getStringExtra("connectionDetails");
+                    connectionDetails.trim();
+                    String[] connectionDetailsArray = connectionDetails.split(" ");
+                    Client client = new Client(this, connectionDetailsArray[0],
+                            Integer.parseInt(connectionDetailsArray[1]));
+                    client.execute();
+                } else {
+                    Toast.makeText(this, "Error reading QRCode", Toast.LENGTH_SHORT).show();
+                }
         }
-        */
     }
+
 }
