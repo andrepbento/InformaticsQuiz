@@ -7,7 +7,7 @@ import android.preference.PreferenceFragment;
 import com.example.andre.informaticsquiz.R;
 
 /**
- * Created by andre on 31/10/2016.
+ * Created by andre
  */
 
 public class SettingsActivity extends PreferenceActivity {

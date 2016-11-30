@@ -3,7 +3,7 @@ package models;
 import java.util.Date;
 
 /**
- * Created by andre on 12/11/2016.
+ * Created by andre
  */
 
 public class GameResult {

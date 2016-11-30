@@ -1,7 +1,7 @@
 package interfaces;
 
 /**
- * Created by andre on 14/11/2016.
+ * Created by andre
  */
 
 public interface Updateable {

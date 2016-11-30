@@ -19,6 +19,10 @@ import interfaces.PublicConstantValues;
 import models.PlayerData;
 import network.Client;
 
+/**
+ * Created by andre
+ */
+
 public class MainMenuActivity extends Activity {
 
     private PlayerData player;

@@ -4,9 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/lv_game_details"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:text="POR IMPLEMENTAR"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="center"/>
 
 </LinearLayout>

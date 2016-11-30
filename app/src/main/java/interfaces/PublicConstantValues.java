@@ -1,7 +1,7 @@
 package interfaces;
 
 /**
- * Created by andre on 10/11/2016.
+ * Created by andre
  */
 
 public interface PublicConstantValues {
@@ -29,4 +29,9 @@ public interface PublicConstantValues {
 
     // NETWORK
     int listeningPort = 9800;
+
+    // VIBRATOR
+    long VIBRATION_SHORT = 500;
+    long VIBRATION_MEDIUM = 1000;
+    long VIBRATION_LONG = 1500;
 }

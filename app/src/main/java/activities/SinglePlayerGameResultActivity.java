@@ -15,6 +15,10 @@ import models.SinglePlayerGameResult;
 import models.SoundEffect;
 import utils.InformaticsQuizHelper;
 
+/**
+ * Created by andre
+ */
+
 public class SinglePlayerGameResultActivity extends Activity {
 
     @Override

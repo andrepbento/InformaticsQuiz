@@ -19,6 +19,10 @@ import models.Game;
 import network.Client;
 import network.Server;
 
+/**
+ * Created by andre
+ */
+
 public class QRCodeActivity extends Activity {
 
     public final static int HEIGHT=500;

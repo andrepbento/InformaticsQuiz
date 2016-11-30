@@ -1,11 +1,9 @@
 package activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -25,6 +23,11 @@ import com.google.android.gms.vision.face.FaceDetector;
 import java.io.IOException;
 
 import interfaces.PublicConstantValues;
+import models.MyVibrator;
+
+/**
+ * Created by andre
+ */
 
 public class CameraActivity extends Activity {
 
@@ -123,8 +126,7 @@ public class CameraActivity extends Activity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("connectionDetails", barcodes.valueAt(0).displayValue);
                         setResult(RESULT_OK, returnIntent);
-                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(500);
+                        new MyVibrator(CameraActivity.this).vibrate(PublicConstantValues.VIBRATION_MEDIUM);
                         finish();
                     }
                 }

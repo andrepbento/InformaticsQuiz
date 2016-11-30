@@ -8,7 +8,7 @@ import interfaces.PublicConstantValues;
 import utils.InformaticsQuizHelper;
 
 /**
- * Created by andre on 02/11/2016.
+ * Created by andre
  */
 
 public class Game implements Serializable {

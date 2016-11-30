@@ -15,7 +15,7 @@ import models.MultiPlayerGameResult;
 import models.PlayerData;
 
 /**
- * Created by andre on 16/11/2016.
+ * Created by andre
  */
 
 public class Client extends AsyncTask<Void, String, Void> {

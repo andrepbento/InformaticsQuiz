@@ -5,6 +5,10 @@ import android.os.Bundle;
 
 import com.example.andre.informaticsquiz.R;
 
+/**
+ * Created by andre
+ */
+
 public class SetConnectionDetailsActivity extends Activity {
 
     @Override

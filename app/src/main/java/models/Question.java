@@ -3,7 +3,7 @@ package models;
 import java.io.Serializable;
 
 /**
- * Created by andre on 27/10/2016.
+ * Created by andre
  */
 
 public class Question implements Serializable {
