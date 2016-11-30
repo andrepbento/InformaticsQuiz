@@ -14,6 +14,10 @@ import com.example.andre.informaticsquiz.R;
 import adapter.TabsPagerAdapter;
 import utils.InformaticsQuizHelper;
 
+/**
+ * Created by andre
+ */
+
 public class PlayerResultsActivity extends FragmentActivity implements ActionBar.TabListener {
 
     private ViewPager viewPager;
@@ -29,6 +33,7 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
         actionBar = getActionBar();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
+
         mAdapter = new TabsPagerAdapter((getSupportFragmentManager()));
 
         viewPager.setAdapter(mAdapter);

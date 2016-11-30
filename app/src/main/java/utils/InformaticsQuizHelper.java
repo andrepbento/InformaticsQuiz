@@ -19,7 +19,7 @@ import models.Question;
 import models.SinglePlayerGameResult;
 
 /**
- * Created by andre on 26/10/2016.
+ * Created by andre
  */
 
 public class InformaticsQuizHelper extends SQLiteOpenHelper {
@@ -87,9 +87,8 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper {
 
         byte[] buffer = new byte[1024];
         int length;
-        while((length = myInput.read(buffer)) > 0) {
+        while((length = myInput.read(buffer)) > 0)
             myOutput.write(buffer, 0, length);
-        }
 
         myOutput.flush();
         myOutput.close();

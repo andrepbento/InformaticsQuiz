@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by andre on 12/11/2016.
+ * Created by andre
  */
 
 public class MultiPlayerGameResult extends GameResult {

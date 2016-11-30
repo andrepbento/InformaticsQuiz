@@ -25,6 +25,10 @@ import interfaces.PublicConstantValues;
 import models.PlayerData;
 import utils.InformaticsQuizHelper;
 
+/**
+ * Created by andre
+ */
+
 public class PlayerProfileActivity extends Activity {
 
     ImageView ivPlayerImage;

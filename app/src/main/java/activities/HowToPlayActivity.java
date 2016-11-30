@@ -6,6 +6,10 @@ import android.view.MenuItem;
 
 import com.example.andre.informaticsquiz.R;
 
+/**
+ * Created by andre
+ */
+
 public class HowToPlayActivity extends Activity {
 
     @Override

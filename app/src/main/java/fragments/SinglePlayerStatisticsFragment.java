@@ -2,16 +2,13 @@ package fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
@@ -25,6 +22,10 @@ import java.util.List;
 import interfaces.Updateable;
 import models.SinglePlayerGameResult;
 import utils.InformaticsQuizHelper;
+
+/**
+ * Created by andre
+ */
 
 public class SinglePlayerStatisticsFragment extends Fragment implements Updateable {
 
@@ -62,7 +63,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_statistics_list_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_single_player_statistics, container, false);
 
         return rootView;
     }
@@ -95,7 +96,9 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             dbI.close();
         }
 
-        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_game_details);
+        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
+
+        /*
         if(data.isEmpty()) {
             TextView tv = new TextView(getActivity());
             tv.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -104,14 +107,17 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             tv.setText("NO DATA");
             lvSinglePlayerDetails.setEmptyView(tv);
         } else
-            lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
+        */
+        lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
 
+        /*
         lvSinglePlayerDetails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getActivity(), "Clicked on element n." + i, Toast.LENGTH_SHORT).show();
             }
         });
+        */
     }
 
     class SinglePlayerDetailsAdapter extends BaseAdapter {
@@ -150,11 +156,11 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             if(gameResult) {
                 ((TextView) layout.findViewById(R.id.tv_game_result)).setText("VITORIA");
                 ll.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
-                ((TextView) layout.findViewById(R.id.tv_score_added)).setText("+" + scoreAdded);
+                ((TextView) layout.findViewById(R.id.tv_score_added)).setText("+"+scoreAdded);
             } else {
                 ((TextView) layout.findViewById(R.id.tv_game_result)).setText("DERROTA");
                 ll.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
-                ((TextView) layout.findViewById(R.id.tv_score_added)).setText(scoreAdded);
+                ((TextView) layout.findViewById(R.id.tv_score_added)).setText(""+scoreAdded);
             }
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy - HH:mm") ;

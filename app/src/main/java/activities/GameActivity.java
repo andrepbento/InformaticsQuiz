@@ -17,8 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 import interfaces.PublicConstantValues;
 import models.Game;
+import models.MyVibrator;
 import models.Question;
 import models.SoundEffect;
+
+/**
+ * Created by andre
+ */
 
 public class GameActivity extends Activity {
 
@@ -66,6 +71,7 @@ public class GameActivity extends Activity {
                     SoundEffect.playRightAnswerSound();
                 } else {
                     SoundEffect.playWrongAnswerSound();
+                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
                 }
                 break;
             case R.id.btnAnswerB:
@@ -73,6 +79,7 @@ public class GameActivity extends Activity {
                     SoundEffect.playRightAnswerSound();
                 } else {
                     SoundEffect.playWrongAnswerSound();
+                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
                 }
                 break;
             case R.id.btnAnswerC:
@@ -80,6 +87,7 @@ public class GameActivity extends Activity {
                     SoundEffect.playRightAnswerSound();
                 } else {
                     SoundEffect.playWrongAnswerSound();
+                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
                 }
                 break;
             case R.id.btnAnswerD:
@@ -87,6 +95,7 @@ public class GameActivity extends Activity {
                     SoundEffect.playRightAnswerSound();
                 } else {
                     SoundEffect.playWrongAnswerSound();
+                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
                 }
                 break;
         }

@@ -21,6 +21,10 @@ import java.util.List;
 import models.Question;
 import utils.InformaticsQuizHelper;
 
+/**
+ * Created by andre
+ */
+
 public class QuestionsViewerActivity extends Activity {
 
     private static String QUESTION = "QUESTION";

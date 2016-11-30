@@ -9,7 +9,7 @@ import fragments.PlayerStatisticsFragment;
 import fragments.SinglePlayerStatisticsFragment;
 
 /**
- * Created by andre on 10/11/2016.
+ * Created by andre
  */
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
@@ -35,7 +35,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // get item count - equal to number of tabs
         return 3;
     }
 
@@ -45,9 +44,8 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             SinglePlayerStatisticsFragment f = (SinglePlayerStatisticsFragment) object;
             f.update();
         } else if (object instanceof PlayerStatisticsFragment) {
-
         } else if(object instanceof MultiPlayerStatisticsFragment) {
-
+            // REALIZAR UPDATE AS ESTATISTICAS DE MULTI-PLAYER
         }
         return super.getItemPosition(object);
     }

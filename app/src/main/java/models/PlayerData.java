@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import interfaces.PublicConstantValues;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,8 +12,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import interfaces.PublicConstantValues;
+
 /**
- * Created by andre on 09/11/2016.
+ * Created by andre
  */
 
 public class PlayerData implements Serializable {

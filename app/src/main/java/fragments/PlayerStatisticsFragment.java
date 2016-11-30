@@ -12,7 +12,7 @@ import com.example.andre.informaticsquiz.R;
 import models.PlayerData;
 
 /**
- * Created by andre on 14/11/2016.
+ * Created by andre
  */
 
 public class PlayerStatisticsFragment extends Fragment {

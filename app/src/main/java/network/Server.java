@@ -25,7 +25,7 @@ import interfaces.PublicConstantValues;
 import models.Game;
 
 /**
- * Created by andre on 16/11/2016.
+ * Created by andre
  */
 
 public class Server extends AsyncTask<Void, Void, Void> {

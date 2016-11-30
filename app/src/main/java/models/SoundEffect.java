@@ -10,7 +10,7 @@ import com.example.andre.informaticsquiz.R;
 import activities.GameActivity;
 
 /**
- * Created by andre on 14/11/2016.
+ * Created by andre
  */
 
 public class SoundEffect {
@@ -51,20 +51,6 @@ public class SoundEffect {
                 boolean loaded = true;
             }
         });
-    }
-
-    public static void playSound(int soundId) {
-        switch (soundId) {
-            case 0:
-                soundPool.play(soundIdArray[0], 1, 1, 0, 0, 1);
-                break;
-            case 1:
-                soundPool.play(soundIdArray[1], 1, 1, 0, 0, 1);
-                break;
-            case 3:
-                soundPool.play(soundIdArray[3], 1, 1, 0, 0, 1);
-                break;
-        }
     }
 
     public static void playRightAnswerSound() {

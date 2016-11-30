@@ -21,6 +21,10 @@ import interfaces.PublicConstantValues;
 import models.Game;
 import utils.InformaticsQuizHelper;
 
+/**
+ * Created by andre
+ */
+
 public class CreateGameActivity extends Activity {
 
     protected InformaticsQuizHelper dbI;
