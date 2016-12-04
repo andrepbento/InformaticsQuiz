@@ -18,6 +18,7 @@ public class AboutTheAppActivity extends Activity {
         setContentView(R.layout.activity_about_the_app);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(R.string.about_the_app_text);
     }
 
     @Override

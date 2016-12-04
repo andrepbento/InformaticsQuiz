@@ -2,8 +2,10 @@ package models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Date;
 
 import interfaces.PublicConstantValues;
 
@@ -20,38 +23,44 @@ import interfaces.PublicConstantValues;
 
 public class PlayerData implements Serializable {
 
-    private Bitmap photo;
+    static final long serialVersionUID = 1010L;
+
+    private long playerID;
+    private byte[] photoData;
     private String name;
     private int sexId;
     private String sex;
     private int age;
-    private int ocupationId;
-    private String ocupation;
-    private int pontuation;
+    private int ocupation;
+    private int singlePlayerPontuation;
+    private int multiPlayerPontuation;
+    private int totalAnswers;
     private int nRightAnswers;
     private int nWrongAnswers;
-    private int totalAnswers;
     private int singlePlayerGamesPlayed;
     private int winSinglePlayerGames;
-    private int loseSinglePlayerGames;
+    private int multiPlayerGamesPlayed;
+    private int winMultiPlayerGames;
 
-    public PlayerData(Bitmap photo, String name, int sexId, String sex, int age, int ocupationId,
-                      String ocupation) {
-        this.photo = photo;
+    public PlayerData(Bitmap photo, String name, int sexId, String sex, int age, int ocupation) {
+        this.playerID = new Date().getTime();
+        setPhoto(photo);
         this.name = name;
         this.sexId = sexId;
         this.sex = sex;
         this.age = age;
-        this.ocupationId = ocupationId;
         this.ocupation = ocupation;
-        this.pontuation = 0;
+        this.singlePlayerPontuation = 0;
+        this.multiPlayerPontuation = 0;
         this.nRightAnswers = 0;
         this.nWrongAnswers = 0;
         this.totalAnswers = 0;
     }
 
     public Bitmap getPhoto() {
-        return photo;
+        Bitmap userPicture = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        return Bitmap.createScaledBitmap(userPicture, PublicConstantValues.BITMAP_WIDHT_LARGE,
+                PublicConstantValues.BITMAP_HEIGHT_LARGE, false);
     }
 
     public String getName() {
@@ -70,16 +79,14 @@ public class PlayerData implements Serializable {
         return age;
     }
 
-    public int getOcupationId() {
-        return ocupationId;
-    }
-
-    public String getOcupation() {
+    public int getOcupation() {
         return ocupation;
     }
 
     public void setPhoto(Bitmap photo) {
-        this.photo = photo;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        photoData = stream.toByteArray();
     }
 
     public void setName(String name) {
@@ -98,43 +105,47 @@ public class PlayerData implements Serializable {
         this.age = age;
     }
 
-    public void setOcupationId(int ocupationId) {
-        this.ocupationId = ocupationId;
-    }
-
-    public void setOcupation(String ocupation) {
+    public void setOcupation(int ocupation) {
         this.ocupation = ocupation;
     }
 
-    public int getPontuation() {
-        return pontuation;
+    public int getSinglePlayerPontuation() {
+        return singlePlayerPontuation;
+    }
+
+    public void setSinglePlayerPontuation(int singlePlayerPontuation) {
+        if(singlePlayerPontuation <= 0)
+            this.singlePlayerPontuation = 0;
+        else
+            this.singlePlayerPontuation = singlePlayerPontuation;
+    }
+
+    public int getMultiPlayerPontuation() {
+        return  multiPlayerPontuation;
+    }
+
+    public void setMultiPlayerPontuation(int multiPlayerPontuation) {
+        this.multiPlayerPontuation = multiPlayerPontuation;
     }
 
     public int getnRightAnswers() {
         return nRightAnswers;
     }
 
-    public int getnWrongAnswers() {
-        return nWrongAnswers;
-    }
-
-    public int getTotalAnswers() {
-        return totalAnswers;
-    }
-
-    public void setPontuation(int pontuation) {
-        if(pontuation <= 0)
-            this.pontuation = 0;
-        else
-            this.pontuation = pontuation;
-    }
-
     public void setnRightAnswers(int nRightAnswers) {
         this.nRightAnswers = nRightAnswers;
     }
 
+    public int getnWrongAnswers() {
+        return nWrongAnswers;
+    }
+
     public void setnWrongAnswers(int nWrongAnswers) {
         this.nWrongAnswers = nWrongAnswers;
+    }
+
+    public int getTotalAnswers() {
+        return totalAnswers;
     }
 
     public void setTotalAnswers(int totalAnswers) {

@@ -13,6 +13,8 @@ import utils.InformaticsQuizHelper;
 
 public class Game implements Serializable {
 
+    static final long serialVersionUID = 1010L;
+
     private transient InformaticsQuizHelper dbI;
 
     private String difficulty;

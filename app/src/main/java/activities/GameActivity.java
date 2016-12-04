@@ -3,11 +3,14 @@ package activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +18,7 @@ import com.example.andre.informaticsquiz.R;
 
 import java.util.concurrent.TimeUnit;
 
+import application.InformaticsQuizApp;
 import interfaces.PublicConstantValues;
 import models.Game;
 import models.MyVibrator;
@@ -28,7 +32,8 @@ import models.SoundEffect;
 public class GameActivity extends Activity {
 
     ImageView ivGreenCircle,  ivYellowCircle, ivRedCircle;
-    TextView tvQuestionTimer, tvQuestionNumber, tvQuestionDesc;
+    TextView tvQuestionTimer, tvQuestionDesc;
+    ProgressBar pbQuestionProgress;
     Button btnAnswerA, btnAnswerB, btnAnswerC, btnAnswerD;
 
     private Game game;
@@ -48,59 +53,82 @@ public class GameActivity extends Activity {
         ivYellowCircle = (ImageView) findViewById(R.id.iv_yellow_circle);
         ivRedCircle = (ImageView) findViewById(R.id.iv_red_circle);
         tvQuestionTimer = (TextView) findViewById(R.id.tv_question_timer);
-        tvQuestionNumber = (TextView)findViewById(R.id.tvQuestionNumber);
+        pbQuestionProgress = (ProgressBar) findViewById(R.id.pbQuestionProgress);
         tvQuestionDesc = (TextView)findViewById(R.id.tvQuestionDescription);
         btnAnswerA = (Button)findViewById(R.id.btnAnswerA);
         btnAnswerB = (Button)findViewById(R.id.btnAnswerB);
         btnAnswerC = (Button)findViewById(R.id.btnAnswerC);
         btnAnswerD = (Button)findViewById(R.id.btnAnswerD);
 
+        if(savedInstanceState != null) {
+            InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
+            this.game = iqa.getGame();
+            updateUI();
+            return;
+        }
+
         Intent received_intent = getIntent();
         if(received_intent != null) {
-
             game = (Game) received_intent.getSerializableExtra("game");
-
-            actualizaInterface();
+            continueGame();
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
+        iqa.setGame(game);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
     public void onButtonRespostaClick(View v) throws InterruptedException {
+        final Button button = (Button)v;
+        boolean answerResult = false;
         switch (v.getId()) {
             case R.id.btnAnswerA:
-                if(game.checkAnswer("A")){
-                    SoundEffect.playRightAnswerSound();
-                } else {
-                    SoundEffect.playWrongAnswerSound();
-                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
-                }
+                answerResult = game.checkAnswer("A");
                 break;
             case R.id.btnAnswerB:
-                if(game.checkAnswer("B")){
-                    SoundEffect.playRightAnswerSound();
-                } else {
-                    SoundEffect.playWrongAnswerSound();
-                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
-                }
+                answerResult = game.checkAnswer("B");
                 break;
             case R.id.btnAnswerC:
-                if(game.checkAnswer("C")){
-                    SoundEffect.playRightAnswerSound();
-                } else {
-                    SoundEffect.playWrongAnswerSound();
-                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
-                }
+                answerResult = game.checkAnswer("C");
                 break;
             case R.id.btnAnswerD:
-                if(game.checkAnswer("D")){
-                    SoundEffect.playRightAnswerSound();
-                } else {
-                    SoundEffect.playWrongAnswerSound();
-                    new MyVibrator(this).vibrate(PublicConstantValues.VIBRATION_SHORT);
-                }
+                answerResult = game.checkAnswer("D");
                 break;
         }
 
-        nextQuestion();
+        final Drawable drawable = button.getBackground();
+
+        if(answerResult) {
+            SoundEffect.playRightAnswerSound();
+            button.setBackgroundColor(getResources().getColor(R.color.green_soft));
+        } else {
+            SoundEffect.playWrongAnswerSound();
+            button.setBackgroundColor(getResources().getColor(R.color.red_soft));
+            new MyVibrator(getApplicationContext()).vibrate(PublicConstantValues.VIBRATION_SHORT);
+        }
+
+        cdt.cancel();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                button.setBackground(drawable);
+                nextQuestion();
+            }
+        }, PublicConstantValues.timeToNextQuestion);
     }
 
     public void nextQuestion() {
@@ -111,12 +139,12 @@ public class GameActivity extends Activity {
             setSinglePlayerGameResult();
             finish();
         } else {
-            actualizaInterface();
+            continueGame();
         }
     }
 
-    private void actualizaInterface() {
-        Question question = game.getNextQuestion();
+    private void updateUI() {
+        Question question = game.getCurrentQuestion();
 
         ivGreenCircle.setVisibility(View.INVISIBLE);
         ivYellowCircle.setVisibility(View.INVISIBLE);
@@ -134,9 +162,8 @@ public class GameActivity extends Activity {
                 ivRedCircle.setVisibility(View.VISIBLE); break;
         }
 
-        int questionNumViewValue = game.getCurrentQuestionNum()+1;
-        tvQuestionNumber.setText(getResources().getString(R.string.tv_question_number_text)
-                + " " + questionNumViewValue);
+        pbQuestionProgress.setMax(game.getnQuestions());
+        pbQuestionProgress.setProgress(game.getCurrentQuestionNum()+1);
         tvQuestionDesc.setText(question.getQuestionDesc());
 
         btnAnswerA.setText("A: " + question.getAnswerA());
@@ -167,16 +194,16 @@ public class GameActivity extends Activity {
         }
     }
 
+    private void continueGame() {
+        game.getNextQuestion();
+        updateUI();
+    }
+
     public void onButtonGiveUp(View view) {
         if(game.getTimer())
             cdt.cancel();
         setSinglePlayerGameResult();
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-
     }
 
     public void setSinglePlayerGameResult() {

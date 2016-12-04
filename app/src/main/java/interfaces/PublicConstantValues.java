@@ -8,11 +8,12 @@ public interface PublicConstantValues {
     // GAME CONFIG
     int SP_MODE = 0;
     int MP_MODE = 1;
-    int MAX_N_QUESTIONS = 15;
+    int MAX_N_QUESTIONS = 20;
     int MAX_N_PLAYERS = 4;
 
     // GAME
     int tickTime = 1000;
+    int timeToNextQuestion = 2000;
     Integer[] easyGameValues = {60, 30, 10};
     Integer[] moderateGameValues = {30, 40, 30};
     Integer[] hardGameValues = {10, 30, 60};
@@ -24,8 +25,12 @@ public interface PublicConstantValues {
     String playerFileName = "playerData.bin";
 
     // CAMERA
-    int PROFILE_PHOTO = 0;
-    int QRCODE_PHOTO = 1;
+    int PROFILE_PHOTO = 1;
+    int QRCODE_PHOTO = 2;
+
+    // BITMAP CONFIG
+    int BITMAP_HEIGHT_LARGE = 640;
+    int BITMAP_WIDHT_LARGE = 480;
 
     // NETWORK
     int listeningPort = 9800;

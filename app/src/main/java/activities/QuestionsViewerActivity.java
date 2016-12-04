@@ -58,6 +58,8 @@ public class QuestionsViewerActivity extends Activity {
         setContentView(R.layout.activity_questions_viewer);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(getApplicationContext().getResources()
+                .getString(R.string.questions_text));
     }
 
     @Override
@@ -138,13 +140,16 @@ public class QuestionsViewerActivity extends Activity {
 
             switch (difficulty) {
                 case 1:
-                    ll.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
+                    //ll.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
+                    ll.setBackgroundColor(getResources().getColor(R.color.green_soft));
                     break;
                 case 2:
-                    ll.setBackground(getResources().getDrawable(R.drawable.yellow_white_gradient));
+                    //ll.setBackground(getResources().getDrawable(R.drawable.yellow_white_gradient));
+                    ll.setBackgroundColor(getResources().getColor(R.color.yellow_soft));
                     break;
                 case 3:
-                    ll.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
+                    //ll.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
+                    ll.setBackgroundColor(getResources().getColor(R.color.red_soft));
                     break;
             }
 

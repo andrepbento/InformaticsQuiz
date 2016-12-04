@@ -1,17 +1,31 @@
 <resources>
     <string name="app_name">Informatics Quiz</string>
-    <string name="tv_questions_text">Perguntas</string>
-    <string name="tv_game_config_text">Configuração do jogo</string>
-    <string name="tv_difficulty_text">Dificuldade</string>
+
+    <string name="questions_text">Perguntas</string>
+    <string name="game_config_text">Configuração do jogo</string>
+    <string name="single_player_text">Single-Player</string>
+    <string name="player_text">Jogador</string>
+    <string name="multi_player_text">Multi-Player</string>
+    <string name="results_text">Resultados</string>
+    <string name="difficulty_text">Dificuldade</string>
     <string name="tv_questions_number_text">Número de perguntas</string>
     <string name="tv_question_number_text">Pergunta número</string>
     <string name="tv_course_text">"Curso"</string>
     <string name="tv_profession_text">"Profissão"</string>
     <string name="tv_other_text">"Outro"</string>
 
-    <string name="about_the_app_credits_text">Créditos</string>
+    <string name="how_to_play_text">Como jogar?</string>
+    <string name="preferences_text">Preferências</string>
+    <string name="about_the_app_text">Acerca de</string>
+
+    <string name="qrcode_text">QRCode</string>
+
+    <string name="my_player_profile_text">Meu perfil</string>
+    <string name="create_player_profile_text">Criar conta</string>
+
+    <string name="credits_text">Créditos</string>
+    <string name="amov_1415_text">Arquiteturas Móveis 14/15</string>
     <string name="about_the_app_programador_text">Programador e Designer:\n\tAndré Bento nº21240008</string>
-    <string name="about_the_app_amov_text">Arquiteturas Móveis 14/15</string>
     <string name="about_the_app_images_text">Imagens: Google</string>
 
 </resources>

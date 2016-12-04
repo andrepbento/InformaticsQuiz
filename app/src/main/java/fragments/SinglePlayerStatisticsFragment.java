@@ -41,7 +41,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
 
     private View rootView;
 
-    ArrayList<HashMap<String, Object>> data;
+    public static ArrayList<HashMap<String, Object>> data;
 
     private void addValuesToAdapter(boolean gameResult, Date gameDate, int gameScore,
                                     int nRightAnswers, double pRightAnswers, int nWrongAnswers,
@@ -98,16 +98,6 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
 
         ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
 
-        /*
-        if(data.isEmpty()) {
-            TextView tv = new TextView(getActivity());
-            tv.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-            tv.setGravity(Gravity.CENTER);
-            tv.setText("NO DATA");
-            lvSinglePlayerDetails.setEmptyView(tv);
-        } else
-        */
         lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
 
         /*

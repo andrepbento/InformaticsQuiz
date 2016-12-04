@@ -1,17 +1,21 @@
 package activities;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
 import adapter.TabsPagerAdapter;
+import fragments.SinglePlayerStatisticsFragment;
 import utils.InformaticsQuizHelper;
 
 /**
@@ -23,23 +27,25 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    private String[] tabs = { "Single-Player", "Player", "Multi-Player" };
+    private String[] tabs = new String[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_results);
 
+        tabs[0] = getResources().getString(R.string.single_player_text);
+        tabs[1] = getResources().getString(R.string.player_text);
+        tabs[2] = getResources().getString(R.string.multi_player_text);
+
         actionBar = getActionBar();
-
-        viewPager = (ViewPager) findViewById(R.id.pager);
-
-        mAdapter = new TabsPagerAdapter((getSupportFragmentManager()));
-
-        viewPager.setAdapter(mAdapter);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.results_text);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        mAdapter = new TabsPagerAdapter((getSupportFragmentManager()));
+        viewPager.setAdapter(mAdapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -76,13 +82,20 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int pageNum = viewPager.getCurrentItem();
-        if(pageNum == 1) {
-            menu.findItem(R.id.item_clear_data).setVisible(false);
-        } else {
-            menu.findItem(R.id.item_clear_data).setVisible(true);
+        switch(viewPager.getCurrentItem()){
+            case 0:
+                if(SinglePlayerStatisticsFragment.data.isEmpty())
+                    menu.findItem(R.id.item_clear_data).setVisible(false);
+                else
+                    menu.findItem(R.id.item_clear_data).setVisible(true);
+                break;
+            case 1:
+                menu.findItem(R.id.item_clear_data).setVisible(false);
+                break;
+            case 2:
+                Toast.makeText(this, "Implementar o bottão de apagar!", Toast.LENGTH_LONG).show();
+                break;
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -99,15 +112,16 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                 if(dbI.open()) {
                     switch(pageNum) {
                         case 0:
-                            dbI.deleteSinglePlayerGameResults();
+                            deleteLogData();
                             mAdapter.notifyDataSetChanged();
                             break;
-                        case 1:
+                        case 2:
                             //dbI.deleteMultiPlayerGameResults();
                             mAdapter.notifyDataSetChanged();
                             break;
                     }
                 }
+                item.setVisible(false);
                 break;
         }
 
@@ -128,4 +142,30 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
+
+    private void deleteLogData() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
+                    dbI.create();
+                    if(dbI.open()) {
+                        dbI.deleteSinglePlayerGameResults();
+                        //dbI.deleteMultiPlayerGameResults();
+                        dbI.close();
+                    }
+                    Toast.makeText(getApplication(), "Player deleted", Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE: break;
+            }
+        }
+    };
 }

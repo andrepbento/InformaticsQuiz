@@ -20,30 +20,26 @@
             android:id="@+id/tv_single_player_pontuation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            style="@style/MediumCustomTextBold"
             android:gravity="center"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_weight="0.5"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        <!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:layout_gravity="right"
                 android:src="@drawable/right_answers_icon"/>
 
             <TextView
-                android:id="@+id/tv_right_asnwers"
+                android:id="@+id/tv_sp_right_asnwers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginLeft="5dp"/>
 
         </LinearLayout>
@@ -53,8 +49,63 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/wrong_answers_icon"/>
+
+            <TextView
+                android:id="@+id/tv_sp_wrong_asnwers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+        -->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/mp_trophy_icon"/>
+
+        <TextView
+            android:id="@+id/tv_multi_player_pontuation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MediumCustomTextBold"
+            android:gravity="center"/>
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/right_answers_icon"/>
+
+            <TextView
+                android:id="@+id/tv_mp_right_asnwers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/wrong_answers_icon"/>
 
             <TextView
@@ -64,7 +115,7 @@
                 android:layout_marginLeft="5dp"/>
 
         </LinearLayout>
-
+        -->
     </LinearLayout>
 
 </LinearLayout>

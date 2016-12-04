@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/item_create_user"
-        android:title="Criar" />
+    <item
+        android:id="@+id/item_create_user"
+        android:icon="@drawable/drawable_create_user"
+        android:title="Criar"
+        android:showAsAction="ifRoom"/>
 </menu>

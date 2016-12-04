@@ -80,11 +80,6 @@
 
         <Spinner
             android:id="@+id/spinner_player_ocupation"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:id="@+id/et_ocupation_specification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

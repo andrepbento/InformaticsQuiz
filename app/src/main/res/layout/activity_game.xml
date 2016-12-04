@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    style="@style/AppBackground"
     android:orientation="vertical"
     tools:context="activities.GameActivity">
 
@@ -45,19 +46,20 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvQuestionNumber"
+    <ProgressBar
+        android:id="@+id/pbQuestionProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center" />
+        android:gravity="center"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/tvQuestionDescription"
-        style="@style/MediumCustomText"
+        style="@style/MediumCustomTextBold"
         android:gravity="center"/>
 
     <Button

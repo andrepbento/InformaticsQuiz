@@ -2,8 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item_edit_player_data"
-        android:title="Edit data"/>
+        android:icon="@drawable/drawable_edit_data"
+        android:title="Edit data"
+        android:showAsAction="ifRoom"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/item_save_player_data"
+        android:icon="@drawable/drawable_save_data"
+        android:title="Save data"
+        android:showAsAction="ifRoom"
+        android:visible="false"/>
+
     <item
         android:id="@+id/item_delete_player_data"
-        android:title="Delete account" />
+        android:icon="@drawable/drawable_delete_user"
+        android:title="Delete account"
+        android:showAsAction="ifRoom"/>
 </menu>

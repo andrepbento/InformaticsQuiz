@@ -1,5 +1,6 @@
 package network;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -49,8 +50,8 @@ public class Server extends AsyncTask<Void, Void, Void> {
         ConnectivityManager connMgr = (ConnectivityManager)	context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
-            Toast.makeText(context, "No network connection!", Toast.LENGTH_LONG).show();
-            //context.finish();
+            Toast.makeText(context, "No network connection!", Toast.LENGTH_SHORT).show();
+            ((Activity)context).finish();
             return;
         }
 
@@ -65,6 +66,8 @@ public class Server extends AsyncTask<Void, Void, Void> {
         }
         this.context = (QRCodeActivity) context;
         this.game = game;
+
+        this.execute();
     }
 
     public void closeSocket() {
@@ -124,10 +127,12 @@ public class Server extends AsyncTask<Void, Void, Void> {
 
                 if (nPlayers <= playersCounter) {
                     stopReceivingClients();
-                    // Envia o jogo criado ao respectivo jogador
-                    // Ao receber ele sabe que tem que começar a jogar
-                    // Fica à espera de receber os dados de resultado de cada um deles
-                    // Caso algum desista esse evento é tratado como se perdesse com 0, fim da tabela
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            context.tvPlayersConnected.setText("Ready to play!");
+                        }
+                    });
                 }
 
             }

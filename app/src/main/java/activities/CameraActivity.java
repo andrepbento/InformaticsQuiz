@@ -3,6 +3,8 @@ package activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -17,7 +19,6 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
@@ -43,6 +44,8 @@ public class CameraActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        getActionBar().setTitle("Câmera");
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
@@ -51,7 +54,7 @@ public class CameraActivity extends Activity {
         Intent receivedIntent = getIntent();
         cameraMode = receivedIntent.getIntExtra("cameraMode", 0);
 
-        if(cameraMode == 0) { Log.e("Camera", "Error"); finish(); }
+        if(cameraMode == 0) { Log.e("Camera", "Error"); onDestroy(); finish(); }
 
         Button btnTakePic = (Button) findViewById(R.id.btn_take_pic);
 
@@ -63,21 +66,21 @@ public class CameraActivity extends Activity {
             btnTakePic.setVisibility(View.VISIBLE);
             cameraSource = new CameraSource
                     .Builder(this, faceDetector)
-                    .setRequestedPreviewSize(640, 480)
+                    .setRequestedPreviewSize(800, 480)
                     .setAutoFocusEnabled(true)
                     .setFacing(CameraSource.CAMERA_FACING_FRONT)
                     .build();
         } else if(cameraMode == PublicConstantValues.QRCODE_PHOTO) {
             barcodeDetector = new BarcodeDetector.Builder(this)
-                            .setBarcodeFormats(Barcode.QR_CODE)
-                            .build();
+                    .setBarcodeFormats(Barcode.QR_CODE)
+                    .build();
 
             btnTakePic.setVisibility(View.INVISIBLE);
             cameraSource = new CameraSource
                     .Builder(this, barcodeDetector)
                     .setRequestedPreviewSize(1280, 720)
                     .setAutoFocusEnabled(true)
-                    .setFacing(CameraSource.CAMERA_FACING_BACK)
+                    .setFacing(CameraSource.CAMERA_FACING_FRONT)
                     .build();
         }
 
@@ -101,18 +104,7 @@ public class CameraActivity extends Activity {
             }
         });
 
-        if(cameraMode == PublicConstantValues.PROFILE_PHOTO) {
-            faceDetector.setProcessor(new Detector.Processor<Face>() {
-                @Override
-                public void release() {
-                }
-
-                @Override
-                public void receiveDetections(Detector.Detections<Face> detections) {
-                    final SparseArray<Face> faces = detections.getDetectedItems();
-                }
-            });
-        } else if(cameraMode == PublicConstantValues.QRCODE_PHOTO) {
+        if(cameraMode == PublicConstantValues.QRCODE_PHOTO) {
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
                 public void release() {
@@ -137,7 +129,7 @@ public class CameraActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cameraSource.release();
+        if(cameraSource != null) cameraSource.release();
         if(cameraMode == PublicConstantValues.PROFILE_PHOTO) faceDetector.release();
         else if(cameraMode == PublicConstantValues.QRCODE_PHOTO) barcodeDetector.release();
     }
@@ -145,12 +137,22 @@ public class CameraActivity extends Activity {
     public void onButtonTakePickClick(View view) {
         switch (view.getId()) {
             case R.id.btn_take_pic:
-                Toast.makeText(this, "Implementar onButtonTakePickClick()", Toast.LENGTH_LONG)
-                        .show();
-                Intent returnIntent = new Intent();
-                setResult(RESULT_CANCELED, returnIntent);
-                finish();
+                cameraSource.takePicture(myShutterCallback, myPictureCallback_JPG);
         }
     }
+
+    CameraSource.ShutterCallback myShutterCallback = new CameraSource.ShutterCallback(){
+        public void onShutter() {}
+    };
+
+    CameraSource.PictureCallback myPictureCallback_JPG = new CameraSource.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] bytes) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("pictureData", bytes);
+            setResult(RESULT_OK, returnIntent);
+            finish();
+        }
+    };
 
 }

@@ -6,16 +6,8 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
+    style="@style/AppBackground"
     tools:context="activities.MainMenuActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_weight="0.8"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Informatics Quiz"
-        style="@style/LargeCustomText"
-        android:gravity="center_horizontal"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,7 +18,8 @@
             android:id="@+id/btn_single_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Single-Player"
+            android:text="@string/single_player_text"
+            style="@style/MediumCustomTextBold"
             android:layout_gravity="center"
             android:onClick="onButtonClick" />
 
@@ -41,7 +34,8 @@
             android:id="@+id/btn_multi_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Multi-Player"
+            android:text="@string/multi_player_text"
+            style="@style/MediumCustomTextBold"
             android:layout_gravity="center"
             android:onClick="onButtonClick" />
     </FrameLayout>
@@ -52,10 +46,11 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/btn_player_statistics"
+            android:id="@+id/btn_player_results"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Resultados"
+            android:text="@string/results_text"
+            style="@style/MediumCustomTextBold"
             android:layout_gravity="center"
             android:onClick="onButtonClick" />
 

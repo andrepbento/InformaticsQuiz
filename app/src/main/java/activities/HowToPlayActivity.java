@@ -18,6 +18,7 @@ public class HowToPlayActivity extends Activity {
         setContentView(R.layout.activity_how_to_play);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(R.string.how_to_play_text);
     }
 
     @Override

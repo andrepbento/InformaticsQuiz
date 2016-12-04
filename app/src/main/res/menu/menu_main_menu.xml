@@ -4,12 +4,12 @@
             android:title="Opções de utilizador"
             android:icon="@drawable/drawable_user"
             android:showAsAction="ifRoom" />
-        <item android:id="@+id/item_opt_bd"
-            android:title="Perguntas"/>
+        <item android:id="@+id/item_questions_viewer"
+            android:title="@string/questions_text"/>
         <item android:id="@+id/item_tutorial"
-                android:title="Como jogar?" />
+                android:title="@string/how_to_play_text" />
         <item android:id="@+id/item_preferencias"
-            android:title="Preferências" />
+            android:title="@string/preferences_text" />
         <item android:id="@+id/item_acerca_de"
-            android:title="Acerca de" />
+            android:title="@string/about_the_app_text" />
 </menu>

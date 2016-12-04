@@ -7,20 +7,11 @@
     android:orientation="vertical"
     tools:context="activities.QuestionsViewerActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:text="@string/tv_questions_text"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:typeface="serif"/>
-
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp">
+        style="@style/ListView">
 
     </ListView>
 

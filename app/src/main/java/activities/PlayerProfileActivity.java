@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,14 +34,12 @@ import utils.InformaticsQuizHelper;
 public class PlayerProfileActivity extends Activity {
 
     ImageView ivPlayerImage;
-    EditText etPlayerName, etPlayerAge, etOcupationSpecif;
+    EditText etPlayerName, etPlayerAge;
     Spinner spinnerPlayerSex, spinnerPlayerOcupation;
 
     PlayerData playerData;
 
     Menu menu;
-
-    boolean edit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,9 @@ public class PlayerProfileActivity extends Activity {
         setContentView(R.layout.activity_player_profile);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         ivPlayerImage = (ImageView) findViewById(R.id.iv_player_image);
         ivPlayerImage.setOnClickListener(onPlayerImageClick);
@@ -62,11 +65,11 @@ public class PlayerProfileActivity extends Activity {
                 R.array.ocupation, android.R.layout.simple_spinner_item);
         adapterOcupation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlayerOcupation.setAdapter(adapterOcupation);
-        etOcupationSpecif = (EditText) findViewById(R.id.et_ocupation_specification);
 
         playerData = PlayerData.loadData(this);
 
         if(playerData != null) {
+            getActionBar().setTitle(R.string.my_player_profile_text);
             if (playerData.getPhoto() != null)
                 ivPlayerImage.setImageBitmap(playerData.getPhoto());
             else
@@ -75,10 +78,12 @@ public class PlayerProfileActivity extends Activity {
             etPlayerName.setText(playerData.getName());
             spinnerPlayerSex.setSelection(playerData.getSexId());
             etPlayerAge.setText(String.valueOf(playerData.getAge()));
-            spinnerPlayerOcupation.setSelection(playerData.getOcupationId());
-            etOcupationSpecif.setText(playerData.getOcupation());
+            spinnerPlayerOcupation.setSelection(playerData.getOcupation());
 
             disableAllViewElements();
+        } else {
+            getActionBar().setTitle(R.string.create_player_profile_text);
+            ivPlayerImage.setImageResource(R.drawable.drawable_user);
         }
     }
 
@@ -105,6 +110,9 @@ public class PlayerProfileActivity extends Activity {
             case R.id.item_edit_player_data:
                 editPlayerProfile();
                 break;
+            case R.id.item_save_player_data:
+                savePlayerProfile();
+                break;
             case R.id.item_delete_player_data:
                 deletePlayerData();
                 break;
@@ -126,8 +134,15 @@ public class PlayerProfileActivity extends Activity {
         switch (requestCode) {
             case PublicConstantValues.PROFILE_PHOTO:
                 if(resultCode == RESULT_OK) {
-                    Toast.makeText(this, "Implementar o que fazer com a foto", Toast.LENGTH_LONG)
-                            .show();
+                    byte[] pictureData = data.getByteArrayExtra("pictureData");
+                    if(pictureData != null) {
+                        Bitmap userPicture = BitmapFactory.decodeByteArray(pictureData, 0, pictureData.length);
+                        ivPlayerImage.setImageBitmap(Bitmap.createScaledBitmap(userPicture,
+                                PublicConstantValues.BITMAP_WIDHT_LARGE,
+                                PublicConstantValues.BITMAP_HEIGHT_LARGE, false));
+                    }else{
+                        Toast.makeText(this, "Error receiving photo", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(this, "Error taking photo", Toast.LENGTH_SHORT).show();
                 }
@@ -135,18 +150,17 @@ public class PlayerProfileActivity extends Activity {
         }
     }
 
-    public void createPlayerProfile() {
+    private void createPlayerProfile() {
         if(infoIsFilled()) {
-            Bitmap playerBitmap = null;
+            Bitmap playerBitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.drawable_user)).getBitmap();
             if(ivPlayerImage.getDrawable() != null)
-                playerBitmap = ((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap();
+                    playerBitmap = ((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap();
             String name = etPlayerName.getText().toString();
             int sexId = spinnerPlayerSex.getSelectedItemPosition();
             String sex = spinnerPlayerSex.getSelectedItem().toString();
             int age = Integer.parseInt(etPlayerAge.getText().toString());
             int ocupationId = spinnerPlayerOcupation.getSelectedItemPosition();
-            String ocupation = etOcupationSpecif.getText().toString();
-            PlayerData player = new PlayerData(playerBitmap, name, sexId, sex, age, ocupationId, ocupation);
+            PlayerData player = new PlayerData(playerBitmap, name, sexId, sex, age, ocupationId);
             player.saveData(getApplicationContext());
             finish();
         } else {
@@ -156,69 +170,51 @@ public class PlayerProfileActivity extends Activity {
     }
 
     private void editPlayerProfile() {
-        if(!edit) {
-            edit = true;
-            menu.getItem(0).setTitle("Guardar dados");
-            enableAllViewElements();
+        menu.findItem(R.id.item_edit_player_data).setVisible(false);
+        menu.findItem(R.id.item_save_player_data).setVisible(true);
+        enableAllViewElements();
+    }
+
+    private void savePlayerProfile() {
+        if(infoIsFilled()) {
+            menu.findItem(R.id.item_edit_player_data).setVisible(true);
+            menu.findItem(R.id.item_save_player_data).setVisible(false);
+            playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());
+            playerData.setName(etPlayerName.getText().toString());
+            playerData.setSexId(spinnerPlayerSex.getSelectedItemPosition());
+            playerData.setSex(spinnerPlayerSex.getSelectedItem().toString());
+            playerData.setAge(Integer.parseInt(etPlayerAge.getText().toString()));
+            playerData.setOcupation(spinnerPlayerOcupation.getSelectedItemPosition());
+            playerData.saveData(this);
+            disableAllViewElements();
         } else {
-            menu.getItem(0).setTitle("Editar dados");
-            if(infoIsFilled()) {
-                edit = false;
-                //playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());
-                playerData.setName(etPlayerName.getText().toString());
-                playerData.setSexId(spinnerPlayerSex.getSelectedItemPosition());
-                playerData.setSex(spinnerPlayerSex.getSelectedItem().toString());
-                playerData.setAge(Integer.parseInt(etPlayerAge.getText().toString()));
-                playerData.setOcupationId(spinnerPlayerOcupation.getSelectedItemPosition());
-                playerData.setOcupation(etOcupationSpecif.getText().toString());
-                playerData.saveData(this);
-                disableAllViewElements();
-            } else {
-                Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
-                        Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean infoIsFilled() {
         if(etPlayerName.getText().toString().isEmpty())
             return false;
-        if(etPlayerAge.getText().toString().isEmpty() &&
-                Integer.parseInt(etPlayerAge.getText().toString()) >= 7) // Only players with age >= 7 are alowed to play
-            return false;
-        if(etOcupationSpecif.getText().toString().isEmpty())
+        if(etPlayerAge.getText().toString().isEmpty())
             return false;
         return true;
     }
 
     private void enableAllViewElements() {
         ivPlayerImage.setEnabled(true);
-        //ivPlayerImage.setFocusable(true);
         etPlayerName.setEnabled(true);
-        //etPlayerName.setFocusable(true);
         spinnerPlayerSex.setEnabled(true);
-        //spinnerPlayerSex.setFocusable(true);
         etPlayerAge.setEnabled(true);
-        //etPlayerAge.setFocusable(true);
         spinnerPlayerOcupation.setEnabled(true);
-        //spinnerPlayerOcupation.setFocusable(true);
-        etOcupationSpecif.setEnabled(true);
-        //etOcupationSpecif.setFocusable(true);
     }
 
     private void disableAllViewElements() {
         ivPlayerImage.setEnabled(false);
-        //ivPlayerImage.setFocusable(false);
         etPlayerName.setEnabled(false);
-        //etPlayerName.setFocusable(false);
         spinnerPlayerSex.setEnabled(false);
-        //spinnerPlayerSex.setFocusable(false);
         etPlayerAge.setEnabled(false);
-        //etPlayerAge.setFocusable(false);
         spinnerPlayerOcupation.setEnabled(false);
-        //spinnerPlayerOcupation.setFocusable(false);
-        etOcupationSpecif.setEnabled(false);
-        //etOcupationSpecif.setFocusable(false);
     }
 
     private void deletePlayerData() {

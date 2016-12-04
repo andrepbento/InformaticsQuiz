@@ -25,10 +25,13 @@ public class PlayerStatisticsFragment extends Fragment {
 
         PlayerData playerData = PlayerData.loadData(getContext());
 
-        int playerPontuation = playerData.getPontuation();
+        int singlePlayerPontuation = playerData.getSinglePlayerPontuation();
+        int multiPlayerPontuation = playerData.getMultiPlayerPontuation();
 
         ((TextView) rootView.findViewById(R.id.tv_single_player_pontuation))
-                .setText(String.valueOf(playerPontuation));
+                .setText(String.valueOf(singlePlayerPontuation));
+        ((TextView) rootView.findViewById(R.id.tv_multi_player_pontuation))
+                .setText(String.valueOf(multiPlayerPontuation));
 
         return  rootView;
     }

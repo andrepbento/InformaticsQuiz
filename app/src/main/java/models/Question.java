@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 public class Question implements Serializable {
 
+    static final long serialVersionUID = 1010L;
+
     private int questionId;
     private String questionDesc;
     private String answerA;

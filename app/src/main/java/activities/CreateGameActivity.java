@@ -1,13 +1,11 @@
 package activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -29,8 +27,6 @@ public class CreateGameActivity extends Activity {
 
     protected InformaticsQuizHelper dbI;
 
-    ActionBar actionBar;
-
     Spinner spinner;
 
     Switch timerSwitch;
@@ -50,8 +46,7 @@ public class CreateGameActivity extends Activity {
         dbI.create();
 
         if(dbI.open()) {
-            actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
 
             spinner = (Spinner) findViewById(R.id.spinner_dificuldade);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -72,19 +67,22 @@ public class CreateGameActivity extends Activity {
 
             Intent intent = getIntent();
             gameMode = intent.getIntExtra("mode", 0);
+            String mode = "";
             if(gameMode == PublicConstantValues.MP_MODE) {
-                ViewStub stub = (ViewStub) findViewById(R.id.viewStub);
-                stub.setLayoutResource(R.layout.footer_create_multi_player_game);
-                stub.inflate();
+                mode = getResources().getString(R.string.multi_player_text);
+                (findViewById(R.id.n_players_piece)).setVisibility(View.VISIBLE);
                 tvnPlayers = (TextView)findViewById(R.id.tv_num_players);
                 tvnPlayers.setText("Número de jogadores" + ": 2");
                 seekBarNPlayers = (SeekBar) findViewById(R.id.sb_n_players);
                 seekBarNPlayers.setProgress(2);
                 seekBarNPlayers.setMax(PublicConstantValues.MAX_N_PLAYERS);
                 seekBarNPlayers.setOnSeekBarChangeListener(nPlayersChangeListener);
-            } else
+            } else {
                 gameMode = PublicConstantValues.SP_MODE;
-
+                mode = getResources().getString(R.string.single_player_text);
+            }
+            getActionBar().setTitle(getResources().getString(R.string.game_config_text)+"("
+                    +mode+")");
         } else {
             Log.e("DB", "Could not open()");
             finish();
@@ -167,6 +165,7 @@ public class CreateGameActivity extends Activity {
                 intent.putExtra("game", game);
                 intent.putExtra("nPlayers", nPlayers);
                 startActivity(intent);
+                finish();
             }
         }
     }

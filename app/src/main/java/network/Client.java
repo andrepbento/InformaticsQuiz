@@ -1,8 +1,12 @@
 package network;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,14 +22,14 @@ import models.PlayerData;
  * Created by andre
  */
 
-public class Client extends AsyncTask<Void, String, Void> {
+public class Client extends AsyncTask<Void, Void, Void> {
 
     private String serverIp;
     private int serverPort;
 
     private Socket clientSocket;
-    private ObjectOutputStream out;
     private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     private PlayerData playerData;
 
@@ -37,7 +41,17 @@ public class Client extends AsyncTask<Void, String, Void> {
         this.serverIp = serverIp;
         this.serverPort = serverPort;
 
+        ConnectivityManager connMgr = (ConnectivityManager)	context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            Toast.makeText(context, "No network connection!", Toast.LENGTH_SHORT).show();
+            ((Activity)context).finish();
+            return;
+        }
+
         playerData = PlayerData.loadData(context);
+
+        this.execute();
     }
 
     @Override
@@ -46,9 +60,10 @@ public class Client extends AsyncTask<Void, String, Void> {
 
         try {
             clientSocket = new Socket(InetAddress.getByName(serverIp), serverPort);
+            Log.e("Client", "Ligado");
 
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
             in = new ObjectInputStream(clientSocket.getInputStream());
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
 
             sendDataToServer(playerData);
 
@@ -61,7 +76,7 @@ public class Client extends AsyncTask<Void, String, Void> {
                     // Comando qualquer
                 } else if (read instanceof Game) {
                     //game = (Game) read;
-                    this.publishProgress("startGame");
+                    //this.publishProgress("startGame");
                     // recebeu o jogo arracnar com o mesmo e no final enviar estatisticas
                 } else if (read instanceof MultiPlayerGameResult) {
                     MultiPlayerGameResult mpgr = (MultiPlayerGameResult) read;
@@ -84,11 +99,6 @@ public class Client extends AsyncTask<Void, String, Void> {
                 }
         }
         return null;
-    }
-
-    @Override
-    protected void onProgressUpdate(String... args) {
-
     }
 
     private void stopReceiving() { running = false; }

@@ -15,6 +15,8 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import application.InformaticsQuizApp;
+import interfaces.PublicConstantValues;
 import models.Game;
 import network.Client;
 import network.Server;
@@ -28,7 +30,6 @@ public class QRCodeActivity extends Activity {
     public final static int HEIGHT=500;
     public final static int WIDTH=500;
 
-    ImageView ivQRCode;
     String QRcode;
 
     public TextView tvPlayersConnected;
@@ -39,18 +40,20 @@ public class QRCodeActivity extends Activity {
         setContentView(R.layout.activity_qrcode);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(R.string.qrcode_text);
+
+        final ImageView ivQRCode = (ImageView) findViewById(R.id.iv_qr_code);
+        final TextView tvServerDetails = (TextView) findViewById(R.id.tv_server_details);
+        tvPlayersConnected = (TextView) findViewById(R.id.tv_players_connected);
+
+        final InformaticsQuizApp iqa = (InformaticsQuizApp) getApplication();
 
         Intent receivedIntent = getIntent();
         int nPlayers = receivedIntent.getIntExtra("nPlayers", 0);
         Game game = (Game) receivedIntent.getSerializableExtra("game");
 
         final Server server = new Server(this, nPlayers, game);
-        server.execute();
-
-        final ImageView ivQRCode = (ImageView) findViewById(R.id.iv_qr_code);
-        final TextView tvServerDetails = (TextView) findViewById(R.id.tv_server_details);
-        tvPlayersConnected = (TextView) findViewById(R.id.tv_players_connected);
-        tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
+        iqa.setLocalServer(server);
 
         // create thread to avoid ANR Exception
         Thread t = new Thread(new Runnable() {
@@ -73,6 +76,11 @@ public class QRCodeActivity extends Activity {
                                     tvServerDetails.setText("IP: " + server.getLocalIpAddress()
                                             + "   Port: " + server.getListeningPort());
 
+                                    tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
+
+                                    Client client = new Client(getApplicationContext(), server.getLocalIpAddress(),
+                                            PublicConstantValues.listeningPort);
+                                    iqa.setLocalClient(client);
                                 } catch (WriterException e) {
                                     e.printStackTrace();
                                 }
@@ -86,8 +94,16 @@ public class QRCodeActivity extends Activity {
         });
         t.start();
 
-        Client client = new Client(this, server.getLocalIpAddress(), server.getListeningPort());
-        client.execute();
+        /*
+
+        Thread launchClientThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+        launchClientThread.start();
+        */
     }
 
     private Bitmap encodeAsBitmap(String str) throws WriterException {
@@ -125,6 +141,5 @@ public class QRCodeActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 }

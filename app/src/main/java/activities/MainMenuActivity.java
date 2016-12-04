@@ -2,15 +2,22 @@ package activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
@@ -26,40 +33,37 @@ import network.Client;
 public class MainMenuActivity extends Activity {
 
     private PlayerData player;
-
-    private Button btnMultiPlayer, btnPlayerStatisctic;
+    private Button btnMultiPlayer, btnPlayerResults;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        player = null;
+        btnMultiPlayer = (Button) findViewById(R.id.btn_multi_player);
+        btnPlayerResults = (Button) findViewById(R.id.btn_player_results);
+
+        this.player = null;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        btnMultiPlayer = (Button) findViewById(R.id.btn_multi_player);
-        btnPlayerStatisctic = (Button) findViewById(R.id.btn_player_statistics);
-
         player = PlayerData.loadData(this);
 
         if(player != null) {
             btnMultiPlayer.setEnabled(true);
-            btnPlayerStatisctic.setEnabled(true);
-            //if(player.getPhoto() != null)
-            //    menu_main_menu.findItem(R.id.item_user).setIcon((Drawable)new BitmapDrawable(player.getPhoto()));
-            //else
-            //    menu_main_menu.findItem(R.id.item_user).setIcon(R.drawable.drawable_user);
+            btnPlayerResults.setEnabled(true);
         } else {
-            player = null;
             btnMultiPlayer.setEnabled(false);
-            btnPlayerStatisctic.setEnabled(false);
+            btnPlayerResults.setEnabled(false);
             Toast.makeText(getApplicationContext(), "Não existe conta criada, todos os dados serão perdidos," +
                     " se quiseres que se guardem cria uma conta pff", Toast.LENGTH_LONG).show();
         }
+
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -70,48 +74,65 @@ public class MainMenuActivity extends Activity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(player != null)
+            menu.findItem(R.id.item_user).setIcon(new BitmapDrawable(player.getPhoto()));
+        else
+            menu.findItem(R.id.item_user).setIcon(getResources().getDrawable(R.drawable.drawable_user));
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_user:
                 startActivity(new Intent(MainMenuActivity.this, PlayerProfileActivity.class));
                 break;
-            case R.id.item_opt_bd:
+            case R.id.item_questions_viewer:
                 startActivity(new Intent(MainMenuActivity.this, QuestionsViewerActivity.class));
                 break;
             case R.id.item_tutorial:
                 startActivity(new Intent(MainMenuActivity.this, HowToPlayActivity.class));
                 break;
             case R.id.item_preferencias:
-                /*
                 Intent intent_preferences = new Intent(MainMenuActivity.this, SettingsActivity.class);
                 startActivity(intent_preferences);
-                */
-                Toast.makeText(getApplicationContext(), "Por implementar...", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.item_acerca_de:
                 startActivity(new Intent(MainMenuActivity.this, AboutTheAppActivity.class));
                 break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void onButtonClick(View view) {
-        int view_id = view.getId();
-
-        switch (view_id) {
+        switch (view.getId()) {
             case R.id.btn_single_player:
                 Intent spIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
                 spIntent.putExtra("mode", PublicConstantValues.SP_MODE);
                 startActivity(spIntent);
                 break;
             case R.id.btn_multi_player:
-                setUpMultiPlayerDialogBox();
+                if(checkNetworkConnection())
+                    setUpMultiPlayerDialogBox();
                 break;
-            case R.id.btn_player_statistics:
+            case R.id.btn_player_results:
                 startActivity(new Intent(MainMenuActivity.this, PlayerResultsActivity.class));
                 break;
         }
+    }
+
+    private boolean checkNetworkConnection(){
+        ConnectivityManager connMgr = (ConnectivityManager)	this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            Toast.makeText(this, "No network connection!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void setUpMultiPlayerDialogBox() {
@@ -127,15 +148,15 @@ public class MainMenuActivity extends Activity {
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch(which) {
-                    case 0:
-                        Intent mpIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
-                        mpIntent.putExtra("mode", PublicConstantValues.MP_MODE);
-                        startActivity(mpIntent);
-                        break;
-                    case 1:
-                        setUpJoinGameMethod();
-                }
+            switch(which) {
+                case 0:
+                    Intent mpIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
+                    mpIntent.putExtra("mode", PublicConstantValues.MP_MODE);
+                    startActivity(mpIntent);
+                    break;
+                case 1:
+                    setUpJoinGameMethod();
+            }
             }
         });
 
@@ -157,9 +178,7 @@ public class MainMenuActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 switch(which) {
                     case 0:
-                        //setUpConnectionDetails();
-                        Client client = new Client(MainMenuActivity.this, "192.168.1.75", 9800);
-                        client.execute();
+                        setUpServerConnectionDetails();
                         break;
                     case 1:
                         Intent jgIntent = new Intent(MainMenuActivity.this, CameraActivity.class);
@@ -172,9 +191,43 @@ public class MainMenuActivity extends Activity {
         builderSingle.show();
     }
 
+    private void setUpServerConnectionDetails(){
+        AlertDialog.Builder dialogAlert = new AlertDialog.Builder(MainMenuActivity.this);
+        //builderSingle.setIcon(R.drawable.ic_launcher);
+        dialogAlert.setTitle("Insert Server connection details:");
+        Context context = getApplicationContext();
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText etServerIP = new EditText(context);
+        etServerIP.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
+        etServerIP.setHint("Server IP");
+        etServerIP.setText("");
+        layout.addView(etServerIP);
+
+        EditText etServerPort = new EditText(context);
+        etServerPort.setHint("Server Port");
+        layout.addView(etServerPort);
+
+        dialogAlert.setView(layout);
+        dialogAlert.setPositiveButton("Conectar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //Obter dados, verificar o Input, criar um cliente(ele executa),
+                        //esperar caso não esteja feita a ligação
+                        Client client = new Client(getApplicationContext(), "192.168.1.33", 9800);
+                        Toast.makeText(MainMenuActivity.this, "Implementar conectar!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+        dialogAlert.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         switch (requestCode) {
             case PublicConstantValues.QRCODE_PHOTO:
                 if(resultCode == RESULT_OK) {
