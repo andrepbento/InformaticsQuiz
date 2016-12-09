@@ -120,7 +120,8 @@ public class GameActivity extends Activity {
             new MyVibrator(getApplicationContext()).vibrate(PublicConstantValues.VIBRATION_SHORT);
         }
 
-        cdt.cancel();
+        if(game.getTimer())
+            cdt.cancel();
 
         new Handler().postDelayed(new Runnable() {
             @Override

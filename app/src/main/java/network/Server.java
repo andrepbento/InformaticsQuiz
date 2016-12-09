@@ -55,7 +55,7 @@ public class Server extends AsyncTask<Void, Void, Void> {
             return;
         }
 
-        this.listeningPort = PublicConstantValues.listeningPort;
+        this.listeningPort = PublicConstantValues.serverListeningPort;
         try {
             this.serverSocket = new ServerSocket(listeningPort);
             this.nPlayers = nPlayers;

@@ -59,7 +59,7 @@ public class QRCodeActivity extends Activity {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 // this is the msg which will be encode in QRcode
-                QRcode = server.getLocalIpAddress() + " " + server.getListeningPort();
+                QRcode = server.getLocalIpAddress();
 
                 try {
                     synchronized (this) {
@@ -73,18 +73,17 @@ public class QRCodeActivity extends Activity {
                                     bitmap = encodeAsBitmap(QRcode);
                                     ivQRCode.setImageBitmap(bitmap);
 
-                                    tvServerDetails.setText("IP: " + server.getLocalIpAddress()
-                                            + "   Port: " + server.getListeningPort());
+                                    tvServerDetails.setText("IP: " + server.getLocalIpAddress());
 
                                     tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
 
                                     Client client = new Client(getApplicationContext(), server.getLocalIpAddress(),
-                                            PublicConstantValues.listeningPort);
+                                            PublicConstantValues.serverListeningPort);
                                     iqa.setLocalClient(client);
                                 } catch (WriterException e) {
                                     e.printStackTrace();
                                 }
-                            } // end of run method
+                            }
                         });
                     }
                 } catch (InterruptedException e) {
@@ -93,17 +92,6 @@ public class QRCodeActivity extends Activity {
             }
         });
         t.start();
-
-        /*
-
-        Thread launchClientThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-        launchClientThread.start();
-        */
     }
 
     private Bitmap encodeAsBitmap(String str) throws WriterException {

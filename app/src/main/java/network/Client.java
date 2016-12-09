@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,7 +21,7 @@ import models.PlayerData;
  * Created by andre
  */
 
-public class Client extends AsyncTask<Void, Void, Void> {
+public class Client extends Thread {//AsyncTask<Void, Void, Void> {
 
     private String serverIp;
     private int serverPort;
@@ -51,11 +50,14 @@ public class Client extends AsyncTask<Void, Void, Void> {
 
         playerData = PlayerData.loadData(context);
 
-        this.execute();
+        this.start();
     }
 
+    //@Override
+    //protected Void doInBackground(Void... params) {
+
     @Override
-    protected Void doInBackground(Void... params) {
+    public void run() {
         running = true;
 
         try {
@@ -90,7 +92,7 @@ public class Client extends AsyncTask<Void, Void, Void> {
             Log.e("Client", e.getMessage());
         } catch (ClassNotFoundException e) {
             Log.e("Client", e.getMessage());
-        } finally {
+        } /*finally {
             if(clientSocket != null)
                 try {
                     clientSocket.close();
@@ -98,7 +100,9 @@ public class Client extends AsyncTask<Void, Void, Void> {
                     Log.e("Client", e.getMessage());
                 }
         }
-        return null;
+        */
+
+        //return null;
     }
 
     private void stopReceiving() { running = false; }

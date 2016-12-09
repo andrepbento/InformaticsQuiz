@@ -3,8 +3,6 @@ package activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -12,7 +10,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 import com.google.android.gms.vision.CameraSource;
@@ -80,7 +77,7 @@ public class CameraActivity extends Activity {
                     .Builder(this, barcodeDetector)
                     .setRequestedPreviewSize(1280, 720)
                     .setAutoFocusEnabled(true)
-                    .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                    .setFacing(CameraSource.CAMERA_FACING_BACK)
                     .build();
         }
 

@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,11 +16,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
+import application.InformaticsQuizApp;
 import interfaces.PublicConstantValues;
 import models.PlayerData;
 import network.Client;
@@ -193,30 +192,27 @@ public class MainMenuActivity extends Activity {
 
     private void setUpServerConnectionDetails(){
         AlertDialog.Builder dialogAlert = new AlertDialog.Builder(MainMenuActivity.this);
-        //builderSingle.setIcon(R.drawable.ic_launcher);
-        dialogAlert.setTitle("Insert Server connection details:");
-        Context context = getApplicationContext();
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        dialogAlert.setTitle("Insert Server IP:");
 
-        final EditText etServerIP = new EditText(context);
-        etServerIP.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
-        etServerIP.setHint("Server IP");
-        etServerIP.setText("");
-        layout.addView(etServerIP);
-
-        EditText etServerPort = new EditText(context);
-        etServerPort.setHint("Server Port");
-        layout.addView(etServerPort);
-
-        dialogAlert.setView(layout);
+        final EditText etServerIP = new EditText(getBaseContext());
+        etServerIP.setHint("192.168.1.100");
+        etServerIP.setText("192.168.1.100");
+        dialogAlert.setView(etServerIP);
         dialogAlert.setPositiveButton("Conectar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        //Obter dados, verificar o Input, criar um cliente(ele executa),
-                        //esperar caso não esteja feita a ligação
-                        Client client = new Client(getApplicationContext(), "192.168.1.33", 9800);
-                        Toast.makeText(MainMenuActivity.this, "Implementar conectar!",
-                                Toast.LENGTH_SHORT).show();
+                        String serverIp = "";
+                        if(!etServerIP.getText().toString().isEmpty())
+                            serverIp = etServerIP.getText().toString();
+                        else {
+                            Toast.makeText(MainMenuActivity.this, "Server IP insertion error!",
+                                    Toast.LENGTH_SHORT).show();
+                            setUpServerConnectionDetails();
+                        }
+                        InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
+                        Client client = new Client(getApplicationContext(), serverIp,
+                                PublicConstantValues.serverListeningPort);
+                        iqa.setLocalClient(client);
+                        // Lançar uma progressBar animada
                     }
                 }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -232,11 +228,8 @@ public class MainMenuActivity extends Activity {
             case PublicConstantValues.QRCODE_PHOTO:
                 if(resultCode == RESULT_OK) {
                     String connectionDetails = data.getStringExtra("connectionDetails");
-                    connectionDetails.trim();
-                    String[] connectionDetailsArray = connectionDetails.split(" ");
-                    Client client = new Client(this, connectionDetailsArray[0],
-                            Integer.parseInt(connectionDetailsArray[1]));
-                    client.execute();
+                    Client client = new Client(this, connectionDetails,
+                            PublicConstantValues.serverListeningPort);
                 } else {
                     Toast.makeText(this, "Error reading QRCode", Toast.LENGTH_SHORT).show();
                 }

@@ -65,7 +65,6 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
             }
         });
 
-        // Adding Tabs
         for(String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
         }
@@ -161,8 +160,6 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                         //dbI.deleteMultiPlayerGameResults();
                         dbI.close();
                     }
-                    Toast.makeText(getApplication(), "Player deleted", Toast.LENGTH_SHORT).show();
-                    finish();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE: break;
             }

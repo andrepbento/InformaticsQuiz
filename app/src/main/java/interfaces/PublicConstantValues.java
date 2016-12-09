@@ -33,7 +33,7 @@ public interface PublicConstantValues {
     int BITMAP_WIDHT_LARGE = 480;
 
     // NETWORK
-    int listeningPort = 9800;
+    int serverListeningPort = 9800;
 
     // VIBRATOR
     long VIBRATION_SHORT = 500;

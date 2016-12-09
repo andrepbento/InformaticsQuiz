@@ -43,6 +43,8 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
 
     public static ArrayList<HashMap<String, Object>> data;
 
+    public static ListView lvSinglePlayerDetails;
+
     private void addValuesToAdapter(boolean gameResult, Date gameDate, int gameScore,
                                     int nRightAnswers, double pRightAnswers, int nWrongAnswers,
                                     double pWrongAnswers, int gameNQuestions, String gameDifficulty)
@@ -96,7 +98,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
             dbI.close();
         }
 
-        ListView lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
+        lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
 
         lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
 
