@@ -4,7 +4,7 @@ package interfaces;
  * Created by andre
  */
 
-public interface PublicConstantValues {
+public interface Constants {
     // GAME CONFIG
     int SP_MODE = 0;
     int MP_MODE = 1;
@@ -17,7 +17,7 @@ public interface PublicConstantValues {
     Integer[] easyGameValues = {60, 30, 10};
     Integer[] moderateGameValues = {30, 40, 30};
     Integer[] hardGameValues = {10, 30, 60};
-    Integer easyGameTime = 90; // seconds
+    Integer easyGameTime = 90;
     Integer moderateGameTime = 60;
     Integer hardGameTime = 30;
 
@@ -39,4 +39,8 @@ public interface PublicConstantValues {
     long VIBRATION_SHORT = 500;
     long VIBRATION_MEDIUM = 1000;
     long VIBRATION_LONG = 1500;
+
+    // MSG_CODES
+    int MSG_CODE_PLAYER_DATA = 1;
+    int MSG_CODE_GAME = 2;
 }

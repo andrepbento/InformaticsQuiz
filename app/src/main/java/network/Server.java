@@ -1,9 +1,6 @@
 package network;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,8 +19,10 @@ import java.util.Enumeration;
 import java.util.List;
 
 import activities.QRCodeActivity;
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.Game;
+import models.MSG;
+import models.PlayerData;
 
 /**
  * Created by andre
@@ -31,41 +30,36 @@ import models.Game;
 
 public class Server extends AsyncTask<Void, Void, Void> {
 
-    private int listeningPort;
+    private Activity activity;
 
     private ServerSocket serverSocket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-
-    private boolean full;
-
-    protected QRCodeActivity context;
+    private List<Socket> clientSockets;
+    private List<MultiPlayerGameConnection> gameConnections;
 
     private int nPlayers;
     private Game game;
 
-    List<Socket> clientSockets;
+    private boolean full;
 
-    public Server(Context context, int nPlayers, Game game) {
-        ConnectivityManager connMgr = (ConnectivityManager)	context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) {
-            Toast.makeText(context, "No network connection!", Toast.LENGTH_SHORT).show();
-            ((Activity)context).finish();
+    public Server(Activity activity, int nPlayers, Game game) {
+        if (!Connection.checkNetworkConnection(activity)) {
+            Toast.makeText(activity, "No network connection!", Toast.LENGTH_SHORT).show();
+            ((Activity)activity).finish();
             return;
         }
 
-        this.listeningPort = PublicConstantValues.serverListeningPort;
         try {
-            this.serverSocket = new ServerSocket(listeningPort);
+            this.serverSocket = new ServerSocket(Constants.serverListeningPort);
             this.nPlayers = nPlayers;
             clientSockets = new ArrayList<>();
+            gameConnections = new ArrayList<>();
         } catch (IOException e) {
             Log.e("Server", e.getMessage());
             closeSocket();
         }
-        this.context = (QRCodeActivity) context;
+        this.activity = activity;
         this.game = game;
+        this.full = false;
 
         this.execute();
     }
@@ -99,50 +93,126 @@ public class Server extends AsyncTask<Void, Void, Void> {
         return "";
     }
 
-    public int getListeningPort() { return listeningPort; }
+    // public int getListeningPort() { return serverSocket.getLocalPort(); }
 
-    public void stopReceivingClients() { full = true; }
+    public int getnPlayers() {
+        return nPlayers;
+    }
 
     @Override
     protected Void doInBackground(Void... params) {
-        full = false;
+
+        receiveClients();
+
+        try {
+            for (MultiPlayerGameConnection mpgc : gameConnections)
+                mpgc.join();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void receiveClients() {
         int playersCounter = 0;
 
         try {
             while (!full) {
-                Socket s =  serverSocket.accept();
+                Socket s = serverSocket.accept();
                 clientSockets.add(s);
+
+                MultiPlayerGameConnection mpgc = new MultiPlayerGameConnection(playersCounter);
+                mpgc.start();
+                gameConnections.add(mpgc);
 
                 playersCounter++;
 
                 final int finalPlayersCounter = playersCounter;
-                context.runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        context.tvPlayersConnected.setText("Players connected: " + finalPlayersCounter
-                                                                + "/" + nPlayers);
+                        ((QRCodeActivity)activity).tvPlayersConnected.setText("Players connected: " + finalPlayersCounter
+                                + "/" + nPlayers);
                     }
                 });
 
-
                 if (nPlayers <= playersCounter) {
-                    stopReceivingClients();
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            context.tvPlayersConnected.setText("Ready to play!");
-                        }
-                    });
+                    stopAcceptingClients();
+                    sendGameToAllClients();
                 }
-
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             Log.e("Server", e.getMessage());
         }
-        return null;
     }
 
-    public int getnPlayers() {
-        return nPlayers;
+    public void stopAcceptingClients() { full = true; }
+
+    private void sendGameToAllClients() {
+        for(MultiPlayerGameConnection mpgc : gameConnections)
+            mpgc.sendGameToClient();
+    }
+
+    class MultiPlayerGameConnection extends Thread {
+
+        private ObjectInputStream in;
+        private ObjectOutputStream out;
+
+        private boolean running;
+        private int playerIndex;
+
+        public MultiPlayerGameConnection(int playerIndex) {
+            this.running = true;
+            this.playerIndex = playerIndex;
+        }
+
+        public void stopRunning() {
+            this.running = false;
+        }
+
+        @Override
+        public void run() {
+            try {
+                in = new ObjectInputStream(clientSockets.get(playerIndex).getInputStream());
+                out = new ObjectOutputStream(clientSockets.get(playerIndex).getOutputStream());
+
+                while(running) {
+                    Object obj = in.readObject();
+                    if(obj instanceof MSG) {
+                        MSG msg = (MSG)obj;
+                        switch(msg.getMsgCode()) {
+                            case Constants.MSG_CODE_PLAYER_DATA:
+                                final PlayerData pd = msg.getPlayerData();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(activity, "Jogador " + pd.getName() + " ligado!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                        }
+                        //out.writeObject(new MSG(Constants.MSG_CODE_PLAYER_DATA_RECEIVED));
+                    } //else
+                        //out.writeObject(new MSG(Constants.MSG_CODE_FAIL));
+                }
+
+                in.close();
+                out.close();
+            } catch (ClassNotFoundException e) {
+                Log.e("Server", e.getMessage());
+            } catch (IOException e) {
+                Log.e("Server", e.getMessage());
+            }
+        }
+
+        private void sendGameToClient() {
+            try {
+                out.writeObject(new MSG(Constants.MSG_CODE_GAME, game));
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

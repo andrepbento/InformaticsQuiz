@@ -16,7 +16,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import application.InformaticsQuizApp;
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.Game;
 import network.Client;
 import network.Server;
@@ -77,8 +77,8 @@ public class QRCodeActivity extends Activity {
 
                                     tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
 
-                                    Client client = new Client(getApplicationContext(), server.getLocalIpAddress(),
-                                            PublicConstantValues.serverListeningPort);
+                                    Client client = new Client(QRCodeActivity.this, server.getLocalIpAddress(),
+                                            Constants.serverListeningPort);
                                     iqa.setLocalClient(client);
                                 } catch (WriterException e) {
                                     e.printStackTrace();

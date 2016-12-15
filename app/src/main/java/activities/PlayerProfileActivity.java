@@ -23,7 +23,7 @@ import com.example.andre.informaticsquiz.R;
 
 import java.io.File;
 
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.PlayerData;
 import utils.InformaticsQuizHelper;
 
@@ -124,22 +124,22 @@ public class PlayerProfileActivity extends Activity {
         @Override
         public void onClick(View v) {
             Intent takePlayerPhoto = new Intent(PlayerProfileActivity.this, CameraActivity.class);
-            takePlayerPhoto.putExtra("cameraMode", PublicConstantValues.PROFILE_PHOTO);
-            startActivityForResult(takePlayerPhoto, PublicConstantValues.PROFILE_PHOTO);
+            takePlayerPhoto.putExtra("cameraMode", Constants.PROFILE_PHOTO);
+            startActivityForResult(takePlayerPhoto, Constants.PROFILE_PHOTO);
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case PublicConstantValues.PROFILE_PHOTO:
+            case Constants.PROFILE_PHOTO:
                 if(resultCode == RESULT_OK) {
                     byte[] pictureData = data.getByteArrayExtra("pictureData");
                     if(pictureData != null) {
                         Bitmap userPicture = BitmapFactory.decodeByteArray(pictureData, 0, pictureData.length);
                         ivPlayerImage.setImageBitmap(Bitmap.createScaledBitmap(userPicture,
-                                PublicConstantValues.BITMAP_WIDHT_LARGE,
-                                PublicConstantValues.BITMAP_HEIGHT_LARGE, false));
+                                Constants.BITMAP_WIDHT_LARGE,
+                                Constants.BITMAP_HEIGHT_LARGE, false));
                     }else{
                         Toast.makeText(this, "Error receiving photo", Toast.LENGTH_SHORT).show();
                     }
@@ -228,7 +228,7 @@ public class PlayerProfileActivity extends Activity {
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    File playerData = new File(getFilesDir(), PublicConstantValues.playerFileName);
+                    File playerData = new File(getFilesDir(), Constants.playerFileName);
                     boolean delete = playerData.delete();
                     InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
                     dbI.create();

@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 
 /**
  * Created by andre
@@ -59,8 +59,8 @@ public class PlayerData implements Serializable {
 
     public Bitmap getPhoto() {
         Bitmap userPicture = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
-        return Bitmap.createScaledBitmap(userPicture, PublicConstantValues.BITMAP_WIDHT_LARGE,
-                PublicConstantValues.BITMAP_HEIGHT_LARGE, false);
+        return Bitmap.createScaledBitmap(userPicture, Constants.BITMAP_WIDHT_LARGE,
+                Constants.BITMAP_HEIGHT_LARGE, false);
     }
 
     public String getName() {
@@ -155,7 +155,7 @@ public class PlayerData implements Serializable {
     public void saveData(Context context) {
         FileOutputStream fos = null;
         try {
-            fos = context.openFileOutput(PublicConstantValues.playerFileName, Context.MODE_PRIVATE);
+            fos = context.openFileOutput(Constants.playerFileName, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(this);
             os.close();
@@ -170,7 +170,7 @@ public class PlayerData implements Serializable {
 
         FileInputStream fis = null;
         try {
-            fis = context.openFileInput(PublicConstantValues.playerFileName);
+            fis = context.openFileInput(Constants.playerFileName);
         } catch (FileNotFoundException e) {
             Log.e("MainMenuActivity", "FileNotFoundException " + e.getMessage());
             return playerData;

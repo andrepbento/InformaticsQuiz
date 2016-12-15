@@ -19,7 +19,7 @@ import com.example.andre.informaticsquiz.R;
 import java.util.concurrent.TimeUnit;
 
 import application.InformaticsQuizApp;
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.Game;
 import models.MyVibrator;
 import models.Question;
@@ -117,7 +117,7 @@ public class GameActivity extends Activity {
         } else {
             SoundEffect.playWrongAnswerSound();
             button.setBackgroundColor(getResources().getColor(R.color.red_soft));
-            new MyVibrator(getApplicationContext()).vibrate(PublicConstantValues.VIBRATION_SHORT);
+            new MyVibrator(getApplicationContext()).vibrate(Constants.VIBRATION_SHORT);
         }
 
         if(game.getTimer())
@@ -129,7 +129,7 @@ public class GameActivity extends Activity {
                 button.setBackground(drawable);
                 nextQuestion();
             }
-        }, PublicConstantValues.timeToNextQuestion);
+        }, Constants.timeToNextQuestion);
     }
 
     public void nextQuestion() {
@@ -173,7 +173,7 @@ public class GameActivity extends Activity {
         btnAnswerD.setText("D: " + question.getAnswerD());
 
         if(game.getTimer()) {
-            cdt = new CountDownTimer(game.getQuestionTime(), PublicConstantValues.tickTime) {
+            cdt = new CountDownTimer(game.getQuestionTime(), Constants.tickTime) {
 
                 public void onTick(long millisUntilFinished) {
                     long millis = millisUntilFinished;

@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.Game;
 import utils.InformaticsQuizHelper;
 
@@ -27,7 +27,7 @@ public class CreateGameActivity extends Activity {
 
     protected InformaticsQuizHelper dbI;
 
-    Spinner spinner;
+    Spinner difficultySpinner;
 
     Switch timerSwitch;
 
@@ -48,11 +48,11 @@ public class CreateGameActivity extends Activity {
         if(dbI.open()) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
 
-            spinner = (Spinner) findViewById(R.id.spinner_dificuldade);
+            difficultySpinner = (Spinner) findViewById(R.id.spinner_dificuldade);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                     R.array.difficulty, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
+            difficultySpinner.setAdapter(adapter);
 
             timerSwitch = (Switch) findViewById(R.id.sw_timer);
 
@@ -62,27 +62,28 @@ public class CreateGameActivity extends Activity {
 
             seekBarNQuestions = (SeekBar)findViewById(R.id.sb_n_questions);
             seekBarNQuestions.setProgress(1);
-            seekBarNQuestions.setMax(PublicConstantValues.MAX_N_QUESTIONS);
+            seekBarNQuestions.setMax(Constants.MAX_N_QUESTIONS);
             seekBarNQuestions.setOnSeekBarChangeListener(nQuestionsChangeListener);
 
             Intent intent = getIntent();
-            gameMode = intent.getIntExtra("mode", 0);
+            gameMode = intent.getIntExtra("gameMode", 0);
             String mode = "";
-            if(gameMode == PublicConstantValues.MP_MODE) {
+            if(gameMode == Constants.MP_MODE) {
                 mode = getResources().getString(R.string.multi_player_text);
                 (findViewById(R.id.n_players_piece)).setVisibility(View.VISIBLE);
                 tvnPlayers = (TextView)findViewById(R.id.tv_num_players);
                 tvnPlayers.setText("Número de jogadores" + ": 2");
                 seekBarNPlayers = (SeekBar) findViewById(R.id.sb_n_players);
                 seekBarNPlayers.setProgress(2);
-                seekBarNPlayers.setMax(PublicConstantValues.MAX_N_PLAYERS);
+                seekBarNPlayers.setMax(Constants.MAX_N_PLAYERS);
                 seekBarNPlayers.setOnSeekBarChangeListener(nPlayersChangeListener);
             } else {
-                gameMode = PublicConstantValues.SP_MODE;
+                gameMode = Constants.SP_MODE;
                 mode = getResources().getString(R.string.single_player_text);
             }
             getActionBar().setTitle(getResources().getString(R.string.game_config_text)+"("
                     +mode+")");
+            dbI.close();
         } else {
             Log.e("DB", "Could not open()");
             finish();
@@ -143,17 +144,17 @@ public class CreateGameActivity extends Activity {
         if(dbI.open()) {
 
             String[] difficultyArray = getResources().getStringArray(R.array.difficulty);
-            int difficultyId = spinner.getSelectedItemPosition();
+            int difficultyId = difficultySpinner.getSelectedItemPosition();
             int n_perguntas = seekBarNQuestions.getProgress();
 
             Game game = new Game(dbI, difficultyArray, difficultyId, n_perguntas, timerSwitch.isChecked());
 
-            if (gameMode == PublicConstantValues.SP_MODE) {
+            if (gameMode == Constants.SP_MODE) {
                 Intent intent_inicia_jogo = new Intent(CreateGameActivity.this, GameActivity.class);
                 intent_inicia_jogo.putExtra("game", game);
                 startActivity(intent_inicia_jogo);
                 finish();
-            } else if (gameMode == PublicConstantValues.MP_MODE) {
+            } else if (gameMode == Constants.MP_MODE) {
                 if(seekBarNPlayers.getProgress() < 2 || seekBarNPlayers.getProgress() > 4){
                     Toast.makeText(getApplicationContext(), "Falta escolher o número de jogadores...", Toast.LENGTH_SHORT).show();
                     return;

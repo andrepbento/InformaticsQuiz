@@ -20,7 +20,7 @@ import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
 
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import models.MyVibrator;
 
 /**
@@ -55,7 +55,7 @@ public class CameraActivity extends Activity {
 
         Button btnTakePic = (Button) findViewById(R.id.btn_take_pic);
 
-        if(cameraMode == PublicConstantValues.PROFILE_PHOTO) {
+        if(cameraMode == Constants.PROFILE_PHOTO) {
             faceDetector = new FaceDetector.Builder(this)
                     .setProminentFaceOnly(true)
                     .build();
@@ -67,7 +67,7 @@ public class CameraActivity extends Activity {
                     .setAutoFocusEnabled(true)
                     .setFacing(CameraSource.CAMERA_FACING_FRONT)
                     .build();
-        } else if(cameraMode == PublicConstantValues.QRCODE_PHOTO) {
+        } else if(cameraMode == Constants.QRCODE_PHOTO) {
             barcodeDetector = new BarcodeDetector.Builder(this)
                     .setBarcodeFormats(Barcode.QR_CODE)
                     .build();
@@ -101,7 +101,7 @@ public class CameraActivity extends Activity {
             }
         });
 
-        if(cameraMode == PublicConstantValues.QRCODE_PHOTO) {
+        if(cameraMode == Constants.QRCODE_PHOTO) {
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
                 public void release() {
@@ -115,7 +115,7 @@ public class CameraActivity extends Activity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("connectionDetails", barcodes.valueAt(0).displayValue);
                         setResult(RESULT_OK, returnIntent);
-                        new MyVibrator(CameraActivity.this).vibrate(PublicConstantValues.VIBRATION_MEDIUM);
+                        new MyVibrator(CameraActivity.this).vibrate(Constants.VIBRATION_MEDIUM);
                         finish();
                     }
                 }
@@ -127,8 +127,8 @@ public class CameraActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if(cameraSource != null) cameraSource.release();
-        if(cameraMode == PublicConstantValues.PROFILE_PHOTO) faceDetector.release();
-        else if(cameraMode == PublicConstantValues.QRCODE_PHOTO) barcodeDetector.release();
+        if(cameraMode == Constants.PROFILE_PHOTO) faceDetector.release();
+        else if(cameraMode == Constants.QRCODE_PHOTO) barcodeDetector.release();
     }
 
     public void onButtonTakePickClick(View view) {

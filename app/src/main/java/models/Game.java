@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import interfaces.PublicConstantValues;
+import interfaces.Constants;
 import utils.InformaticsQuizHelper;
 
 /**
@@ -42,13 +42,13 @@ public class Game implements Serializable {
 
         if(this.difficulty.equals(diffArray[0])) {
             fillQuestionsList(nQuestions, 0);
-            setQuestionTime(PublicConstantValues.easyGameTime * 1000);
+            setQuestionTime(Constants.easyGameTime * 1000);
         } else if(this.difficulty.equals(diffArray[1])) {
             fillQuestionsList(nQuestions, 1);
-            setQuestionTime(PublicConstantValues.moderateGameTime * 1000);
+            setQuestionTime(Constants.moderateGameTime * 1000);
         } else {
             fillQuestionsList(nQuestions, 2);
-            setQuestionTime(PublicConstantValues.hardGameTime * 1000);
+            setQuestionTime(Constants.hardGameTime * 1000);
         }
     }
 
@@ -95,27 +95,27 @@ public class Game implements Serializable {
 
         switch(gameDifficulty) {
             case 0:
-                nEasyQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.easyGameValues[0] /100.0f));
-                nModerateQuestions = (int)(nQuestions*(PublicConstantValues.easyGameValues[1] /100.0f));
-                nHardQuestions = (int)(nQuestions*(PublicConstantValues.easyGameValues[2] /100.0f));
+                nEasyQuestions = (int)Math.ceil(nQuestions*(Constants.easyGameValues[0] /100.0f));
+                nModerateQuestions = (int)(nQuestions*(Constants.easyGameValues[1] /100.0f));
+                nHardQuestions = (int)(nQuestions*(Constants.easyGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nEasyQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
                     nHardQuestions--;
                 break;
             case 1:
-                nEasyQuestions = (int)(nQuestions*(PublicConstantValues.moderateGameValues[0] /100.0f));
-                nModerateQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.moderateGameValues[1] /100.0f));
-                nHardQuestions = (int)(nQuestions*(PublicConstantValues.moderateGameValues[2] /100.0f));
+                nEasyQuestions = (int)(nQuestions*(Constants.moderateGameValues[0] /100.0f));
+                nModerateQuestions = (int)Math.ceil(nQuestions*(Constants.moderateGameValues[1] /100.0f));
+                nHardQuestions = (int)(nQuestions*(Constants.moderateGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nModerateQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
                     nHardQuestions--;
                 break;
             case 2:
-                nEasyQuestions = (int)(nQuestions*(PublicConstantValues.hardGameValues[0] /100.0f));
-                nModerateQuestions = (int)(nQuestions*(PublicConstantValues.hardGameValues[1] /100.0f));
-                nHardQuestions = (int)Math.ceil(nQuestions*(PublicConstantValues.hardGameValues[2] /100.0f));
+                nEasyQuestions = (int)(nQuestions*(Constants.hardGameValues[0] /100.0f));
+                nModerateQuestions = (int)(nQuestions*(Constants.hardGameValues[1] /100.0f));
+                nHardQuestions = (int)Math.ceil(nQuestions*(Constants.hardGameValues[2] /100.0f));
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions < nQuestions)
                     nHardQuestions++;
                 if(nEasyQuestions + nModerateQuestions + nHardQuestions > nQuestions)
