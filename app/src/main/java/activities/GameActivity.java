@@ -18,7 +18,6 @@ import com.example.andre.informaticsquiz.R;
 
 import java.util.concurrent.TimeUnit;
 
-import application.InformaticsQuizApp;
 import interfaces.Constants;
 import models.Game;
 import models.MyVibrator;
@@ -60,20 +59,14 @@ public class GameActivity extends Activity {
         btnAnswerC = (Button)findViewById(R.id.btnAnswerC);
         btnAnswerD = (Button)findViewById(R.id.btnAnswerD);
 
-        if(savedInstanceState != null) {
-            InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
-            this.game = iqa.getGame();
+        Intent receivedIntent = getIntent();
+        if(receivedIntent != null) {
+            game = (Game) receivedIntent.getSerializableExtra("game");
             updateUI();
-            return;
-        }
-
-        Intent received_intent = getIntent();
-        if(received_intent != null) {
-            game = (Game) received_intent.getSerializableExtra("game");
-            continueGame();
+            startTimer();
         }
     }
-
+/*
     @Override
     protected void onResume() {
         super.onResume();
@@ -85,13 +78,14 @@ public class GameActivity extends Activity {
         InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
         iqa.setGame(game);
     }
-
+*/
     @Override
     public void onBackPressed() {
-
     }
 
     public void onButtonRespostaClick(View v) throws InterruptedException {
+        stopTimer();
+
         final Button button = (Button)v;
         boolean answerResult = false;
         switch (v.getId()) {
@@ -120,9 +114,6 @@ public class GameActivity extends Activity {
             new MyVibrator(getApplicationContext()).vibrate(Constants.VIBRATION_SHORT);
         }
 
-        if(game.getTimer())
-            cdt.cancel();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -133,14 +124,15 @@ public class GameActivity extends Activity {
     }
 
     public void nextQuestion() {
-        if(game.getTimer())
-            cdt.cancel();
-
         if(game.checkEnd()) {
-            setSinglePlayerGameResult();
+            if(game.getGameMode() == Constants.SP_MODE)
+                setSinglePlayerGameResult();
+            else if (game.getGameMode() == Constants.MP_MODE)
+                setMultiPlayerGameResult();
             finish();
         } else {
-            continueGame();
+            updateUI();
+            startTimer();
         }
     }
 
@@ -171,7 +163,15 @@ public class GameActivity extends Activity {
         btnAnswerB.setText("B: " + question.getAnswerB());
         btnAnswerC.setText("C: " + question.getAnswerC());
         btnAnswerD.setText("D: " + question.getAnswerD());
+    }
 
+    public void onButtonGiveUp(View view) {
+        stopTimer();
+        setSinglePlayerGameResult();
+        finish();
+    }
+
+    private void startTimer() {
         if(game.getTimer()) {
             cdt = new CountDownTimer(game.getQuestionTime(), Constants.tickTime) {
 
@@ -195,19 +195,12 @@ public class GameActivity extends Activity {
         }
     }
 
-    private void continueGame() {
-        game.getNextQuestion();
-        updateUI();
-    }
-
-    public void onButtonGiveUp(View view) {
+    private void stopTimer() {
         if(game.getTimer())
             cdt.cancel();
-        setSinglePlayerGameResult();
-        finish();
     }
 
-    public void setSinglePlayerGameResult() {
+    private void setSinglePlayerGameResult() {
         Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerGameResultActivity.class);
         gameResultIntent.putExtra("gameResult", game.getResult());
         gameResultIntent.putExtra("gamePlayerScore", game.getScore());
@@ -224,5 +217,14 @@ public class GameActivity extends Activity {
         gameResultIntent.putExtra("gameDifficulty", game.getDifficultyId());
         gameResultIntent.putExtra("gameTotalQuestions", game.getnQuestions());
         startActivity(gameResultIntent);
+    }
+
+    private void setMultiPlayerGameResult() {
+        try {
+
+            throw new Exception("GAMEACTIVITY.setMultiPlayerGameResult() POR IMPLEMENTAR!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

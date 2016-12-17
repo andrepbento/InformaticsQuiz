@@ -15,6 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import activities.QRCodeActivity;
 import interfaces.Constants;
 import models.Game;
 import models.MSG;
+import models.MultiPlayerGameResult;
 import models.PlayerData;
 
 /**
@@ -36,10 +38,11 @@ public class Server extends AsyncTask<Void, Void, Void> {
     private List<Socket> clientSockets;
     private List<MultiPlayerGameConnection> gameConnections;
 
-    private int nPlayers;
     private Game game;
 
     private boolean full;
+
+    private MultiPlayerGameResult multiPlayerGameResult;
 
     public Server(Activity activity, int nPlayers, Game game) {
         if (!Connection.checkNetworkConnection(activity)) {
@@ -50,7 +53,6 @@ public class Server extends AsyncTask<Void, Void, Void> {
 
         try {
             this.serverSocket = new ServerSocket(Constants.serverListeningPort);
-            this.nPlayers = nPlayers;
             clientSockets = new ArrayList<>();
             gameConnections = new ArrayList<>();
         } catch (IOException e) {
@@ -96,7 +98,7 @@ public class Server extends AsyncTask<Void, Void, Void> {
     // public int getListeningPort() { return serverSocket.getLocalPort(); }
 
     public int getnPlayers() {
-        return nPlayers;
+        return game.getnPlayers();
     }
 
     @Override
@@ -133,11 +135,11 @@ public class Server extends AsyncTask<Void, Void, Void> {
                     @Override
                     public void run() {
                         ((QRCodeActivity)activity).tvPlayersConnected.setText("Players connected: " + finalPlayersCounter
-                                + "/" + nPlayers);
+                                + "/" + game.getnPlayers());
                     }
                 });
 
-                if (nPlayers <= playersCounter) {
+                if (game.getnPlayers() <= playersCounter) {
                     stopAcceptingClients();
                     sendGameToAllClients();
                 }
@@ -151,7 +153,16 @@ public class Server extends AsyncTask<Void, Void, Void> {
 
     private void sendGameToAllClients() {
         for(MultiPlayerGameConnection mpgc : gameConnections)
-            mpgc.sendGameToClient();
+            mpgc.sendMSGToClient(new MSG(Constants.MSG_CODE_GAME, game));
+    }
+
+    private void sendMultiPlayerGameResultToAllClients() {
+        multiPlayerGameResult = new MultiPlayerGameResult(new Date(), game.getnQuestions(), game.getDifficultyId());
+        MSG msg = new MSG(Constants.MSG_CODE_MULTI_PLAYER_GAME_RESULT, multiPlayerGameResult);
+        for(MultiPlayerGameConnection mpgc : gameConnections) {
+            mpgc.sendMSGToClient(msg);
+            mpgc.stopRunning();
+        }
     }
 
     class MultiPlayerGameConnection extends Thread {
@@ -191,10 +202,12 @@ public class Server extends AsyncTask<Void, Void, Void> {
                                     }
                                 });
                                 break;
+                            case Constants.MSG_CODE_GAME:
+                                // Guardar o jogo associando-o ao jogador em causa (playerIndex)
+                                throw new Exception("Por implementar case Constants.MSG_CODE_GAME");
+                                // break;
                         }
-                        //out.writeObject(new MSG(Constants.MSG_CODE_PLAYER_DATA_RECEIVED));
-                    } //else
-                        //out.writeObject(new MSG(Constants.MSG_CODE_FAIL));
+                    }
                 }
 
                 in.close();
@@ -203,12 +216,14 @@ public class Server extends AsyncTask<Void, Void, Void> {
                 Log.e("Server", e.getMessage());
             } catch (IOException e) {
                 Log.e("Server", e.getMessage());
+            } catch (Exception e) {
+                Log.e("Server", e.getMessage());
             }
         }
 
-        private void sendGameToClient() {
+        private void sendMSGToClient(MSG msg) {
             try {
-                out.writeObject(new MSG(Constants.MSG_CODE_GAME, game));
+                out.writeObject(msg);
                 out.flush();
             } catch (IOException e) {
                 e.printStackTrace();

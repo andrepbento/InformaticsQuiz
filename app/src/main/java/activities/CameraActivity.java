@@ -51,7 +51,11 @@ public class CameraActivity extends Activity {
         Intent receivedIntent = getIntent();
         cameraMode = receivedIntent.getIntExtra("cameraMode", 0);
 
-        if(cameraMode == 0) { Log.e("Camera", "Error"); onDestroy(); finish(); }
+        if(cameraMode == 0) {
+            Log.e("Camera", "Error");
+            onDestroy();
+            finish();
+        }
 
         Button btnTakePic = (Button) findViewById(R.id.btn_take_pic);
 
@@ -126,9 +130,12 @@ public class CameraActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(cameraSource != null) cameraSource.release();
-        if(cameraMode == Constants.PROFILE_PHOTO) faceDetector.release();
-        else if(cameraMode == Constants.QRCODE_PHOTO) barcodeDetector.release();
+        if(cameraSource != null)
+            cameraSource.release();
+        if(cameraMode == Constants.PROFILE_PHOTO)
+            faceDetector.release();
+        else if(cameraMode == Constants.QRCODE_PHOTO)
+            barcodeDetector.release();
     }
 
     public void onButtonTakePickClick(View view) {

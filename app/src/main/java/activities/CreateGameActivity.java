@@ -68,7 +68,10 @@ public class CreateGameActivity extends Activity {
             Intent intent = getIntent();
             gameMode = intent.getIntExtra("gameMode", 0);
             String mode = "";
-            if(gameMode == Constants.MP_MODE) {
+            if(gameMode == Constants.SP_MODE) {
+                gameMode = Constants.SP_MODE;
+                mode = getResources().getString(R.string.single_player_text);
+            } else if(gameMode == Constants.MP_MODE) {
                 mode = getResources().getString(R.string.multi_player_text);
                 (findViewById(R.id.n_players_piece)).setVisibility(View.VISIBLE);
                 tvnPlayers = (TextView)findViewById(R.id.tv_num_players);
@@ -77,9 +80,6 @@ public class CreateGameActivity extends Activity {
                 seekBarNPlayers.setProgress(2);
                 seekBarNPlayers.setMax(Constants.MAX_N_PLAYERS);
                 seekBarNPlayers.setOnSeekBarChangeListener(nPlayersChangeListener);
-            } else {
-                gameMode = Constants.SP_MODE;
-                mode = getResources().getString(R.string.single_player_text);
             }
             getActionBar().setTitle(getResources().getString(R.string.game_config_text)+"("
                     +mode+")");
@@ -142,32 +142,30 @@ public class CreateGameActivity extends Activity {
         dbI.create();
 
         if(dbI.open()) {
-
             String[] difficultyArray = getResources().getStringArray(R.array.difficulty);
             int difficultyId = difficultySpinner.getSelectedItemPosition();
-            int n_perguntas = seekBarNQuestions.getProgress();
+            int nPerguntas = seekBarNQuestions.getProgress();
 
-            Game game = new Game(dbI, difficultyArray, difficultyId, n_perguntas, timerSwitch.isChecked());
+            Game game = new Game(dbI, difficultyArray, difficultyId, nPerguntas, timerSwitch.isChecked());
 
+            Intent intent = null;
             if (gameMode == Constants.SP_MODE) {
-                Intent intent_inicia_jogo = new Intent(CreateGameActivity.this, GameActivity.class);
-                intent_inicia_jogo.putExtra("game", game);
-                startActivity(intent_inicia_jogo);
-                finish();
+                intent = new Intent(CreateGameActivity.this, GameActivity.class);
+                game.setGameMode(Constants.SP_MODE);
+                game.setnPlayers(1);
             } else if (gameMode == Constants.MP_MODE) {
                 if(seekBarNPlayers.getProgress() < 2 || seekBarNPlayers.getProgress() > 4){
                     Toast.makeText(getApplicationContext(), "Falta escolher o número de jogadores...", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                intent = new Intent(CreateGameActivity.this, QRCodeActivity.class);
+                game.setGameMode(Constants.MP_MODE);
                 SeekBar seekBar = (SeekBar) findViewById(R.id.sb_n_players);
-                int nPlayers = seekBar.getProgress();
-
-                Intent intent = new Intent(CreateGameActivity.this, QRCodeActivity.class);
-                intent.putExtra("game", game);
-                intent.putExtra("nPlayers", nPlayers);
-                startActivity(intent);
-                finish();
+                game.setnPlayers(seekBar.getProgress());
             }
+            intent.putExtra("game", game);
+            startActivity(intent);
+            finish();
         }
     }
 }

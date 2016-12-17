@@ -73,7 +73,6 @@ public class SinglePlayerGameResultActivity extends Activity {
         if(playerData != null) {
             playerData.setSinglePlayerPontuation(playerData.getSinglePlayerPontuation() + gameScore);
             playerData.setnRightAnswers(playerData.getnRightAnswers() + nRightAnswers);
-            playerData.setnWrongAnswers(playerData.getnWrongAnswers() + nWrongAnswers);
             playerData.setTotalAnswers(playerData.getTotalAnswers() + gameTotalQuestions);
             playerData.saveData(this);
 

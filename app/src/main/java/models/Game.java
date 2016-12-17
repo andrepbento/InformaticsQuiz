@@ -31,6 +31,9 @@ public class Game implements Serializable {
 
     private ArrayList<Question> questionsList;
 
+    private int gameMode;
+    private int nPlayers;
+
     public Game(InformaticsQuizHelper dbI, String[] diffArray, int difficultyId, int nQuestions, boolean timer) {
         this.dbI = dbI;
 
@@ -84,6 +87,22 @@ public class Game implements Serializable {
 
     private void setQuestionTime(long valor) {
         this.questionTime = valor;
+    }
+
+    public int getnPlayers() {
+        return nPlayers;
+    }
+
+    public void setnPlayers(int nPlayers) {
+        this.nPlayers = nPlayers;
+    }
+
+    public int getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(int gameMode) {
+        this.gameMode = gameMode;
     }
 
     private void fillQuestionsList(int nQuestions, int gameDifficulty){
@@ -153,29 +172,25 @@ public class Game implements Serializable {
         return (int)(Math.random() * range) + (min <= max ? min : max);
     }
 
-    public Question getNextQuestion() {
-        return questionsList.get(currentQuestionNum);
-    }
-
     public boolean checkAnswer(String answerLeter) {
         if(questionsList.get(currentQuestionNum).getRightAnswerLeter().equals(answerLeter)) {
             score += questionsList.get(currentQuestionNum).getQuestionValue();
             nRightQuestions++;
+            currentQuestionNum++;
             return true;
         }
         nWrongQuestions++;
+        currentQuestionNum++;
         return false;
     }
 
     public boolean checkEnd() {
-        currentQuestionNum++;
         return currentQuestionNum >= this.getnQuestions() ? true : false;
     }
 
     public boolean getResult() {
         if(score == 0)
             return false;
-
         return getTotalScore() / 2 <= score;
     }
 

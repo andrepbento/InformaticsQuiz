@@ -18,6 +18,7 @@ import activities.GameActivity;
 import interfaces.Constants;
 import models.Game;
 import models.MSG;
+import models.MultiPlayerGameResult;
 import models.PlayerData;
 
 /**
@@ -78,12 +79,14 @@ public class Client extends Thread {
                             startGame.putExtra("game", game);
                             activity.startActivity(startGame);
                             break;
+                        case Constants.MSG_CODE_MULTI_PLAYER_GAME_RESULT:
+                            MultiPlayerGameResult mpgr = msg.getMultiPlayerGameResult();
+                            mpgr.save(activity);
+                            stopReceiving();
+                            break;
                     }
                 }
             }
-
-            out.close();
-            in.close();
         } catch (IOException e) {
             Log.e("Client", e.getMessage());
         } catch (ClassNotFoundException e) {
@@ -98,7 +101,11 @@ public class Client extends Thread {
         }
     }
 
-    private void stopReceiving() { running = false; }
+    private void stopReceiving() throws IOException {
+        running = false;
+        out.close();
+        in.close();
+    }
 
     private void sendDataToServer(Object data) {
         try {

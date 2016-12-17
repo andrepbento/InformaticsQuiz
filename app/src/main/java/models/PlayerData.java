@@ -20,7 +20,6 @@ import interfaces.Constants;
 /**
  * Created by andre
  */
-
 public class PlayerData implements Serializable {
 
     static final long serialVersionUID = 1010L;
@@ -36,11 +35,6 @@ public class PlayerData implements Serializable {
     private int multiPlayerPontuation;
     private int totalAnswers;
     private int nRightAnswers;
-    private int nWrongAnswers;
-    private int singlePlayerGamesPlayed;
-    private int winSinglePlayerGames;
-    private int multiPlayerGamesPlayed;
-    private int winMultiPlayerGames;
 
     public PlayerData(Bitmap photo, String name, int sexId, String sex, int age, int ocupation) {
         this.playerID = new Date().getTime();
@@ -53,7 +47,6 @@ public class PlayerData implements Serializable {
         this.singlePlayerPontuation = 0;
         this.multiPlayerPontuation = 0;
         this.nRightAnswers = 0;
-        this.nWrongAnswers = 0;
         this.totalAnswers = 0;
     }
 
@@ -137,11 +130,7 @@ public class PlayerData implements Serializable {
     }
 
     public int getnWrongAnswers() {
-        return nWrongAnswers;
-    }
-
-    public void setnWrongAnswers(int nWrongAnswers) {
-        this.nWrongAnswers = nWrongAnswers;
+        return totalAnswers - nRightAnswers;
     }
 
     public int getTotalAnswers() {

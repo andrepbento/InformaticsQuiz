@@ -27,6 +27,8 @@ import network.Server;
 
 public class QRCodeActivity extends Activity {
 
+    private InformaticsQuizApp iqa = null;
+
     public final static int HEIGHT=500;
     public final static int WIDTH=500;
 
@@ -46,7 +48,7 @@ public class QRCodeActivity extends Activity {
         final TextView tvServerDetails = (TextView) findViewById(R.id.tv_server_details);
         tvPlayersConnected = (TextView) findViewById(R.id.tv_players_connected);
 
-        final InformaticsQuizApp iqa = (InformaticsQuizApp) getApplication();
+        iqa = (InformaticsQuizApp) getApplication();
 
         Intent receivedIntent = getIntent();
         int nPlayers = receivedIntent.getIntExtra("nPlayers", 0);
@@ -129,5 +131,11 @@ public class QRCodeActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        iqa.getLocalServer().stopAcceptingClients();
+        super.onBackPressed();
     }
 }

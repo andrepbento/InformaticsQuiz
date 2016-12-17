@@ -7,6 +7,7 @@ import java.util.Date;
  */
 
 public class SinglePlayerGameResult extends GameResult {
+
     private int gameId = 0;
     private boolean gameResult;
     private int gameScore;

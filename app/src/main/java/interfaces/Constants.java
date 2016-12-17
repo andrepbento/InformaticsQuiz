@@ -21,8 +21,9 @@ public interface Constants {
     Integer moderateGameTime = 60;
     Integer hardGameTime = 30;
 
-    // PLAYER
+    // STORAGE
     String playerFileName = "playerData.bin";
+    String multiPlayerPath = "/multiPlayerGames";
 
     // CAMERA
     int PROFILE_PHOTO = 1;
@@ -43,4 +44,5 @@ public interface Constants {
     // MSG_CODES
     int MSG_CODE_PLAYER_DATA = 1;
     int MSG_CODE_GAME = 2;
+    int MSG_CODE_MULTI_PLAYER_GAME_RESULT = 3;
 }

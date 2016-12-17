@@ -49,7 +49,6 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -61,7 +60,6 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -70,6 +68,12 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
         }
 
         viewPager.setCurrentItem(1);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -111,16 +115,13 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                 if(dbI.open()) {
                     switch(pageNum) {
                         case 0:
-                            deleteLogData();
-                            mAdapter.notifyDataSetChanged();
+                            deleteLogData(item);
                             break;
                         case 2:
                             //dbI.deleteMultiPlayerGameResults();
-                            mAdapter.notifyDataSetChanged();
                             break;
                     }
                 }
-                item.setVisible(false);
                 break;
         }
 
@@ -142,27 +143,26 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
     }
 
-    private void deleteLogData() {
+    private void deleteLogData(final MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
+        builder.setMessage("Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
+                        dbI.create();
+                        if (dbI.open()) {
+                            dbI.deleteSinglePlayerGameResults();
+                            //dbI.deleteMultiPlayerGameResults();
+                            dbI.close();
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        item.setVisible(false);
+                    }})
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }})
+                .show();
     }
-
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
-                    dbI.create();
-                    if(dbI.open()) {
-                        dbI.deleteSinglePlayerGameResults();
-                        //dbI.deleteMultiPlayerGameResults();
-                        dbI.close();
-                    }
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE: break;
-            }
-        }
-    };
 }

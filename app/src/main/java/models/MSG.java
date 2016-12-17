@@ -22,35 +22,24 @@ public class MSG implements Serializable {
         this.game = game;
     }
 
-    public int getMsgCode() {
-        return msgCode;
+    public MSG(int msgCode, MultiPlayerGameResult multiPlayerGameResult) {
+        this.msgCode = msgCode;
+        this.multiPlayerGameResult = multiPlayerGameResult;
     }
 
-    public void setMsgCode(int msgCode) {
-        this.msgCode = msgCode;
+    public int getMsgCode() {
+        return msgCode;
     }
 
     public PlayerData getPlayerData() {
         return playerData;
     }
 
-    public void setPlayerData(PlayerData playerData) {
-        this.playerData = playerData;
-    }
-
     public Game getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public MultiPlayerGameResult getMultiPlayerGameResult() {
         return multiPlayerGameResult;
-    }
-
-    public void setMultiPlayerGameResult(MultiPlayerGameResult multiPlayerGameResult) {
-        this.multiPlayerGameResult = multiPlayerGameResult;
     }
 }
