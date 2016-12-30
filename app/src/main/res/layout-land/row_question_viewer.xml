@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:orientation="vertical"
     android:id="@+id/question_viewer_line">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -25,7 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
             <TextView
@@ -34,7 +34,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="ANSWER_A"
-                style="@style/MediumCustomText"/>
+                style="@style/MediumCustomText"
+                android:gravity="left"/>
 
             <TextView
                 android:id="@+id/tv_answer_b"
@@ -42,7 +43,16 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="ANSWER_B"
-                style="@style/MediumCustomText"/>
+                style="@style/MediumCustomText"
+                android:gravity="left"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/tv_answer_c"
@@ -50,7 +60,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="ANSWER_C"
-                style="@style/MediumCustomText"/>
+                style="@style/MediumCustomText"
+                android:gravity="left"/>
 
             <TextView
                 android:id="@+id/tv_answer_d"
@@ -58,7 +69,9 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="ANSWER_D"
-                style="@style/MediumCustomText"/>
+                style="@style/MediumCustomText"
+                android:gravity="left"/>
+
         </LinearLayout>
 
     </LinearLayout>

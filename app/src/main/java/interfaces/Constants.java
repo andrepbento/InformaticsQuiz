@@ -5,15 +5,17 @@ package interfaces;
  */
 
 public interface Constants {
+    long DAY_IN_MS = 1000 * 60 * 60 * 24;
+
     // GAME CONFIG
     int SP_MODE = 0;
     int MP_MODE = 1;
     int MAX_N_QUESTIONS = 20;
-    int MAX_N_PLAYERS = 4;
+    int MAX_N_PLAYERS = 16;
 
     // GAME
     int tickTime = 1000;
-    int timeToNextQuestion = 2000;
+    int timeToNextQuestion = 1500;
     Integer[] easyGameValues = {60, 30, 10};
     Integer[] moderateGameValues = {30, 40, 30};
     Integer[] hardGameValues = {10, 30, 60};
@@ -23,7 +25,8 @@ public interface Constants {
 
     // STORAGE
     String playerFileName = "playerData.bin";
-    String multiPlayerPath = "/multiPlayerGames";
+    String singlePlayerPath = "singlePlayerGames";
+    String multiPlayerPath = "multiPlayerGames";
 
     // CAMERA
     int PROFILE_PHOTO = 1;
@@ -45,4 +48,9 @@ public interface Constants {
     int MSG_CODE_PLAYER_DATA = 1;
     int MSG_CODE_GAME = 2;
     int MSG_CODE_MULTI_PLAYER_GAME_RESULT = 3;
+
+    // ABOUT APP
+    String URL_FACEBOOK_PROGRAMER_PROFILE = "https://www.facebook.com/andrebento16";
+    String URL_GITHUB = "https://github.com/andrepbento/InformaticsQuiz";
+    String URL_ISEC = "https://www.isec.pt/PT/Default.aspx";
 }

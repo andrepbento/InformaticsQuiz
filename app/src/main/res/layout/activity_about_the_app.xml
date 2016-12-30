@@ -1,44 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_how_to_play"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    style="@style/AppBackground"
-    tools:context="activities.AboutTheAppActivity">
+    tools:context="activities.AboutTheAppActivity"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:keepScreenOn="true"
-        android:textColor="#00b4f0"
-        android:textStyle="bold"
-        android:textSize="40sp"
-        android:gravity="top|center"
-        android:text="@string/credits_text"
-        android:layout_marginTop="10dp"/>
-
+        android:layout_weight="2"
+        android:textColor="@color/blue_soft"
+        style="@style/UltraLargeCustomTextBold"
+        android:gravity="center"
+        android:text="@string/credits_text"/>
 
     <TextView
-        android:layout_below="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_weight="1"
         android:text="@string/about_the_app_programador_text"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentStart="false"
-        android:layout_marginTop="20dp"
-        android:textAlignment="center"
+        style="@style/LargeCustomText"
         android:gravity="center"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_facebook_logo"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:src="@drawable/facebook_logo"/>
+
+        <ImageView
+            android:id="@+id/iv_play_store_logo"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_weight="1"
+            android:src="@drawable/github_logo"/>
+
+    </LinearLayout>
+
     <ImageView
+        android:id="@+id/iv_isec_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
         android:src="@drawable/isec_logo"
-        android:layout_alignParentBottom="true"/>
+        android:layout_gravity="center"/>
 
-</RelativeLayout>
+</LinearLayout>

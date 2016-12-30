@@ -1,12 +1,16 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by andre
  */
 
-public class GameResult {
+public class GameResult implements Serializable {
+
+    static final long serialVersionUID = 1010L;
+
     protected Date gameDate;
     protected int gameNQuestions;
     protected int gameDifficulty;

@@ -3,6 +3,7 @@ package activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,40 +11,44 @@ import com.example.andre.informaticsquiz.R;
 
 import java.util.Date;
 
+import models.Game;
+import models.MySharedPreferences;
 import models.PlayerData;
 import models.SinglePlayerGameResult;
 import models.SoundEffect;
-import utils.InformaticsQuizHelper;
 
 /**
  * Created by andre
  */
 
-public class SinglePlayerGameResultActivity extends Activity {
+public class SinglePlayerResultActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_player_game_result);
+        MySharedPreferences.loadTheme(this);
+        setContentView(R.layout.activity_single_player_result);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(R.string.single_player_game_result_text);
 
         Intent gameResultIntent = getIntent();
-        boolean gameResult = gameResultIntent.getBooleanExtra("gameResult", false);
-        Date gameDate = new Date();
-        int gameTotalQuestions = gameResultIntent.getIntExtra("gameTotalQuestions", 0);
-        int gameScore = gameResultIntent.getIntExtra("gameScore", 0);
-        int nRightAnswers = gameResultIntent.getIntExtra("nRightAnswers", 0);
-        double pRightAnswers = Math.round((double)nRightAnswers / gameTotalQuestions * 100.0);
-        int nWrongAnswers = gameResultIntent.getIntExtra("nWrongAnswers", 0);
-        double pWrongAnswers = Math.round((double)nWrongAnswers / gameTotalQuestions * 100.0);
-        int gameDifficulty = gameResultIntent.getIntExtra("gameDifficulty", 0);
+        Game game = (Game) gameResultIntent.getSerializableExtra("game");
 
-        int gamePlayerScore = gameResultIntent.getIntExtra("gamePlayerScore",0);
-        int gameTotalScore = gameResultIntent.getIntExtra("gameTotalScore",0);
+        boolean gameResult = game.getResult();
+        Date gameDate = new Date();
+        int gameTotalQuestions = game.getnQuestions();
+        int gameScore = game.getScore();
+        int nRightAnswers = game.getnRightQuestions();
+        double pRightAnswers = Math.round((double)nRightAnswers / gameTotalQuestions * 100.0);
+        int nWrongAnswers = game.getnWrongQuestions();
+        double pWrongAnswers = Math.round((double)nWrongAnswers / gameTotalQuestions * 100.0);
+        int gameDifficulty = game.getDifficultyId();
+
+        int gamePlayerScore = game.getScore();
+        int gameTotalScore = game.getTotalScore();
 
         View layout = this.getWindow().getDecorView();
-
-        //         android:id="@+id/iv_game_result" ************************************************
-
         TextView tvGameResult = (TextView) findViewById(R.id.tv_game_result);
         TextView tvScoreAdded = (TextView) findViewById(R.id.tv_score_added);
         if(gameResult) {
@@ -54,6 +59,8 @@ public class SinglePlayerGameResultActivity extends Activity {
         } else {
             tvGameResult.setText("CHUMBAS-TE! Tens que te esforçar mais...");
             layout.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
+            double halfScore = game.getTotalScore() / 2;
+            gameScore = ((int)halfScore - game.getScore()) * (-1);
             tvScoreAdded.setText(String.valueOf(gameScore));
             SoundEffect.playLoseGameSound();
         }
@@ -69,32 +76,34 @@ public class SinglePlayerGameResultActivity extends Activity {
         String[] diffArray = this.getResources().getStringArray(R.array.difficulty);
         ((TextView) findViewById(R.id.tv_game_difficulty)).setText(diffArray[gameDifficulty]);
 
-        PlayerData playerData = PlayerData.loadData(this);
-        if(playerData != null) {
-            playerData.setSinglePlayerPontuation(playerData.getSinglePlayerPontuation() + gameScore);
-            playerData.setnRightAnswers(playerData.getnRightAnswers() + nRightAnswers);
-            playerData.setTotalAnswers(playerData.getTotalAnswers() + gameTotalQuestions);
-            playerData.saveData(this);
+        if(savedInstanceState==null) {
+            PlayerData playerData = PlayerData.loadData(this);
+            if (playerData != null) {
+                playerData.setSinglePlayerPontuation(playerData.getSinglePlayerPontuation() + gameScore);
+                playerData.setnRightAnswers(playerData.getnRightAnswers() + nRightAnswers);
+                playerData.setTotalAnswers(playerData.getTotalAnswers() + gameTotalQuestions);
+                playerData.saveData(this);
 
-            InformaticsQuizHelper dbI = new InformaticsQuizHelper(this);
-
-            dbI.create();
-
-            if (dbI.open()) {
-                int gameId = (dbI.getLastSinglePlayerGameId() + 1);
-
-                SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameDifficulty, gameId,
-                        gameResult, gameScore, nRightAnswers, nWrongAnswers);
-
-                dbI.insertSinglePlayerGameResult(spgr);
-
-                dbI.close();
+                (new SinglePlayerGameResult(gameDate, gameDifficulty, gameResult, gameScore,
+                        nRightAnswers, nWrongAnswers)).save(getApplicationContext());
             }
         }
     }
 
-    public void onButtonGoToInicialMenu(View view) {
-        SoundEffect.stopAllSounds();
-        onBackPressed();
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                SoundEffect.stopAllSounds();
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

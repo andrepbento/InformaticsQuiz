@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    style="@style/AppBackground"
     android:orientation="vertical"
     tools:context="activities.CreateGameActivity">
 
@@ -27,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/difficulty_text"
-                style="@style/SmallCustomText"/>
+                style="@style/LargeCustomText"/>
 
             <Spinner
                 android:id="@+id/spinner_dificuldade"
@@ -49,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Tempo"
-                style="@style/SmallCustomText"/>
+                style="@style/LargeCustomText"/>
 
             <Switch
                 android:id="@+id/sw_timer"
@@ -76,13 +75,14 @@
             android:layout_marginTop="10dp"
             android:id="@+id/tv_num_perguntas"
             android:text="@string/tv_questions_number_text"
-            style="@style/SmallCustomText"/>
+            style="@style/LargeCustomText"/>
 
         <SeekBar
             android:id="@+id/sb_n_questions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="16dp"
+            />
 
     </LinearLayout>
 
@@ -90,7 +90,8 @@
         android:id="@+id/n_players_piece"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:orientation="vertical"
         android:visibility="invisible">
 
         <TextView
@@ -99,13 +100,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Número de jogadores"
-            android:textSize="20sp"/>
+            style="@style/LargeCustomText"/>
 
         <SeekBar
             android:id="@+id/sb_n_players"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 
@@ -113,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Criar jogo"
-        style="@style/MediumCustomTextBold"
+        style="@style/VeryLargeCustomText"
         android:layout_gravity="center"
         android:onClick="onButtonComecarClick"/>
 

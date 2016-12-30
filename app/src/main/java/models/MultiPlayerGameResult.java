@@ -1,17 +1,20 @@
 package models;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import interfaces.Constants;
 
@@ -19,68 +22,140 @@ import interfaces.Constants;
  * Created by andre
  */
 
-public class MultiPlayerGameResult extends GameResult {
+public class MultiPlayerGameResult extends GameResult implements Serializable {
+    static final long serialVersionUID = 1010L;
 
     private long multiPlayerGameResultID;
-    private Map<PlayerData, Game> multiPlayerGameResultTable;
+    private List<PlayerResult> multiPlayerGameResultTable;
 
     public MultiPlayerGameResult(Date gameDate, int gameNQuestions, int gameDifficulty) {
         super(gameDate, gameNQuestions, gameDifficulty);
         multiPlayerGameResultID = new Date().getTime();
-        /*
-        multiPlayerGameResultTable = new TreeMap<>(new Comparator<Game>() {
-            @Override
-            public int compare(Game g1, Game g2) {
-                return g1.getScore().compareTo(g2.getScore());
-            }
-        });
-        */
+        multiPlayerGameResultTable = new ArrayList<>();
     }
 
-    public void addPlayerData(PlayerData playerData, Game game){
-        multiPlayerGameResultTable.put(playerData, game);
+    public long getMultiPlayerGameResultID() {
+        return this.multiPlayerGameResultID;
     }
 
-    public int getPlayersCount(){
-        return multiPlayerGameResultTable.size();
+    public void addPlayerInfo(PlayerData playerData, Game game){
+        multiPlayerGameResultTable.add(new PlayerResult(playerData, game));
+        orderResults();
     }
 
-    /*
-    public void orderTable() {
-        Map<PlayerData, Game> temp = new HashMap<>();
-        for(multiPlayerGameResultTable)
-        multiPlayerGameResultTable
+    public List<PlayerResult> getMultiPlayerGameResultTable() {
+        return multiPlayerGameResultTable;
     }
-    */
+
+    private void orderResults() {
+        Collections.sort(multiPlayerGameResultTable, Collections.reverseOrder());
+    }
 
     public boolean save(Context context) {
-        FileOutputStream fos = null;
-        try {
-            fos = context.openFileOutput(Constants.multiPlayerPath+"/"+String.valueOf(multiPlayerGameResultID),
-                    Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(this);
-            os.flush();
+        String directoryName = Constants.multiPlayerPath;
+        String fileName = multiPlayerGameResultID+".bin";
+
+        File directory = new File(context.getFilesDir(), directoryName);
+        if(!directory.exists())
+            directory.mkdir();
+
+        try{
+            File file = new File(directory, fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+            fileOutputStream.close();
         } catch(IOException e) {
+            Log.e("MPGameResult", e.toString());
             return false;
         }
         return true;
     }
 
-    public static List<MultiPlayerGameResult> load() {
+    public static List<MultiPlayerGameResult> loadAllData(Context context) {
         List<MultiPlayerGameResult> multiPlayerGameResultList = new ArrayList<>();
-        try {
-            final File folder = new File(Constants.multiPlayerPath);
-            for (final File fileEntry : folder.listFiles()) {
-                if (fileEntry.isFile()) {
-                    FileInputStream fin = new FileInputStream(fileEntry);
-                    ObjectInputStream bis = new ObjectInputStream(fin);
-                    multiPlayerGameResultList.add((MultiPlayerGameResult) bis.readObject());
+
+        String directoryName = Constants.multiPlayerPath;
+
+        File directory = new File(context.getFilesDir(), directoryName);
+        if(!directory.exists())
+            return multiPlayerGameResultList;
+
+        for(final File fileEntry : directory.listFiles())
+            if(fileEntry.isFile()) {
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(fileEntry);
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    multiPlayerGameResultList.add((MultiPlayerGameResult) objectInputStream.readObject());
+                    objectInputStream.close();
+                    fileInputStream.close();
+                } catch (FileNotFoundException e) {
+                    Log.e("MPGR_loadAllData", e.toString());
+                } catch (IOException e) {
+                    Log.e("MPGR_loadAllData", e.toString());
+                } catch (ClassNotFoundException e) {
+                    Log.e("MPGR_loadAllData", e.toString());
                 }
             }
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
+
         return multiPlayerGameResultList;
+    }
+
+    public static boolean deleteAllData(Context context) {
+        String directoryName = Constants.multiPlayerPath;
+
+        File directory = new File(context.getFilesDir(), directoryName);
+        if(!directory.exists())
+            return false;
+
+        for(final File fileEntry : directory.listFiles())
+            if(fileEntry.isFile())
+                fileEntry.delete();
+
+        return true;
+    }
+
+    public static boolean deleteAllData(Context context, long minTime) {
+        String directoryName = Constants.multiPlayerPath;
+
+        File directory = new File(context.getFilesDir(), directoryName);
+        if(!directory.exists())
+            return false;
+
+        for(final File fileEntry : directory.listFiles())
+            if(fileEntry.isFile()) {
+                String[] nameSplitted = fileEntry.getName().split("\\.");
+                if (Long.parseLong(nameSplitted[0]) < minTime)
+                    fileEntry.delete();
+            }
+
+        return true;
+    }
+
+    public class PlayerResult implements Serializable, Comparable {
+        static final long serialVersionUID = 1010L;
+
+        private PlayerData playerData;
+        private Game game;
+
+        public PlayerResult(PlayerData playerData, Game game) {
+            this.playerData = playerData;
+            this.game = game;
+        }
+
+        public PlayerData getPlayerData() {
+            return playerData;
+        }
+
+        public Game getGame() {
+            return game;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            PlayerResult playerResult = (PlayerResult) o;
+            return this.getGame().getScore() - playerResult.getGame().getScore();
+        }
     }
 }

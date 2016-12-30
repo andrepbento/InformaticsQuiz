@@ -21,7 +21,6 @@ import interfaces.Constants;
  * Created by andre
  */
 public class PlayerData implements Serializable {
-
     static final long serialVersionUID = 1010L;
 
     private long playerID;
@@ -50,10 +49,20 @@ public class PlayerData implements Serializable {
         this.totalAnswers = 0;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        PlayerData playerData = (PlayerData) obj;
+        if(this.playerID == playerData.getPlayerID())
+            return true;
+        return false;
+    }
+
+    public long getPlayerID() {
+        return this.playerID;
+    }
+
     public Bitmap getPhoto() {
-        Bitmap userPicture = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
-        return Bitmap.createScaledBitmap(userPicture, Constants.BITMAP_WIDHT_LARGE,
-                Constants.BITMAP_HEIGHT_LARGE, false);
+        return BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
     }
 
     public String getName() {
@@ -118,7 +127,10 @@ public class PlayerData implements Serializable {
     }
 
     public void setMultiPlayerPontuation(int multiPlayerPontuation) {
-        this.multiPlayerPontuation = multiPlayerPontuation;
+        if(singlePlayerPontuation <= 0)
+            this.multiPlayerPontuation = 0;
+        else
+            this.multiPlayerPontuation = multiPlayerPontuation;
     }
 
     public int getnRightAnswers() {
@@ -180,5 +192,4 @@ public class PlayerData implements Serializable {
 
         return playerData;
     }
-
 }

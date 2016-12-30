@@ -18,7 +18,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppThemeBlack">
         <activity android:name="activities.MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
         <activity android:name="activities.QuestionsViewerActivity" />
         <activity android:name="activities.CreateGameActivity" />
         <activity android:name="activities.GameActivity" />
-        <activity android:name="activities.SinglePlayerGameResultActivity" />
+        <activity android:name="activities.SinglePlayerResultActivity" />
         <activity android:name="activities.PlayerProfileActivity" />
         <activity android:name="activities.CameraActivity" />
         <activity android:name="activities.PlayerResultsActivity" />
@@ -37,6 +37,7 @@
         <activity android:name="activities.AboutTheAppActivity" />
         <activity android:name="activities.QRCodeActivity" />
         <activity android:name="activities.SettingsActivity" />
+        <activity android:name="activities.MultiPlayerResultActivity" />
     </application>
 
 </manifest>

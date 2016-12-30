@@ -19,6 +19,7 @@ import com.example.andre.informaticsquiz.R;
 
 import application.InformaticsQuizApp;
 import interfaces.Constants;
+import models.MySharedPreferences;
 import models.PlayerData;
 import network.Client;
 import network.Connection;
@@ -28,12 +29,12 @@ import network.Connection;
  */
 
 public class MainMenuActivity extends Activity {
-
     private PlayerData player;
     private Button btnMultiPlayer, btnPlayerResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MySharedPreferences.loadTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
@@ -47,16 +48,12 @@ public class MainMenuActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        player = PlayerData.loadData(this);
-
-        if(player != null) {
+        if((player = PlayerData.loadData(this)) != null) {
             btnMultiPlayer.setEnabled(true);
             btnPlayerResults.setEnabled(true);
         } else {
             btnMultiPlayer.setEnabled(false);
             btnPlayerResults.setEnabled(false);
-            Toast.makeText(getApplicationContext(), "Não existe conta criada, todos os dados serão perdidos," +
-                    " se quiseres que se guardem cria uma conta pff", Toast.LENGTH_LONG).show();
         }
 
         invalidateOptionsMenu();
@@ -96,8 +93,6 @@ public class MainMenuActivity extends Activity {
             case R.id.item_acerca_de:
                 startActivity(new Intent(MainMenuActivity.this, AboutTheAppActivity.class));
                 break;
-            default:
-                return super.onOptionsItemSelected(item);
         }
 
         return super.onOptionsItemSelected(item);
@@ -124,26 +119,25 @@ public class MainMenuActivity extends Activity {
 
     private void setUpMultiPlayerDialogBox() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainMenuActivity.this);
-        //builderSingle.setIcon(R.drawable.ic_launcher);
-        builderSingle.setTitle("Multi-Player");
+        builderSingle.setTitle(getResources().getString(R.string.multi_player_text));
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(MainMenuActivity.this,
                 android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add("Create game");
-        arrayAdapter.add("Join game");
+        arrayAdapter.add(getString(R.string.create_game_text));
+        arrayAdapter.add(getString(R.string.enter_game_text));
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            switch(which) {
-                case 0:
-                    Intent mpIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
-                    mpIntent.putExtra("gameMode", Constants.MP_MODE);
-                    startActivity(mpIntent);
-                    break;
-                case 1:
-                    setUpJoinGameMethod();
-            }
+                switch(which) {
+                    case 0:
+                        Intent mpIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
+                        mpIntent.putExtra("gameMode", Constants.MP_MODE);
+                        startActivity(mpIntent);
+                        break;
+                    case 1:
+                        setUpJoinGameMethod();
+                }
             }
         });
 
@@ -152,13 +146,12 @@ public class MainMenuActivity extends Activity {
 
     private void setUpJoinGameMethod() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainMenuActivity.this);
-        //builderSingle.setIcon(R.drawable.ic_launcher);
-        builderSingle.setTitle("Join using:");
+        builderSingle.setTitle(getResources().getString(R.string.join_using_text));
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(MainMenuActivity.this,
                 android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add("Server IP");
-        arrayAdapter.add("QRCode");
+        arrayAdapter.add(getString(R.string.server_ip_text));
+        arrayAdapter.add(getString(R.string.qrcode_text));
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
@@ -180,13 +173,13 @@ public class MainMenuActivity extends Activity {
 
     private void setUpServerConnectionDetails(){
         AlertDialog.Builder dialogAlert = new AlertDialog.Builder(MainMenuActivity.this);
-        dialogAlert.setTitle("Insert Server IP:");
+        dialogAlert.setTitle(R.string.insert_server_ip_text);
 
         final EditText etServerIP = new EditText(MainMenuActivity.this);
-        etServerIP.setHint("192.168.1.100");
-        etServerIP.setText("192.168.1.100");
+        etServerIP.setHint("192.168.1.33");
+        etServerIP.setText("192.168.1.33");
         dialogAlert.setView(etServerIP);
-        dialogAlert.setPositiveButton("Conect", new DialogInterface.OnClickListener() {
+        dialogAlert.setPositiveButton(R.string.connect_text, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String serverIp = "";
                         if(!etServerIP.getText().toString().isEmpty())
@@ -199,7 +192,7 @@ public class MainMenuActivity extends Activity {
 
                         createClient(serverIp);
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.cancel_text, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
                 });
@@ -211,19 +204,19 @@ public class MainMenuActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.QRCODE_PHOTO:
-                if(resultCode == RESULT_OK) {
+                if(resultCode == RESULT_OK)
                     createClient(data.getStringExtra("connectionDetails"));
-                } else {
-                    Toast.makeText(this, "Error reading QRCode", Toast.LENGTH_SHORT).show();
-                }
+                else
+                    Toast.makeText(this, "Erro de leitura do QRCode", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void createClient(String serverIp) {
-        InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
+        InformaticsQuizApp app = (InformaticsQuizApp)getApplication();
         Client client = new Client(MainMenuActivity.this, serverIp,
                 Constants.serverListeningPort);
-        iqa.setLocalClient(client);
+        client.start();
+        app.setLocalClient(client);
         // Lançar uma progressBar animada
     }
 }

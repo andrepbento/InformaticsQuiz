@@ -17,7 +17,9 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import activities.QRCodeActivity;
 import interfaces.Constants;
@@ -31,47 +33,57 @@ import models.PlayerData;
  */
 
 public class Server extends AsyncTask<Void, Void, Void> {
-
     private Activity activity;
 
     private ServerSocket serverSocket;
-    private List<Socket> clientSockets;
     private List<MultiPlayerGameConnection> gameConnections;
 
     private Game game;
 
     private boolean full;
+    public static int playersCounter;
 
+    private List<PlayerData> playersDataList;
+    private Map<Integer, Game> gameResults;
     private MultiPlayerGameResult multiPlayerGameResult;
 
-    public Server(Activity activity, int nPlayers, Game game) {
+    private Thread checkConnections;
+
+    public Server(Activity activity, Game game) {
         if (!Connection.checkNetworkConnection(activity)) {
             Toast.makeText(activity, "No network connection!", Toast.LENGTH_SHORT).show();
-            ((Activity)activity).finish();
+            (activity).finish();
             return;
         }
 
         try {
             this.serverSocket = new ServerSocket(Constants.serverListeningPort);
-            clientSockets = new ArrayList<>();
-            gameConnections = new ArrayList<>();
         } catch (IOException e) {
-            Log.e("Server", e.getMessage());
+            Log.e("Server", e.toString());
             closeSocket();
         }
+        this.gameConnections = new ArrayList<>();
         this.activity = activity;
         this.game = game;
         this.full = false;
-
-        this.execute();
+        this.playersDataList = new ArrayList<>();
+        this.gameResults = new HashMap<>();
+        this.playersCounter = 0;
     }
 
-    public void closeSocket() {
+    public void stopServer() {
+        stopAcceptingClients();
+        for(MultiPlayerGameConnection multiPlayerGameConnection : gameConnections)
+            multiPlayerGameConnection.stopRunning();
+        closeSocket();
+    }
+
+    private void closeSocket() {
         if(serverSocket != null)
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                Log.e("Server", e.getMessage());
+                Log.e("Server", e.toString());
             }
         serverSocket = null;
     }
@@ -90,54 +102,42 @@ public class Server extends AsyncTask<Void, Void, Void> {
                 }
             }
         } catch (SocketException e) {
-            Log.e("Server", e.getMessage());
+            Log.e("Server", e.toString());
         }
         return "";
     }
-
-    // public int getListeningPort() { return serverSocket.getLocalPort(); }
 
     public int getnPlayers() {
         return game.getnPlayers();
     }
 
+    public void checkReceivedAllGames() {
+        if(playersDataList.size() <= gameResults.size())
+            sendMultiPlayerGameResultToAllClients();
+    }
+
     @Override
     protected Void doInBackground(Void... params) {
-
         receiveClients();
 
-        try {
-            for (MultiPlayerGameConnection mpgc : gameConnections)
-                mpgc.join();
-        } catch(InterruptedException e) {
-            e.printStackTrace();
+        for(MultiPlayerGameConnection multiPlayerGameConnection : gameConnections){
+            try {
+                multiPlayerGameConnection.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
     }
 
     private void receiveClients() {
-        int playersCounter = 0;
-
         try {
             while (!full) {
                 Socket s = serverSocket.accept();
-                clientSockets.add(s);
 
-                MultiPlayerGameConnection mpgc = new MultiPlayerGameConnection(playersCounter);
+                MultiPlayerGameConnection mpgc = new MultiPlayerGameConnection(playersCounter, s);
                 mpgc.start();
-                gameConnections.add(mpgc);
-
-                playersCounter++;
-
-                final int finalPlayersCounter = playersCounter;
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((QRCodeActivity)activity).tvPlayersConnected.setText("Players connected: " + finalPlayersCounter
-                                + "/" + game.getnPlayers());
-                    }
-                });
 
                 if (game.getnPlayers() <= playersCounter) {
                     stopAcceptingClients();
@@ -145,27 +145,41 @@ public class Server extends AsyncTask<Void, Void, Void> {
                 }
             }
         } catch(IOException e) {
-            Log.e("Server", e.getMessage());
+            Log.e("Server", e.toString());
         }
     }
 
-    public void stopAcceptingClients() { full = true; }
+    public void stopAcceptingClients() {
+        full = true;
+    }
 
     private void sendGameToAllClients() {
-        for(MultiPlayerGameConnection mpgc : gameConnections)
-            mpgc.sendMSGToClient(new MSG(Constants.MSG_CODE_GAME, game));
+        if(activity instanceof QRCodeActivity)
+            activity.finish();
+        for(MultiPlayerGameConnection multiPlayerGameConnection : gameConnections)
+            multiPlayerGameConnection.sendMSGToClient(new MSG(Constants.MSG_CODE_GAME, game));
+    }
+
+    private void processMultiPlayerResult() {
+        multiPlayerGameResult = new MultiPlayerGameResult(new Date(), game.getnQuestions(), game.getDifficultyId());
+        for(int i = 0; i < game.getnPlayers(); i++) {
+            if(gameResults.containsKey(i))
+                multiPlayerGameResult.addPlayerInfo(playersDataList.get(i), gameResults.get(i));
+            else
+                multiPlayerGameResult.addPlayerInfo(playersDataList.get(i), null);
+        }
     }
 
     private void sendMultiPlayerGameResultToAllClients() {
-        multiPlayerGameResult = new MultiPlayerGameResult(new Date(), game.getnQuestions(), game.getDifficultyId());
+        processMultiPlayerResult();
         MSG msg = new MSG(Constants.MSG_CODE_MULTI_PLAYER_GAME_RESULT, multiPlayerGameResult);
-        for(MultiPlayerGameConnection mpgc : gameConnections) {
-            mpgc.sendMSGToClient(msg);
-            mpgc.stopRunning();
+        for(MultiPlayerGameConnection multiPlayerGameConnection : gameConnections) {
+            multiPlayerGameConnection.sendMSGToClient(msg);
         }
     }
 
     class MultiPlayerGameConnection extends Thread {
+        private Socket socket;
 
         private ObjectInputStream in;
         private ObjectOutputStream out;
@@ -173,61 +187,82 @@ public class Server extends AsyncTask<Void, Void, Void> {
         private boolean running;
         private int playerIndex;
 
-        public MultiPlayerGameConnection(int playerIndex) {
+        public MultiPlayerGameConnection(int playerIndex, Socket socket) {
+            gameConnections.add(this);
             this.running = true;
             this.playerIndex = playerIndex;
-        }
-
-        public void stopRunning() {
-            this.running = false;
+            playersCounter++;
+            this.socket = socket;
         }
 
         @Override
         public void run() {
             try {
-                in = new ObjectInputStream(clientSockets.get(playerIndex).getInputStream());
-                out = new ObjectOutputStream(clientSockets.get(playerIndex).getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
+                out = new ObjectOutputStream(socket.getOutputStream());
+                out.flush();
 
                 while(running) {
-                    Object obj = in.readObject();
-                    if(obj instanceof MSG) {
-                        MSG msg = (MSG)obj;
-                        switch(msg.getMsgCode()) {
-                            case Constants.MSG_CODE_PLAYER_DATA:
-                                final PlayerData pd = msg.getPlayerData();
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(activity, "Jogador " + pd.getName() + " ligado!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                break;
-                            case Constants.MSG_CODE_GAME:
-                                // Guardar o jogo associando-o ao jogador em causa (playerIndex)
-                                throw new Exception("Por implementar case Constants.MSG_CODE_GAME");
-                                // break;
-                        }
+                    MSG msg = (MSG)in.readObject();
+                    switch(msg.getMsgCode()) {
+                        case Constants.MSG_CODE_PLAYER_DATA:
+                            final PlayerData playerData = msg.getPlayerData();
+                            playersDataList.add(playerData);
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((QRCodeActivity)activity).tvPlayersConnected.setText("Players connected: "
+                                            +playersCounter+"/"+game.getnPlayers());
+                                    Toast.makeText((QRCodeActivity) activity, "Jogador "+playerData.getName()
+                                            +" ligado!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case Constants.MSG_CODE_GAME:
+                            gameResults.put(playerIndex, msg.getGame());
+                            checkReceivedAllGames();
+                            break;
                     }
                 }
-
                 in.close();
                 out.close();
             } catch (ClassNotFoundException e) {
-                Log.e("Server", e.getMessage());
+                Log.e("Server", e.toString());
             } catch (IOException e) {
-                Log.e("Server", e.getMessage());
+                Log.e("Server", e.toString());
             } catch (Exception e) {
-                Log.e("Server", e.getMessage());
+                Log.e("Server", e.toString());
+            } finally {
+                closeSocket();
             }
         }
 
-        private void sendMSGToClient(MSG msg) {
-            try {
-                out.writeObject(msg);
-                out.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        private void closeSocket() {
+            if(socket!=null)
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    Log.e("Server", e.toString());
+                }
+        }
+
+        public void stopRunning() {
+            this.running = false;
+            closeSocket();
+        }
+
+        public void sendMSGToClient(final MSG msg) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        out.writeObject(msg);
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 }

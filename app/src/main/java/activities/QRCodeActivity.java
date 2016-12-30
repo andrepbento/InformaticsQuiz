@@ -18,6 +18,7 @@ import com.google.zxing.common.BitMatrix;
 import application.InformaticsQuizApp;
 import interfaces.Constants;
 import models.Game;
+import models.MySharedPreferences;
 import network.Client;
 import network.Server;
 
@@ -26,19 +27,19 @@ import network.Server;
  */
 
 public class QRCodeActivity extends Activity {
-
-    private InformaticsQuizApp iqa = null;
+    private InformaticsQuizApp app = null;
 
     public final static int HEIGHT=500;
     public final static int WIDTH=500;
 
-    String QRcode;
+    private String qrCodeData;
 
     public TextView tvPlayersConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_qrcode);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,55 +49,44 @@ public class QRCodeActivity extends Activity {
         final TextView tvServerDetails = (TextView) findViewById(R.id.tv_server_details);
         tvPlayersConnected = (TextView) findViewById(R.id.tv_players_connected);
 
-        iqa = (InformaticsQuizApp) getApplication();
+        app = (InformaticsQuizApp) getApplication();
 
         Intent receivedIntent = getIntent();
-        int nPlayers = receivedIntent.getIntExtra("nPlayers", 0);
         Game game = (Game) receivedIntent.getSerializableExtra("game");
 
-        final Server server = new Server(this, nPlayers, game);
-        iqa.setLocalServer(server);
+        final Server server = new Server(this, game);
+        server.execute();
+        app.setLocalServer(server);
 
         // create thread to avoid ANR Exception
-        Thread t = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             public void run() {
-                // this is the msg which will be encode in QRcode
-                QRcode = server.getLocalIpAddress();
-
-                try {
+                qrCodeData = server.getLocalIpAddress();
                     synchronized (this) {
-                        wait(100);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    Bitmap bitmap = null;
+                                Bitmap bitmap = null;
 
-                                    bitmap = encodeAsBitmap(QRcode);
-                                    ivQRCode.setImageBitmap(bitmap);
+                                bitmap = encodeAsBitmap(qrCodeData);
+                                ivQRCode.setImageBitmap(bitmap);
 
-                                    tvServerDetails.setText("IP: " + server.getLocalIpAddress());
+                                tvServerDetails.setText("IP: " + server.getLocalIpAddress());
 
-                                    tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
+                                tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
 
-                                    Client client = new Client(QRCodeActivity.this, server.getLocalIpAddress(),
-                                            Constants.serverListeningPort);
-                                    iqa.setLocalClient(client);
-                                } catch (WriterException e) {
-                                    e.printStackTrace();
-                                }
+                                Client client = new Client(QRCodeActivity.this, server.getLocalIpAddress(),
+                                        Constants.serverListeningPort);
+                                client.start();
+                                app.setLocalClient(client);
                             }
                         });
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
-        });
-        t.start();
+        }).start();
     }
 
-    private Bitmap encodeAsBitmap(String str) throws WriterException {
+    private Bitmap encodeAsBitmap(String str) {
         BitMatrix result;
         try {
             result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, HEIGHT, WIDTH, null);
@@ -135,7 +125,10 @@ public class QRCodeActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        iqa.getLocalServer().stopAcceptingClients();
+        app.getLocalClient().stopClient();
+        app.setLocalClient(null);
+        app.getLocalServer().stopServer();
+        app.setLocalServer(null);
         super.onBackPressed();
     }
 }

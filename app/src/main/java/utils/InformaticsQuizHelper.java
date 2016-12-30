@@ -12,26 +12,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import models.Question;
-import models.SinglePlayerGameResult;
 
 /**
  * Created by andre
  */
 
 public class InformaticsQuizHelper extends SQLiteOpenHelper {
-
     private static String DB_PATH = "";
     private static String DB_NAME = "informaticsQuiz.db";
     private static int DB_VERSION = 1;
 
+    private static String TABLE = "";
     private static String QUESTIONS_PT_TABLE = "Questions_PT";
     private static String QUESTIONS_EN_TABLE = "Questions_EN";
-    private static String SINGLE_PLAYER_STATISTICS_TABLE = "SinglePlayerStatistics";
-    private static String MULTI_PLAYER_STATISTICS_TABLE = "MultiPlayerStatistics";
     private static String DIFFICULTY_COLUMN = "Difficulty";
     private static String EASY_DIFFICULTY = "1";
     private static String MODERATE_DIFFICULTY = "2";
@@ -99,6 +96,13 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper {
         try {
             String myPath = DB_PATH + DB_NAME;
             db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+            Locale deviceLocale = context.getResources().getConfiguration().locale;
+            if(deviceLocale.equals(Locale.US) || deviceLocale.equals(Locale.ENGLISH)
+                    || deviceLocale.equals(Locale.CANADA) || deviceLocale.equals(Locale.UK))
+                TABLE = QUESTIONS_EN_TABLE;
+            else
+                TABLE = QUESTIONS_PT_TABLE;
+
             return true;
         } catch (SQLiteException sqle) {
             db = null;
@@ -159,100 +163,21 @@ public class InformaticsQuizHelper extends SQLiteOpenHelper {
     }
 
     public List<Question> getAllQuestions() {
-        return getQuestions("select * from " + QUESTIONS_PT_TABLE + ";");
+        return getQuestions("select * from " + TABLE + ";");
     }
 
     public List<Question> getEasyQuestions() {
-        return getQuestions("select * from " + QUESTIONS_PT_TABLE
+        return getQuestions("select * from " + TABLE
                 + " where " + DIFFICULTY_COLUMN + " = " + EASY_DIFFICULTY + ";");
     }
 
     public List<Question> getModerateQuestions() {
-        return getQuestions("select * from " + QUESTIONS_PT_TABLE
+        return getQuestions("select * from " + TABLE
                 + " where " + DIFFICULTY_COLUMN + " = " + MODERATE_DIFFICULTY + ";");
     }
 
     public List<Question> getHardQuestions() {
-        return getQuestions("select * from " + QUESTIONS_PT_TABLE
+        return getQuestions("select * from " + TABLE
                 + " where " + DIFFICULTY_COLUMN + " = " + HARD_DIFFICULTY + ";");
     }
-
-    private List<SinglePlayerGameResult> getSinglePlayerGameResults(String query_arg) {
-        List<SinglePlayerGameResult> results = new ArrayList<>();
-
-        try {
-            String query = query_arg;
-            SQLiteDatabase db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-            Cursor cursor = db.rawQuery(query, null);
-
-            if(cursor == null) {
-                Log.e("DB Cursor", "ERROR");
-                return null;
-            }
-
-            while(cursor.moveToNext()) {
-                int gameId = cursor.getInt(0);
-                int int_gameResult = cursor.getInt(1);
-                boolean gameResult = false;
-                if(int_gameResult == 1)
-                    gameResult = true;
-                long l_gameDate = Long.parseLong(cursor.getString(2));
-                Date gameDate = new Date(l_gameDate);
-                int gameScore = cursor.getInt(3);
-                int nRightAnswers = cursor.getInt(4);
-                int nWrongAnswers = cursor.getInt(5);
-                int gameDifficulty = cursor.getInt(6);
-
-                SinglePlayerGameResult spgr = new SinglePlayerGameResult(gameDate, gameDifficulty,
-                        gameId, gameResult, gameScore, nRightAnswers, nWrongAnswers);
-
-                results.add(spgr);
-            }
-        } catch (Exception e) {
-            Log.e("DB", e.getMessage());
-        }
-
-        return results;
-    }
-
-    public List<SinglePlayerGameResult> getAllSinglePlayerResults() {
-        return getSinglePlayerGameResults("select * from " + SINGLE_PLAYER_STATISTICS_TABLE + ";");
-    }
-
-    public int getLastSinglePlayerGameId() {
-        return getSinglePlayerGameResults("select * from " + SINGLE_PLAYER_STATISTICS_TABLE + ";")
-                .size();
-    }
-
-    public void insertSinglePlayerGameResult(SinglePlayerGameResult spgr) {
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-
-        try {
-            String sql_query = "INSERT or replace INTO " + SINGLE_PLAYER_STATISTICS_TABLE
-                    + " (Id, gameResult, gameDate, gameScore, nRightAnswers, nWrongAnswers,"
-                    + "gameDifficulty) VALUES('" + spgr.getGameId() + "', '";
-            if (spgr.getGameResult())
-                sql_query += 1;
-            else
-                sql_query += 0;
-            sql_query += "', '" + spgr.getGameDate().getTime() + "', '" + spgr.getGameScore() + "', '"
-                    + spgr.getnRightAnswers() + "', '" + spgr.getnWrongAnswers() + "', '"
-                    + spgr.getGameDifficulty() + "')";
-            db.execSQL(sql_query);
-        } catch (Exception e) {
-            Log.e("DB", e.getMessage());
-        }
-    }
-
-    public void deleteSinglePlayerGameResults() {
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-
-        try {
-            String sql_query = "delete from " + SINGLE_PLAYER_STATISTICS_TABLE + ";";
-            db.execSQL(sql_query);
-        } catch (Exception e) {
-            Log.e("DB", e.getMessage());
-        }
-    }
-
 }

@@ -6,28 +6,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    tools:context="activities.SinglePlayerGameResultActivity">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Resultado do jogo"
-            android:layout_gravity="left"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
-
-        <ImageView
-            android:id="@+id/iv_game_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"/>
-
-    </FrameLayout>
+    tools:context="activities.SinglePlayerResultActivity">
 
     <TextView
         android:id="@+id/tv_game_result"
@@ -36,32 +15,29 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="serif"/>
+        android:text="GAME_RESULT"
+        style="@style/VeryLargeCustomTextBold"/>
 
     <TextView
         android:id="@+id/tv_game_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
         android:gravity="center"
-        android:textSize="14sp"
-        android:typeface="serif"/>
+        android:text="xxx"
+        style="@style/MediumCustomText"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pontuação:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
+            style="@style/LargeCustomTextBold"/>
 
         <TextView
             android:id="@+id/tv_score_added"
@@ -69,11 +45,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
-
+            android:text="XXX"
+            style="@style/LargeCustomText"/>
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,26 +59,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Respostas certas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
+            style="@style/LargeCustomTextBold"/>
 
         <TextView
             android:id="@+id/tv_n_right_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
+            android:text="XXX"
+            style="@style/LargeCustomText"/>
 
         <TextView
             android:id="@+id/tv_perc_right_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
-
+            android:text="(XXX)"
+            style="@style/LargeCustomText"/>
     </LinearLayout>
 
     <LinearLayout
@@ -117,26 +88,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Respostas erradas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
+            style="@style/LargeCustomTextBold"/>
 
         <TextView
             android:id="@+id/tv_n_wrong_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
+            android:text="XXX"
+            style="@style/LargeCustomText"/>
 
         <TextView
             android:id="@+id/tv_perc_wrong_answers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
-
+            android:text="(XXX)"
+            style="@style/LargeCustomText"/>
     </LinearLayout>
 
     <LinearLayout
@@ -149,50 +117,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Número de perguntas:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="serif"/>
+            style="@style/LargeCustomTextBold"/>
 
         <TextView
             android:id="@+id/tv_game_n_questions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:typeface="serif"/>
-
+            android:text="(XXX)"
+            style="@style/LargeCustomText"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dificuldade:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="serif" />
+            style="@style/LargeCustomTextBold"/>
 
         <TextView
             android:id="@+id/tv_game_difficulty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:typeface="serif" />
-
+            android:text="XXX"
+            style="@style/LargeCustomText"/>
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voltar ao menu incial"
-        android:layout_gravity="center"
-        android:onClick="onButtonGoToInicialMenu"/>
 
 </LinearLayout>

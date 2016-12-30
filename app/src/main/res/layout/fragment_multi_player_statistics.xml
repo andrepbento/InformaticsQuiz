@@ -13,10 +13,19 @@
         android:gravity="center"/>
 
     <TextView
+        android:id="@+id/tv_multi_player_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SEM DADOS!"
         android:textSize="24sp"
         android:gravity="center"/>
+
+    <!--
+    <ListView
+        android:id="@+id/lv_multi_player_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/ListView"/>
+        -->
 
 </LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_multi_player_result"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="activities.MultiPlayerResultActivity"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_position_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/very_large_margin"
+        style="@style/VeryLargeCustomTextBold"
+        android:text="Position: X"
+        android:gravity="center"/>
+
+    <ListView
+        android:id="@+id/lv_multi_player_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_marginTop="@dimen/very_large_margin"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0.5">
+
+        <TextView
+            android:id="@+id/tv_game_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="Data: "
+            style="@style/LargeCustomText"/>
+
+        <TextView
+            android:id="@+id/tv_game_n_players"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Number of players: "
+            style="@style/LargeCustomText"/>
+
+    </LinearLayout>
+
+</LinearLayout>

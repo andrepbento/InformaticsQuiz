@@ -20,6 +20,10 @@
 
     <string name="qrcode_text">QRCode</string>
 
+    <string name="single_player_game_result_text">Resultado do jogo Single-Player</string>
+
+    <string name="multi_player_game_result_text">Resultado do jogo Multi-Player</string>
+
     <string name="my_player_profile_text">Meu perfil</string>
     <string name="create_player_profile_text">Criar conta</string>
 
@@ -27,5 +31,17 @@
     <string name="amov_1415_text">Arquiteturas Móveis 14/15</string>
     <string name="about_the_app_programador_text">Programador e Designer:\n\tAndré Bento nº21240008</string>
     <string name="about_the_app_images_text">Imagens: Google</string>
+    <string name="camera_text">Câmera</string>
+    <string name="number_of_players_text">Número de jogadores</string>
+    <string name="create_game_text">Criar novo jogo</string>
+    <string name="enter_game_text">Entrar em jogo criado</string>
+    <string name="join_using_text">Entrar em jogo usando</string>
+    <string name="server_ip_text">IP do Servidor</string>
+    <string name="insert_server_ip_text">Insere o IP do Servidor</string>
+    <string name="connect_text">Ligar</string>
+    <string name="cancel_text">Cancelar</string>
+    <string name="time_text">"Tempo"</string>
+    <string name="theme_text">Tema</string>
+    <string name="regist_time_text">Tempo de registo</string>
 
 </resources>

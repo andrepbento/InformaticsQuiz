@@ -2,6 +2,7 @@ package application;
 
 import android.app.Application;
 
+import activities.GameActivity;
 import models.Game;
 import network.Client;
 import network.Server;
@@ -11,8 +12,10 @@ import network.Server;
  */
 
 public class InformaticsQuizApp extends Application {
+    private boolean inBackground = false;
 
     private Game game;
+    private GameActivity.MyCountDownTimer myCountDownTimer;
 
     private Server localServer;
     private Client localClient;
@@ -23,9 +26,12 @@ public class InformaticsQuizApp extends Application {
         this.localClient = null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public boolean isInBackground() {
+        return inBackground;
+    }
+
+    public void setInBackground(boolean inBackground) {
+        this.inBackground = inBackground;
     }
 
     public Game getGame() {
@@ -34,6 +40,14 @@ public class InformaticsQuizApp extends Application {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public GameActivity.MyCountDownTimer getMyCountDownTimer() {
+        return myCountDownTimer;
+    }
+
+    public void setMyCountDownTimer(GameActivity.MyCountDownTimer myCountDownTimer) {
+        this.myCountDownTimer = myCountDownTimer;
     }
 
     public Server getLocalServer() {
@@ -51,5 +65,4 @@ public class InformaticsQuizApp extends Application {
     public void setLocalClient(Client localClient) {
         this.localClient = localClient;
     }
-
 }

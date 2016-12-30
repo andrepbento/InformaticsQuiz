@@ -10,12 +10,15 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
 
 import adapter.TabsPagerAdapter;
+import fragments.MultiPlayerStatisticsFragment;
 import fragments.SinglePlayerStatisticsFragment;
+import models.MultiPlayerGameResult;
+import models.MySharedPreferences;
+import models.SinglePlayerGameResult;
 import utils.InformaticsQuizHelper;
 
 /**
@@ -32,6 +35,7 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_player_results);
 
         tabs[0] = getResources().getString(R.string.single_player_text);
@@ -96,7 +100,10 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                 menu.findItem(R.id.item_clear_data).setVisible(false);
                 break;
             case 2:
-                Toast.makeText(this, "Implementar o bottão de apagar!", Toast.LENGTH_LONG).show();
+                if(MultiPlayerStatisticsFragment.data.isEmpty())
+                    menu.findItem(R.id.item_clear_data).setVisible(false);
+                else
+                    menu.findItem(R.id.item_clear_data).setVisible(true);
                 break;
         }
         return super.onPrepareOptionsMenu(menu);
@@ -115,10 +122,10 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                 if(dbI.open()) {
                     switch(pageNum) {
                         case 0:
-                            deleteLogData(item);
+                            deleteSinglePlayerData(item);
                             break;
                         case 2:
-                            //dbI.deleteMultiPlayerGameResults();
+                            deleteMultiPlayerData(item);
                             break;
                     }
                 }
@@ -143,19 +150,31 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
     }
 
-    private void deleteLogData(final MenuItem item) {
+    private void deleteSinglePlayerData(final MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
-                        dbI.create();
-                        if (dbI.open()) {
-                            dbI.deleteSinglePlayerGameResults();
-                            //dbI.deleteMultiPlayerGameResults();
-                            dbI.close();
-                        }
+                        SinglePlayerGameResult.deleteAllData(getApplicationContext());
+                        //MultiPlayerGameResult.deleteAllData();
+                        mAdapter.notifyDataSetChanged();
+                        item.setVisible(false);
+                    }})
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }})
+                .show();
+    }
+
+    private void deleteMultiPlayerData(final MenuItem item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MultiPlayerGameResult.deleteAllData(getApplicationContext());
                         mAdapter.notifyDataSetChanged();
                         item.setVisible(false);
                     }})

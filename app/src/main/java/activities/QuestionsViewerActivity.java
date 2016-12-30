@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import models.MySharedPreferences;
 import models.Question;
 import utils.InformaticsQuizHelper;
 
@@ -26,7 +27,6 @@ import utils.InformaticsQuizHelper;
  */
 
 public class QuestionsViewerActivity extends Activity {
-
     private static String QUESTION = "QUESTION";
     private static String ANSWER_A = "ANSWER_A";
     private static String ANSWER_B = "ANSWER_B";
@@ -55,6 +55,7 @@ public class QuestionsViewerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_questions_viewer);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,31 +141,26 @@ public class QuestionsViewerActivity extends Activity {
 
             switch (difficulty) {
                 case 1:
-                    //ll.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
                     ll.setBackgroundColor(getResources().getColor(R.color.green_soft));
                     break;
                 case 2:
-                    //ll.setBackground(getResources().getDrawable(R.drawable.yellow_white_gradient));
                     ll.setBackgroundColor(getResources().getColor(R.color.yellow_soft));
                     break;
                 case 3:
-                    //ll.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
                     ll.setBackgroundColor(getResources().getColor(R.color.red_soft));
                     break;
             }
 
-            ((TextView) layout.findViewById(R.id.tv_pergunta))
+            ((TextView) layout.findViewById(R.id.tv_question))
                     .setText((i+1) + " - " + question);
-            ((TextView) layout.findViewById(R.id.tv_resposta_a))
+            ((TextView) layout.findViewById(R.id.tv_answer_a))
                     .setText("A: " + answerA);
-            ((TextView) layout.findViewById(R.id.tv_resposta_b))
+            ((TextView) layout.findViewById(R.id.tv_answer_b))
                     .setText("B: " + answerB);
-            ((TextView) layout.findViewById(R.id.tv_resposta_c))
+            ((TextView) layout.findViewById(R.id.tv_answer_c))
                     .setText("C: " + answerC);
-            ((TextView) layout.findViewById(R.id.tv_resposta_d))
+            ((TextView) layout.findViewById(R.id.tv_answer_d))
                     .setText("D: " + answerD);
-
-            // RIGHT ANSWER NEEDED THINK COLOR
 
             return layout;
         }

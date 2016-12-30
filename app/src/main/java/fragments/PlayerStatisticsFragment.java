@@ -27,11 +27,20 @@ public class PlayerStatisticsFragment extends Fragment {
 
         int singlePlayerPontuation = playerData.getSinglePlayerPontuation();
         int multiPlayerPontuation = playerData.getMultiPlayerPontuation();
+        int nRightAnswers = playerData.getnRightAnswers();
+        int nTotalAnswers = playerData.getTotalAnswers();
+        int nWrongAnswers = playerData.getnWrongAnswers();
 
         ((TextView) rootView.findViewById(R.id.tv_single_player_pontuation))
                 .setText(String.valueOf(singlePlayerPontuation));
         ((TextView) rootView.findViewById(R.id.tv_multi_player_pontuation))
                 .setText(String.valueOf(multiPlayerPontuation));
+        ((TextView) rootView.findViewById(R.id.tv_n_right_answers))
+                .setText("Respostas certas"+": "+String.valueOf(nRightAnswers));
+        ((TextView) rootView.findViewById(R.id.tv_n_wrong_answers))
+                .setText("Respostas erradas"+": "+String.valueOf(nWrongAnswers));
+        ((TextView) rootView.findViewById(R.id.tv_n_total_answers))
+                .setText("Total de respostas"+": "+String.valueOf(nTotalAnswers));
 
         return  rootView;
     }

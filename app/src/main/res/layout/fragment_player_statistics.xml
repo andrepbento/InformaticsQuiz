@@ -2,120 +2,101 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/trophy_icon"/>
-
-        <TextView
-            android:id="@+id/tv_single_player_pontuation"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/MediumCustomTextBold"
-            android:gravity="center"/>
-
-        <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_weight="1"
-                android:layout_gravity="right"
-                android:src="@drawable/right_answers_icon"/>
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:src="@drawable/trophy_icon"/>
 
             <TextView
-                android:id="@+id/tv_sp_right_asnwers"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_single_player_pontuation"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"/>
-
+                android:text="XXX"
+                style="@style/LargeCustomTextBold"
+                android:gravity="center"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/wrong_answers_icon"/>
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:src="@drawable/mp_trophy_icon"/>
 
             <TextView
-                android:id="@+id/tv_sp_wrong_asnwers"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_multi_player_pontuation"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"/>
-
+                android:text="XXX"
+                style="@style/LargeCustomTextBold"
+                android:gravity="center"/>
         </LinearLayout>
-        -->
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/mp_trophy_icon"/>
+        android:layout_weight="4"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_multi_player_pontuation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/MediumCustomTextBold"
+            android:layout_weight="1"
+            android:text="Detalhes"
+            style="@style/LargeCustomTextBold"
             android:gravity="center"/>
 
-        <!--
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_n_right_answers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:text="XXX"
+            style="@style/MediumCustomText"
+            android:gravity="center"/>
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/right_answers_icon"/>
-
-            <TextView
-                android:id="@+id/tv_mp_right_asnwers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_n_wrong_answers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="XXX"
+            style="@style/MediumCustomText"
+            android:gravity="center"/>
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/wrong_answers_icon"/>
-
-            <TextView
-                android:id="@+id/tv_wrong_asnwers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"/>
-
-        </LinearLayout>
-        -->
+        <TextView
+            android:id="@+id/tv_n_total_answers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="XXX"
+            style="@style/MediumCustomText"
+            android:gravity="center"/>
     </LinearLayout>
 
 </LinearLayout>

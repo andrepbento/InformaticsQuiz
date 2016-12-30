@@ -1,14 +1,285 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here.
-        <item name="buttonStyle">@style/AppTheme.Button</item>
-        <item name="android:buttonStyle">@style/AppTheme.Button</item> -->
+    <style name="AppThemeBlack" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Theme customization for Android API 14+ -->
+        <!-- http://developer.android.com/reference/android/R.styleable.html#Theme
+        Provides a list of attributes you can override -->
+        <!-- You can change the text color in all widgets across the whole app -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- You can change the background -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- ActionBar style -->
+        <item name="android:actionBarStyle">@style/AppThemeBlack.ActionBar</item>
+
+        <!-- ActionBar Tabs style -->
+        <item name="android:actionBarTabBarStyle">@style/AppThemeBlack.ActionBar.Tab</item>
+
+        <!-- Change the font family with API 16+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin" -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+
+        <!-- More font stuff from URL above
+        android:fontFamily   Font family (named by string) for the text.
+        android:shadowColor  Place a shadow of the specified color behind the text.
+        android:shadowDx     Horizontal offset of the shadow.
+        android:shadowDy     Vertical offset of the shadow.
+        android:shadowRadius     Radius of the shadow.
+        android:textAllCaps  Present the text in ALL CAPS.
+        android:textColor    Text color.
+        android:textColorHighlight   Color of the text selection highlight.
+        android:textColorHint    Color of the hint text.
+        android:textColorLink    Color of the links.
+        android:textSize     Size of the text.
+        android:textStyle    Style (bold, italic, bolditalic) for the text.
+        android:typeface     Typeface (normal, sans, serif, monospace) for the text.
+        -->
     </style>
 
-    <style name="AppBackground">
-        <!-- <item name="android:background">@drawable/bg2</item> -->
+    <style name="AppThemeBlack.ActionBar" parent="@android:style/Widget.ActionBar">
+        <item name="android:background">@color/black</item>
+        <item name="android:titleTextStyle">@style/AppThemeBlack.Title</item>
+    </style>
+
+    <style name="AppThemeBlack.ActionBar.Tab">
+        <item name="android:background">@color/grey</item>
+    </style>
+
+    <style name="AppThemeBlack.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+    </style>
+
+    <style name="AppThemeRed" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Theme customization for Android API 14+ -->
+        <!-- http://developer.android.com/reference/android/R.styleable.html#Theme
+        Provides a list of attributes you can override -->
+        <!-- You can change the text color in all widgets across the whole app -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- You can change the background -->
+        <item name="android:windowBackground">@color/red_very_soft</item>
+
+        <!-- ActionBar style -->
+        <item name="android:actionBarStyle">@style/AppThemeRed.ActionBar</item>
+
+        <!-- ActionBar Tabs style -->
+        <item name="android:actionBarTabBarStyle">@style/AppThemeRed.ActionBar.Tab</item>
+
+        <!-- Change the font family with API 16+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin" -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+
+        <!-- More font stuff from URL above
+        android:fontFamily   Font family (named by string) for the text.
+        android:shadowColor  Place a shadow of the specified color behind the text.
+        android:shadowDx     Horizontal offset of the shadow.
+        android:shadowDy     Vertical offset of the shadow.
+        android:shadowRadius     Radius of the shadow.
+        android:textAllCaps  Present the text in ALL CAPS.
+        android:textColor    Text color.
+        android:textColorHighlight   Color of the text selection highlight.
+        android:textColorHint    Color of the hint text.
+        android:textColorLink    Color of the links.
+        android:textSize     Size of the text.
+        android:textStyle    Style (bold, italic, bolditalic) for the text.
+        android:typeface     Typeface (normal, sans, serif, monospace) for the text.
+        -->
+    </style>
+
+    <style name="AppThemeRed.ActionBar" parent="@android:style/Widget.ActionBar">
+        <item name="android:background">@color/red</item>
+        <item name="android:titleTextStyle">@style/AppThemeRed.Title</item>
+    </style>
+
+    <style name="AppThemeRed.ActionBar.Tab">
+        <item name="android:background">@color/red_soft</item>
+    </style>
+
+    <style name="AppThemeRed.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+    </style>
+
+    <style name="AppThemeBlue" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Theme customization for Android API 14+ -->
+        <!-- http://developer.android.com/reference/android/R.styleable.html#Theme
+        Provides a list of attributes you can override -->
+        <!-- You can change the text color in all widgets across the whole app -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- You can change the background -->
+        <item name="android:windowBackground">@color/blue_very_soft</item>
+
+        <!-- ActionBar style -->
+        <item name="android:actionBarStyle">@style/AppThemeBlue.ActionBar</item>
+
+        <!-- ActionBar Tabs style -->
+        <item name="android:actionBarTabBarStyle">@style/AppThemeBlue.ActionBar.Tab</item>
+
+        <!-- Change the font family with API 16+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin"
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>-->
+
+        <!-- More font stuff from URL above
+        android:fontFamily   Font family (named by string) for the text.
+        android:shadowColor  Place a shadow of the specified color behind the text.
+        android:shadowDx     Horizontal offset of the shadow.
+        android:shadowDy     Vertical offset of the shadow.
+        android:shadowRadius     Radius of the shadow.
+        android:textAllCaps  Present the text in ALL CAPS.
+        android:textColor    Text color.
+        android:textColorHighlight   Color of the text selection highlight.
+        android:textColorHint    Color of the hint text.
+        android:textColorLink    Color of the links.
+        android:textSize     Size of the text.
+        android:textStyle    Style (bold, italic, bolditalic) for the text.
+        android:typeface     Typeface (normal, sans, serif, monospace) for the text.
+        -->
+    </style>
+
+    <style name="AppThemeBlue.ActionBar" parent="@android:style/Widget.ActionBar">
+        <item name="android:background">@color/blue</item>
+        <item name="android:titleTextStyle">@style/AppThemeBlue.Title</item>
+    </style>
+
+    <style name="AppThemeBlue.ActionBar.Tab">
+        <item name="android:background">@color/blue_soft</item>
+    </style>
+
+    <style name="AppThemeBlue.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+    </style>
+
+    <style name="AppThemePink" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Theme customization for Android API 14+ -->
+        <!-- http://developer.android.com/reference/android/R.styleable.html#Theme
+        Provides a list of attributes you can override -->
+        <!-- You can change the text color in all widgets across the whole app -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- You can change the background -->
+        <item name="android:windowBackground">@color/pink_very_soft</item>
+
+        <!-- ActionBar style -->
+        <item name="android:actionBarStyle">@style/AppThemePink.ActionBar</item>
+
+        <!-- ActionBar Tabs style -->
+        <item name="android:actionBarTabBarStyle">@style/AppThemePink.ActionBar.Tab</item>
+
+        <!-- Change the font family with API 16+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin" -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+
+        <!-- More font stuff from URL above
+        android:fontFamily   Font family (named by string) for the text.
+        android:shadowColor  Place a shadow of the specified color behind the text.
+        android:shadowDx     Horizontal offset of the shadow.
+        android:shadowDy     Vertical offset of the shadow.
+        android:shadowRadius     Radius of the shadow.
+        android:textAllCaps  Present the text in ALL CAPS.
+        android:textColor    Text color.
+        android:textColorHighlight   Color of the text selection highlight.
+        android:textColorHint    Color of the hint text.
+        android:textColorLink    Color of the links.
+        android:textSize     Size of the text.
+        android:textStyle    Style (bold, italic, bolditalic) for the text.
+        android:typeface     Typeface (normal, sans, serif, monospace) for the text.
+        -->
+    </style>
+
+    <style name="AppThemePink.ActionBar" parent="@android:style/Widget.ActionBar">
+        <item name="android:background">@color/pink</item>
+        <item name="android:titleTextStyle">@style/AppThemePink.Title</item>
+    </style>
+
+    <style name="AppThemePink.ActionBar.Tab">
+        <item name="android:background">@color/pink_soft</item>
+    </style>
+
+    <style name="AppThemePink.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+    </style>
+
+    <style name="AppThemeYellow" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Theme customization for Android API 14+ -->
+        <!-- http://developer.android.com/reference/android/R.styleable.html#Theme
+        Provides a list of attributes you can override -->
+        <!-- You can change the text color in all widgets across the whole app -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/black</item>
+        <item name="android:textColorPrimaryNoDisable">@color/black</item>
+
+        <!-- You can change the background -->
+        <item name="android:windowBackground">@color/yellow_very_soft</item>
+
+        <!-- ActionBar style -->
+        <item name="android:actionBarStyle">@style/AppThemeYellow.ActionBar</item>
+
+        <!-- ActionBar Tabs style -->
+        <item name="android:actionBarTabBarStyle">@style/AppThemeYellow.ActionBar.Tab</item>
+
+        <!-- Change the font family with API 16+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin" -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+
+        <!-- More font stuff from URL above
+        android:fontFamily   Font family (named by string) for the text.
+        android:shadowColor  Place a shadow of the specified color behind the text.
+        android:shadowDx     Horizontal offset of the shadow.
+        android:shadowDy     Vertical offset of the shadow.
+        android:shadowRadius     Radius of the shadow.
+        android:textAllCaps  Present the text in ALL CAPS.
+        android:textColor    Text color.
+        android:textColorHighlight   Color of the text selection highlight.
+        android:textColorHint    Color of the hint text.
+        android:textColorLink    Color of the links.
+        android:textSize     Size of the text.
+        android:textStyle    Style (bold, italic, bolditalic) for the text.
+        android:typeface     Typeface (normal, sans, serif, monospace) for the text.
+        -->
+    </style>
+
+    <style name="AppThemeYellow.ActionBar" parent="@android:style/Widget.Holo.ActionBar.Solid">
+        <item name="android:background">@color/yellow</item>
+        <item name="android:titleTextStyle">@style/AppThemeYellow.Title</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="AppThemeYellow.ActionBar.Tab">
+        <item name="android:background">@color/yellow_soft</item>
+    </style>
+
+    <style name="AppThemeYellow.Title">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/medium_text</item>
     </style>
 
     <style name="ListView" parent="@android:style/Widget.ListView">
@@ -18,55 +289,99 @@
         <item name="android:inputType">textNoSuggestions</item>
     </style>
 
-    <style name="LargeCustomText" parent="Base.TextAppearance.AppCompat.Large">
+    <style name="UltraLargeCustomText" parent="Base.TextAppearance.AppCompat.Large">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">16pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/ultra_large_text</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
+    </style>
+
+    <style name="UltraLargeCustomTextBold" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:capitalize">characters</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/ultra_large_text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
+    </style>
+
+    <style name="VeryLargeCustomText" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:capitalize">characters</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/very_large_text</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
+    </style>
+
+    <style name="VeryLargeCustomTextBold" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:capitalize">characters</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/very_large_text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
+    </style>
+
+    <style name="LargeCustomText" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:capitalize">characters</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/large_text</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="LargeCustomTextBold" parent="Base.TextAppearance.AppCompat.Large">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">16pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/large_text</item>
         <item name="android:textStyle">bold</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="MediumCustomText" parent="Base.TextAppearance.AppCompat.Medium">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">12pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/medium_text</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="MediumCustomTextBold" parent="Base.TextAppearance.AppCompat.Medium">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">12pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/medium_text</item>
         <item name="android:textStyle">bold</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="SmallCustomText" parent="Base.TextAppearance.AppCompat.Small">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">8pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/small_text</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="SmallCustomTextBold" parent="Base.TextAppearance.AppCompat.Small">
         <item name="android:capitalize">characters</item>
-        <item name="android:textSize">8pt</item>
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textSize">@dimen/small_text</item>
         <item name="android:textStyle">bold</item>
         <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:inputType">textNoSuggestions</item>
+        <item name="android:inputType">textNoSuggestions|textMultiLine</item>
     </style>
 
     <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button.Borderless">

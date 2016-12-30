@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -16,11 +17,13 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
 
 import interfaces.Constants;
+import models.MySharedPreferences;
 import models.MyVibrator;
 
 /**
@@ -28,7 +31,6 @@ import models.MyVibrator;
  */
 
 public class CameraActivity extends Activity {
-
     private FaceDetector faceDetector;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
@@ -39,9 +41,11 @@ public class CameraActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_camera);
 
-        getActionBar().setTitle("Câmera");
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(R.string.camera_text);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
@@ -64,6 +68,16 @@ public class CameraActivity extends Activity {
                     .setProminentFaceOnly(true)
                     .build();
 
+            faceDetector.setProcessor(new Detector.Processor<Face>() {
+                @Override
+                public void release() {
+                }
+
+                @Override
+                public void receiveDetections(Detector.Detections<Face> detections) {
+                }
+            });
+
             btnTakePic.setVisibility(View.VISIBLE);
             cameraSource = new CameraSource
                     .Builder(this, faceDetector)
@@ -76,36 +90,6 @@ public class CameraActivity extends Activity {
                     .setBarcodeFormats(Barcode.QR_CODE)
                     .build();
 
-            btnTakePic.setVisibility(View.INVISIBLE);
-            cameraSource = new CameraSource
-                    .Builder(this, barcodeDetector)
-                    .setRequestedPreviewSize(1280, 720)
-                    .setAutoFocusEnabled(true)
-                    .setFacing(CameraSource.CAMERA_FACING_BACK)
-                    .build();
-        }
-
-        cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                try {
-                    cameraSource.start(cameraView.getHolder());
-                } catch (IOException ie) {
-                    Log.e("Camera", ie.getMessage());
-                }
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                cameraSource.stop();
-            }
-        });
-
-        if(cameraMode == Constants.QRCODE_PHOTO) {
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
                 public void release() {
@@ -124,24 +108,70 @@ public class CameraActivity extends Activity {
                     }
                 }
             });
+
+            btnTakePic.setVisibility(View.INVISIBLE);
+            cameraSource = new CameraSource
+                    .Builder(this, barcodeDetector)
+                    .setRequestedPreviewSize(1280, 720)
+                    .setAutoFocusEnabled(true)
+                    .setFacing(CameraSource.CAMERA_FACING_BACK)
+                    .build();
         }
+
+        cameraView.getHolder().addCallback(cameraCallback);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    SurfaceHolder.Callback cameraCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            try {
+                cameraSource.start(cameraView.getHolder());
+            } catch (IOException e) {
+                Log.e("Camera", e.toString());
+            }
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            cameraSource.stop();
+        }
+    };
+
+    private void stopCamera() {
         if(cameraSource != null)
-            cameraSource.release();
+            cameraSource.stop();
         if(cameraMode == Constants.PROFILE_PHOTO)
             faceDetector.release();
         else if(cameraMode == Constants.QRCODE_PHOTO)
             barcodeDetector.release();
     }
 
+    @Override
+    protected void onDestroy() {
+        stopCamera();
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                stopCamera();
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void onButtonTakePickClick(View view) {
         switch (view.getId()) {
             case R.id.btn_take_pic:
-                cameraSource.takePicture(myShutterCallback, myPictureCallback_JPG);
+                cameraSource.takePicture(myShutterCallback, myPictureCallback);
         }
     }
 
@@ -149,14 +179,14 @@ public class CameraActivity extends Activity {
         public void onShutter() {}
     };
 
-    CameraSource.PictureCallback myPictureCallback_JPG = new CameraSource.PictureCallback() {
+    CameraSource.PictureCallback myPictureCallback = new CameraSource.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] bytes) {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("pictureData", bytes);
             setResult(RESULT_OK, returnIntent);
+            stopCamera();
             finish();
         }
     };
-
 }

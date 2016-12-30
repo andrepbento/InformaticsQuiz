@@ -16,4 +16,28 @@
         <item>Masculino</item>
         <item>Feminino</item>
     </string-array>
+
+    <string-array name="registTime">
+        <item>1 dia</item>
+        <item>5 dias</item>
+        <item>15 dias</item>
+        <item>1 mês</item>
+        <item>3 mêses</item>
+    </string-array>
+
+    <string-array name="theme">
+        <item>Tema Preto</item>
+        <item>Tema Vermelho</item>
+        <item>Tema Azul</item>
+        <item>Tema Cor-de-Rosa</item>
+        <item>Tema Amarelo</item>
+    </string-array>
+
+    <string-array name="valuesArray">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>

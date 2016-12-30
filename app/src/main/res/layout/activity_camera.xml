@@ -4,7 +4,6 @@
     android:id="@+id/activity_camera"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/AppBackground"
     tools:context="activities.CameraActivity">
 
     <SurfaceView
@@ -13,11 +12,11 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:text="Take pic"
         android:id="@+id/btn_take_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="bottom|center"
-        android:onClick="onButtonTakePickClick"/>
+        android:onClick="onButtonTakePickClick"
+        android:background="@drawable/drawable_camera_button" />
 
 </FrameLayout>

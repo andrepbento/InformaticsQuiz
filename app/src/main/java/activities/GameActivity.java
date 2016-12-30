@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,8 +19,11 @@ import com.example.andre.informaticsquiz.R;
 
 import java.util.concurrent.TimeUnit;
 
+import application.InformaticsQuizApp;
 import interfaces.Constants;
 import models.Game;
+import models.MSG;
+import models.MySharedPreferences;
 import models.MyVibrator;
 import models.Question;
 import models.SoundEffect;
@@ -29,19 +33,20 @@ import models.SoundEffect;
  */
 
 public class GameActivity extends Activity {
+    private InformaticsQuizApp app = null;
 
     ImageView ivGreenCircle,  ivYellowCircle, ivRedCircle;
-    TextView tvQuestionTimer, tvQuestionDesc;
+    TextView tvQuestionTimer, tvQuestionDesc, tvQuestionProgress;
     ProgressBar pbQuestionProgress;
     Button btnAnswerA, btnAnswerB, btnAnswerC, btnAnswerD;
 
     private Game game;
-
-    private CountDownTimer cdt;
+    private MyCountDownTimer cdt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_game);
 
         getActionBar().hide();
@@ -52,59 +57,78 @@ public class GameActivity extends Activity {
         ivYellowCircle = (ImageView) findViewById(R.id.iv_yellow_circle);
         ivRedCircle = (ImageView) findViewById(R.id.iv_red_circle);
         tvQuestionTimer = (TextView) findViewById(R.id.tv_question_timer);
-        pbQuestionProgress = (ProgressBar) findViewById(R.id.pbQuestionProgress);
-        tvQuestionDesc = (TextView)findViewById(R.id.tvQuestionDescription);
-        btnAnswerA = (Button)findViewById(R.id.btnAnswerA);
-        btnAnswerB = (Button)findViewById(R.id.btnAnswerB);
-        btnAnswerC = (Button)findViewById(R.id.btnAnswerC);
-        btnAnswerD = (Button)findViewById(R.id.btnAnswerD);
-
-        Intent receivedIntent = getIntent();
-        if(receivedIntent != null) {
-            game = (Game) receivedIntent.getSerializableExtra("game");
-            updateUI();
-            startTimer();
-        }
+        tvQuestionProgress = (TextView) findViewById(R.id.tv_question_progress);
+        pbQuestionProgress = (ProgressBar) findViewById(R.id.pb_question_progress);
+        tvQuestionDesc = (TextView)findViewById(R.id.tv_question_description);
+        btnAnswerA = (Button)findViewById(R.id.btn_answer_a);
+        btnAnswerB = (Button)findViewById(R.id.btn_answer_b);
+        btnAnswerC = (Button)findViewById(R.id.btn_answer_c);
+        btnAnswerD = (Button)findViewById(R.id.btn_answer_d);
     }
-/*
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        if(!((InformaticsQuizApp) getApplication()).isInBackground()) {
+            Intent receivedIntent = getIntent();
+            if (receivedIntent != null) {
+                game = (Game) receivedIntent.getSerializableExtra("game");
+                if(game.getTimer())
+                    startTimer(game.getQuestionTime());
+            }
+        } else {
+            app = (InformaticsQuizApp) getApplication();
+            game = app.getGame();
+            if(game.getTimer()) {
+                long millis = app.getMyCountDownTimer().getMillis();
+                startTimer(millis*1000);
+            }
+            app.setInBackground(false);
+        }
+        updateUI();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        InformaticsQuizApp iqa = (InformaticsQuizApp)getApplication();
-        iqa.setGame(game);
-    }
-*/
-    @Override
-    public void onBackPressed() {
+        if(!game.checkEnd()) {
+            app = (InformaticsQuizApp) getApplication();
+            app.setGame(game);
+            if (game.getTimer()) {
+                app.setMyCountDownTimer(cdt);
+            }
+            app.setInBackground(true);
+        }
+        stopTimer();
     }
 
-    public void onButtonRespostaClick(View v) throws InterruptedException {
+    public void onButtonRespostaClick(View v) {
         stopTimer();
 
         final Button button = (Button)v;
         boolean answerResult = false;
         switch (v.getId()) {
-            case R.id.btnAnswerA:
+            case R.id.btn_answer_a:
                 answerResult = game.checkAnswer("A");
                 break;
-            case R.id.btnAnswerB:
+            case R.id.btn_answer_b:
                 answerResult = game.checkAnswer("B");
                 break;
-            case R.id.btnAnswerC:
+            case R.id.btn_answer_c:
                 answerResult = game.checkAnswer("C");
                 break;
-            case R.id.btnAnswerD:
+            case R.id.btn_answer_d:
                 answerResult = game.checkAnswer("D");
                 break;
         }
 
         final Drawable drawable = button.getBackground();
-
+        Button buttonToReplace = null;
         if(answerResult) {
             SoundEffect.playRightAnswerSound();
             button.setBackgroundColor(getResources().getColor(R.color.green_soft));
@@ -113,7 +137,6 @@ public class GameActivity extends Activity {
             button.setBackgroundColor(getResources().getColor(R.color.red_soft));
             new MyVibrator(getApplicationContext()).vibrate(Constants.VIBRATION_SHORT);
         }
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -132,7 +155,8 @@ public class GameActivity extends Activity {
             finish();
         } else {
             updateUI();
-            startTimer();
+            if(game.getTimer())
+                startTimer(game.getQuestionTime());
         }
     }
 
@@ -157,6 +181,8 @@ public class GameActivity extends Activity {
 
         pbQuestionProgress.setMax(game.getnQuestions());
         pbQuestionProgress.setProgress(game.getCurrentQuestionNum()+1);
+        tvQuestionProgress.setText(String.valueOf(game.getCurrentQuestionNum()+1)
+                +"/"+String.valueOf(game.getnQuestions()));
         tvQuestionDesc.setText(question.getQuestionDesc());
 
         btnAnswerA.setText("A: " + question.getAnswerA());
@@ -167,32 +193,16 @@ public class GameActivity extends Activity {
 
     public void onButtonGiveUp(View view) {
         stopTimer();
-        setSinglePlayerGameResult();
+        if(game.getGameMode() == Constants.SP_MODE)
+            setSinglePlayerGameResult();
+        else if(game.getGameMode() == Constants.MP_MODE)
+            setMultiPlayerGameResult();
         finish();
     }
 
-    private void startTimer() {
-        if(game.getTimer()) {
-            cdt = new CountDownTimer(game.getQuestionTime(), Constants.tickTime) {
-
-                public void onTick(long millisUntilFinished) {
-                    long millis = millisUntilFinished;
-                    if(millis / 1000 <= 10)
-                        tvQuestionTimer.setTextColor(Color.RED);
-                    else
-                        tvQuestionTimer.setTextColor(Color.BLACK);
-                    String hms = String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(millis));
-                    tvQuestionTimer.setText("Time: "+ hms);
-                    SoundEffect.playTickSound();
-                }
-
-                public void onFinish() {
-                    Toast.makeText(getApplication(), "Times over!", Toast.LENGTH_SHORT).show();
-                    game.checkAnswer("timeOver");
-                    nextQuestion();
-                }
-            }.start();
-        }
+    private void startTimer(long millisUntilFinish) {
+        cdt = new MyCountDownTimer(millisUntilFinish, Constants.tickTime);
+        cdt.start();
     }
 
     private void stopTimer() {
@@ -201,30 +211,59 @@ public class GameActivity extends Activity {
     }
 
     private void setSinglePlayerGameResult() {
-        Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerGameResultActivity.class);
-        gameResultIntent.putExtra("gameResult", game.getResult());
-        gameResultIntent.putExtra("gamePlayerScore", game.getScore());
-        gameResultIntent.putExtra("gameTotalScore", game.getTotalScore());
-        if(game.getResult())
-            gameResultIntent.putExtra("gameScore", game.getScore());
-        else {
-            double halfScore = game.getTotalScore() / 2;
-            int loseScore = ((int)halfScore - game.getScore()) * (-1);
-            gameResultIntent.putExtra("gameScore", loseScore);
-        }
-        gameResultIntent.putExtra("nRightAnswers", game.getnRightQuestions());
-        gameResultIntent.putExtra("nWrongAnswers", game.getnWrongQuestions());
-        gameResultIntent.putExtra("gameDifficulty", game.getDifficultyId());
-        gameResultIntent.putExtra("gameTotalQuestions", game.getnQuestions());
+        Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerResultActivity.class);
+        gameResultIntent.putExtra("game", game);
         startActivity(gameResultIntent);
     }
 
     private void setMultiPlayerGameResult() {
-        try {
+        app = (InformaticsQuizApp) getApplication();
+        app.getLocalClient().sendDataToServer(new MSG(Constants.MSG_CODE_GAME, game));
+    }
 
-            throw new Exception("GAMEACTIVITY.setMultiPlayerGameResult() POR IMPLEMENTAR!");
-        } catch (Exception e) {
-            e.printStackTrace();
+    public class MyCountDownTimer extends CountDownTimer {
+        private long millis = 0;
+
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            Log.e("MillisLeft", String.valueOf(millisUntilFinished));
+            millis = millisUntilFinished;
+            int secondsLeft = (int)(millis / 1000);
+            if(secondsLeft <= 10) {
+                if(secondsLeft % 2 == 0)
+                    tvQuestionTimer.setTextColor(Color.RED);
+                else
+                    tvQuestionTimer.setTextColor(Color.GRAY);
+            } else
+                tvQuestionTimer.setTextColor(Color.BLACK);
+            String hms = String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(millis));
+            tvQuestionTimer.setText(getString(R.string.time_text)+": "+hms);
+            millis = secondsLeft;
+            SoundEffect.playTickSound();
+        }
+
+        @Override
+        public void onFinish() {
+            cdt.cancel();
+            tvQuestionTimer.setTextColor(Color.RED);
+            tvQuestionTimer.setText(getString(R.string.time_text)+": 00");
+            Toast.makeText(getApplication(), "Times over!", Toast.LENGTH_SHORT).show();
+            SoundEffect.playWrongAnswerSound();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    game.checkAnswer("");
+                    nextQuestion();
+                }
+            }, Constants.timeToNextQuestion);
+        }
+
+        public long getMillis() {
+            return millis;
         }
     }
 }

@@ -17,17 +17,19 @@
     <TextView
         android:id="@+id/tv_server_details"
         android:layout_width="match_parent"
-        android:layout_weight=".3"
+        android:layout_weight="0.3"
         android:layout_height="wrap_content"
-        style="@style/MediumCustomTextBold"
+        android:text="SERVER_IP"
+        style="@style/LargeCustomText"
         android:gravity="center" />
 
     <TextView
         android:id="@+id/tv_players_connected"
         android:layout_width="match_parent"
-        android:layout_weight=".3"
+        android:layout_weight="0.3"
         android:layout_height="wrap_content"
-        style="@style/MediumCustomTextBold"
+        android:text="PLAYERS_CONNECTED"
+        style="@style/LargeCustomText"
         android:gravity="center" />
 
 </LinearLayout>

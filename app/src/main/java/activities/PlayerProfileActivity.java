@@ -24,15 +24,16 @@ import com.example.andre.informaticsquiz.R;
 import java.io.File;
 
 import interfaces.Constants;
+import models.MultiPlayerGameResult;
+import models.MySharedPreferences;
 import models.PlayerData;
-import utils.InformaticsQuizHelper;
+import models.SinglePlayerGameResult;
 
 /**
  * Created by andre
  */
 
 public class PlayerProfileActivity extends Activity {
-
     ImageView ivPlayerImage;
     EditText etPlayerName, etPlayerAge;
     Spinner spinnerPlayerSex, spinnerPlayerOcupation;
@@ -44,6 +45,7 @@ public class PlayerProfileActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_player_profile);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,7 +75,7 @@ public class PlayerProfileActivity extends Activity {
             if (playerData.getPhoto() != null)
                 ivPlayerImage.setImageBitmap(playerData.getPhoto());
             else
-                ivPlayerImage.setImageResource(R.drawable.drawable_user);
+                ivPlayerImage.setImageResource(R.drawable.drawable_no_user_img);
 
             etPlayerName.setText(playerData.getName());
             spinnerPlayerSex.setSelection(playerData.getSexId());
@@ -83,7 +85,7 @@ public class PlayerProfileActivity extends Activity {
             disableAllViewElements();
         } else {
             getActionBar().setTitle(R.string.create_player_profile_text);
-            ivPlayerImage.setImageResource(R.drawable.drawable_user);
+            ivPlayerImage.setImageResource(R.drawable.drawable_no_user_img);
         }
     }
 
@@ -229,14 +231,9 @@ public class PlayerProfileActivity extends Activity {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     File playerData = new File(getFilesDir(), Constants.playerFileName);
-                    boolean delete = playerData.delete();
-                    InformaticsQuizHelper dbI = new InformaticsQuizHelper(getApplicationContext());
-                    dbI.create();
-                    if(dbI.open()) {
-                        dbI.deleteSinglePlayerGameResults();
-                        //dbI.deleteMultiPlayerGameResults();
-                        dbI.close();
-                    }
+                    playerData.delete();
+                    SinglePlayerGameResult.deleteAllData(getApplicationContext());
+                    MultiPlayerGameResult.deleteAllData(getApplicationContext());
                     Toast.makeText(getApplication(), "Player deleted", Toast.LENGTH_SHORT).show();
                     finish();
                     break;

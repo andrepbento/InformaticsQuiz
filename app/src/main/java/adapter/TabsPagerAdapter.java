@@ -40,13 +40,12 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        if(object instanceof SinglePlayerStatisticsFragment) {
-            SinglePlayerStatisticsFragment f = (SinglePlayerStatisticsFragment) object;
-            f.update();
-        } else if (object instanceof PlayerStatisticsFragment) {
-        } else if(object instanceof MultiPlayerStatisticsFragment) {
-            // REALIZAR UPDATE AS ESTATISTICAS DE MULTI-PLAYER
-        }
+        if(object instanceof SinglePlayerStatisticsFragment)
+            ((SinglePlayerStatisticsFragment) object).update();
+        else if (object instanceof PlayerStatisticsFragment) {
+
+        } else if(object instanceof MultiPlayerStatisticsFragment)
+            ((MultiPlayerStatisticsFragment) object).update();
         return super.getItemPosition(object);
     }
 }

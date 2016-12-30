@@ -12,7 +12,6 @@ import utils.InformaticsQuizHelper;
  */
 
 public class Game implements Serializable {
-
     static final long serialVersionUID = 1010L;
 
     private transient InformaticsQuizHelper dbI;
@@ -33,6 +32,8 @@ public class Game implements Serializable {
 
     private int gameMode;
     private int nPlayers;
+
+    public Game() {}
 
     public Game(InformaticsQuizHelper dbI, String[] diffArray, int difficultyId, int nQuestions, boolean timer) {
         this.dbI = dbI;

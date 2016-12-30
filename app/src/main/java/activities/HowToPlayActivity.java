@@ -6,6 +6,8 @@ import android.view.MenuItem;
 
 import com.example.andre.informaticsquiz.R;
 
+import models.MySharedPreferences;
+
 /**
  * Created by andre
  */
@@ -15,6 +17,7 @@ public class HowToPlayActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_how_to_play);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);

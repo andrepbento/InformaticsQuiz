@@ -19,16 +19,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import interfaces.Constants;
 import interfaces.Updateable;
+import models.MySharedPreferences;
 import models.SinglePlayerGameResult;
-import utils.InformaticsQuizHelper;
 
 /**
  * Created by andre
  */
 
 public class SinglePlayerStatisticsFragment extends Fragment implements Updateable {
-
     private static String GAME_RESULT = "GAME_RESULT";
     private static String GAME_DATE = "GAME_DATE";
     private static String SCORE_ADDED = "SCORE_ADDED";
@@ -64,9 +64,7 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.fragment_single_player_statistics, container, false);
-
         return rootView;
     }
 
@@ -74,28 +72,25 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
     public void update() {
         data = new ArrayList<>();
 
-        InformaticsQuizHelper dbI = new InformaticsQuizHelper(rootView.getContext());
+        if(MySharedPreferences.loadResultTime(getActivity())!=0)
+            SinglePlayerGameResult.deleteAllData(getActivity(), new Date().getTime()
+                    - (MySharedPreferences.loadResultTime(getActivity()) * Constants.DAY_IN_MS));
 
-        dbI.create();
+        List<SinglePlayerGameResult> singlePlayerGameResultList = SinglePlayerGameResult.loadAllData(getActivity());
 
-        if(dbI.open()) {
-
-            List<SinglePlayerGameResult> spgrList = dbI.getAllSinglePlayerResults();
-
-            for(SinglePlayerGameResult spgr : spgrList) {
-                String str_gameDifficulty = "";
-                String[] difficulties = getResources().getStringArray(R.array.difficulty);
-                switch (spgr.getGameDifficulty()) {
-                    case 0: str_gameDifficulty = difficulties[0]; break;
-                    case 1: str_gameDifficulty = difficulties[1]; break;
-                    case 2: str_gameDifficulty = difficulties[2]; break;
-                }
-                addValuesToAdapter(spgr.getGameResult(), spgr.getGameDate(), spgr.getGameScore(),
-                        spgr.getnRightAnswers(), spgr.getpRightAnswers(), spgr.getnWrongAnswers(),
-                        spgr.getpWrongAnswers(), spgr.getGameNQuestions(), str_gameDifficulty);
+        for(SinglePlayerGameResult singlePlayerGameResult : singlePlayerGameResultList) {
+            String str_gameDifficulty = "";
+            String[] difficulties = getResources().getStringArray(R.array.difficulty);
+            switch (singlePlayerGameResult.getGameDifficulty()) {
+                case 0: str_gameDifficulty = difficulties[0]; break;
+                case 1: str_gameDifficulty = difficulties[1]; break;
+                case 2: str_gameDifficulty = difficulties[2]; break;
             }
-
-            dbI.close();
+            addValuesToAdapter(singlePlayerGameResult.getGameResult(), singlePlayerGameResult.getGameDate(),
+                    singlePlayerGameResult.getGameScore(), singlePlayerGameResult.getnRightAnswers(),
+                    singlePlayerGameResult.getpRightAnswers(), singlePlayerGameResult.getnWrongAnswers(),
+                    singlePlayerGameResult.getpWrongAnswers(), singlePlayerGameResult.getGameNQuestions(),
+                    str_gameDifficulty);
         }
 
         lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
