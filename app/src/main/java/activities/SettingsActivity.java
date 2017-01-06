@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.example.andre.informaticsquiz.R;
 
+import application.InformaticsQuizApp;
 import models.MySharedPreferences;
 
 /**
@@ -21,7 +22,6 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         MySharedPreferences.loadTheme(this);
-
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
@@ -58,13 +58,12 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
             preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
             if(preference.getKey().equals(THEME_KEY)) {
+                InformaticsQuizApp app = (InformaticsQuizApp) getApplication();
+                app.setPreferencesChanged(true);
+
                 finish();
                 startActivity(getIntent());
             }
-        } else {
-            // For all other preferences, set the summary to the value's
-            // simple string representation.
-            preference.setSummary(stringValue);
         }
 
         return true;

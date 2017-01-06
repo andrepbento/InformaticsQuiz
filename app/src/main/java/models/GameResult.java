@@ -8,7 +8,6 @@ import java.util.Date;
  */
 
 public class GameResult implements Serializable {
-
     static final long serialVersionUID = 1010L;
 
     protected Date gameDate;

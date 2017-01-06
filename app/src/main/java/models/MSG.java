@@ -3,17 +3,26 @@ package models;
 import java.io.Serializable;
 
 /**
- * Created by andre on 14/12/2016.
+ * Created by andre
  */
 
 public class MSG implements Serializable {
-
     static final long serialVersionUID = 1010L;
 
     private int msgCode;
+    private String msg = null;
     private PlayerData playerData = null;
     private Game game = null;
     private MultiPlayerGameResult multiPlayerGameResult = null;
+
+    public MSG(int msgCode) {
+        this.msgCode = msgCode;
+    }
+
+    public MSG(int msgCode, String msg) {
+        this.msgCode = msgCode;
+        this.msg = msg;
+    }
 
     public MSG(int msgCode, PlayerData playerData) {
         this.msgCode = msgCode;
@@ -33,6 +42,8 @@ public class MSG implements Serializable {
     public int getMsgCode() {
         return msgCode;
     }
+
+    public String getMsg() { return msg; }
 
     public PlayerData getPlayerData() {
         return playerData;

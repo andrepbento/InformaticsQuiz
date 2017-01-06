@@ -6,8 +6,6 @@
             android:showAsAction="ifRoom" />
         <item android:id="@+id/item_questions_viewer"
             android:title="@string/questions_text"/>
-        <item android:id="@+id/item_tutorial"
-                android:title="@string/how_to_play_text" />
         <item android:id="@+id/item_preferencias"
             android:title="@string/preferences_text" />
         <item android:id="@+id/item_acerca_de"

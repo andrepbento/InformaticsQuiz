@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.andre.informaticsquiz.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import application.InformaticsQuizApp;
 import models.MultiPlayerGameResult;
+import models.MySharedPreferences;
 import models.PlayerData;
 import models.SoundEffect;
 
@@ -50,6 +53,7 @@ public class MultiPlayerResultActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MySharedPreferences.loadTheme(this);
         setContentView(R.layout.activity_multi_player_result);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,9 +67,9 @@ public class MultiPlayerResultActivity extends Activity {
 
         if(savedInstanceState==null) {
             Intent multiPlayerGameResultIntent = getIntent();
-            MultiPlayerGameResult multiPlayerGameResult
-                    = (MultiPlayerGameResult) multiPlayerGameResultIntent.getSerializableExtra("multiPlayerGameResult");
-            updateMultiPlayerResult(multiPlayerGameResult);
+            long multiPlayerGameResultID
+                    = multiPlayerGameResultIntent.getLongExtra("multiPlayerGameResultID", 0);
+            updateMultiPlayerResult(MultiPlayerGameResult.loadData(this, multiPlayerGameResultID));
         }
     }
 
@@ -89,7 +93,7 @@ public class MultiPlayerResultActivity extends Activity {
         for(MultiPlayerGameResult.PlayerResult playerResult : multiPlayerGameResultList) {
             PlayerData playerData = playerResult.getPlayerData();
             if(playerData.equals(PlayerData.loadData(this))) {
-                tvPositionResult.setText("Posicao: " + position);
+                tvPositionResult.setText(getString(R.string.position_text)+": "+position);
                 PlayerData playerDataTmp = PlayerData.loadData(getApplicationContext());
                 if(playerResult.getGame().getResult() && position <= multiPlayerGameResultList.size()/2) {
                     playerDataTmp.setMultiPlayerPontuation(playerDataTmp.getMultiPlayerPontuation()
@@ -106,8 +110,10 @@ public class MultiPlayerResultActivity extends Activity {
                 }
                 playerDataTmp.setnRightAnswers(playerDataTmp.getnRightAnswers()
                         +playerResult.getGame().getnRightQuestions());
+                playerDataTmp.setnWrongAnswers(playerDataTmp.getnWrongAnswers()
+                        +playerResult.getGame().getnWrongQuestions());
                 playerDataTmp.setTotalAnswers(playerDataTmp.getTotalAnswers()
-                        +playerResult.getGame().getnRightQuestions());
+                        +playerResult.getGame().getnQuestions());
                 playerDataTmp.saveData(getApplicationContext());
             }
 
@@ -115,14 +121,20 @@ public class MultiPlayerResultActivity extends Activity {
 
             position++;
         }
-        tvGameDate.setText("Data: "+new Date(multiPlayerGameResult.getMultiPlayerGameResultID()).toString());
-        tvGameNPlayers.setText(multiPlayerGameResultList.size()+" jogadores");
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy\nHH:mm") ;
+        String dateFormat = df.format(new Date(multiPlayerGameResult.getMultiPlayerGameResultID()));
+
+        tvGameDate.setText(dateFormat);
+        tvGameNPlayers.setText(multiPlayerGameResultList.size()+" "+getString(R.string.players_text));
 
         ListView listViewMultiPlayerResults = (ListView) findViewById(R.id.lv_multi_player_results);
         listViewMultiPlayerResults.setAdapter(new MultiPlayerResultListAdapter());
+    }
 
-        multiPlayerGameResult.save(getApplicationContext());
-
+    @Override
+    protected void onStop() {
+        super.onStop();
         stopAllComunications();
     }
 

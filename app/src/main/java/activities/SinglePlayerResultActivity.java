@@ -52,12 +52,12 @@ public class SinglePlayerResultActivity extends Activity {
         TextView tvGameResult = (TextView) findViewById(R.id.tv_game_result);
         TextView tvScoreAdded = (TextView) findViewById(R.id.tv_score_added);
         if(gameResult) {
-            tvGameResult.setText("PASSAS-TE! Parabéns");
+            tvGameResult.setText(R.string.you_passed_text);
             layout.setBackground(getResources().getDrawable(R.drawable.green_white_gradient));
             tvScoreAdded.setText("+ " + String.valueOf(gameScore));
             SoundEffect.playWinGameSound();
         } else {
-            tvGameResult.setText("CHUMBAS-TE! Tens que te esforçar mais...");
+            tvGameResult.setText(R.string.you_failed_text);
             layout.setBackground(getResources().getDrawable(R.drawable.red_white_gradient));
             double halfScore = game.getTotalScore() / 2;
             gameScore = ((int)halfScore - game.getScore()) * (-1);
@@ -81,6 +81,7 @@ public class SinglePlayerResultActivity extends Activity {
             if (playerData != null) {
                 playerData.setSinglePlayerPontuation(playerData.getSinglePlayerPontuation() + gameScore);
                 playerData.setnRightAnswers(playerData.getnRightAnswers() + nRightAnswers);
+                playerData.setnWrongAnswers(playerData.getnWrongAnswers() + nWrongAnswers);
                 playerData.setTotalAnswers(playerData.getTotalAnswers() + gameTotalQuestions);
                 playerData.saveData(this);
 

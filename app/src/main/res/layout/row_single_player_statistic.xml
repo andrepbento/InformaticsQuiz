@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pontuação:"
+            android:text="@string/tv_score"
             style="@style/MediumCustomTextBold"/>
 
         <TextView
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Respostas certas:"
+            android:text="@string/tv_right_answers"
             style="@style/MediumCustomTextBold"/>
 
         <TextView
@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Respostas erradas:"
+            android:text="@string/tv_wrong_answers"
             style="@style/MediumCustomTextBold"/>
 
         <TextView
@@ -115,7 +115,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Número de perguntas:"
+            android:text="@string/tv_n_questions"
             style="@style/MediumCustomTextBold"/>
 
         <TextView
@@ -138,7 +138,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dificuldade"
+            android:text="@string/tv_difficulty"
             style="@style/MediumCustomTextBold"/>
 
         <TextView

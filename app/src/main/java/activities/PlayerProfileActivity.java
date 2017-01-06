@@ -13,10 +13,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.andre.informaticsquiz.R;
@@ -35,8 +33,7 @@ import models.SinglePlayerGameResult;
 
 public class PlayerProfileActivity extends Activity {
     ImageView ivPlayerImage;
-    EditText etPlayerName, etPlayerAge;
-    Spinner spinnerPlayerSex, spinnerPlayerOcupation;
+    EditText etPlayerName;
 
     PlayerData playerData;
 
@@ -56,17 +53,6 @@ public class PlayerProfileActivity extends Activity {
         ivPlayerImage = (ImageView) findViewById(R.id.iv_player_image);
         ivPlayerImage.setOnClickListener(onPlayerImageClick);
         etPlayerName = (EditText) findViewById(R.id.et_player_name);
-        spinnerPlayerSex = (Spinner) findViewById(R.id.spinner_player_sex);
-        ArrayAdapter<CharSequence> adapterSex = ArrayAdapter.createFromResource(this,
-                R.array.sex, android.R.layout.simple_spinner_item);
-        adapterSex.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPlayerSex.setAdapter(adapterSex);
-        etPlayerAge = (EditText) findViewById(R.id.et_player_age);
-        spinnerPlayerOcupation = (Spinner) findViewById(R.id.spinner_player_ocupation);
-        ArrayAdapter<CharSequence> adapterOcupation = ArrayAdapter.createFromResource(this,
-                R.array.ocupation, android.R.layout.simple_spinner_item);
-        adapterOcupation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPlayerOcupation.setAdapter(adapterOcupation);
 
         playerData = PlayerData.loadData(this);
 
@@ -78,9 +64,6 @@ public class PlayerProfileActivity extends Activity {
                 ivPlayerImage.setImageResource(R.drawable.drawable_no_user_img);
 
             etPlayerName.setText(playerData.getName());
-            spinnerPlayerSex.setSelection(playerData.getSexId());
-            etPlayerAge.setText(String.valueOf(playerData.getAge()));
-            spinnerPlayerOcupation.setSelection(playerData.getOcupation());
 
             disableAllViewElements();
         } else {
@@ -143,10 +126,10 @@ public class PlayerProfileActivity extends Activity {
                                 Constants.BITMAP_WIDHT_LARGE,
                                 Constants.BITMAP_HEIGHT_LARGE, false));
                     }else{
-                        Toast.makeText(this, "Error receiving photo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.error_receiving_photo_text, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(this, "Error taking photo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_taking_photo, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -158,15 +141,11 @@ public class PlayerProfileActivity extends Activity {
             if(ivPlayerImage.getDrawable() != null)
                     playerBitmap = ((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap();
             String name = etPlayerName.getText().toString();
-            int sexId = spinnerPlayerSex.getSelectedItemPosition();
-            String sex = spinnerPlayerSex.getSelectedItem().toString();
-            int age = Integer.parseInt(etPlayerAge.getText().toString());
-            int ocupationId = spinnerPlayerOcupation.getSelectedItemPosition();
-            PlayerData player = new PlayerData(playerBitmap, name, sexId, sex, age, ocupationId);
+            PlayerData player = new PlayerData(playerBitmap, name);
             player.saveData(getApplicationContext());
             finish();
         } else {
-            Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
+            Toast.makeText(getApplicationContext(), R.string.all_the_fields_must_be_filled_text+"!",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -183,14 +162,10 @@ public class PlayerProfileActivity extends Activity {
             menu.findItem(R.id.item_save_player_data).setVisible(false);
             playerData.setPhoto(((BitmapDrawable)ivPlayerImage.getDrawable()).getBitmap());
             playerData.setName(etPlayerName.getText().toString());
-            playerData.setSexId(spinnerPlayerSex.getSelectedItemPosition());
-            playerData.setSex(spinnerPlayerSex.getSelectedItem().toString());
-            playerData.setAge(Integer.parseInt(etPlayerAge.getText().toString()));
-            playerData.setOcupation(spinnerPlayerOcupation.getSelectedItemPosition());
             playerData.saveData(this);
             disableAllViewElements();
         } else {
-            Toast.makeText(getApplicationContext(), "Todos os campos têm que ser preenchidos!",
+            Toast.makeText(getApplicationContext(), R.string.all_the_fields_must_be_filled_text,
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -198,31 +173,25 @@ public class PlayerProfileActivity extends Activity {
     private boolean infoIsFilled() {
         if(etPlayerName.getText().toString().isEmpty())
             return false;
-        if(etPlayerAge.getText().toString().isEmpty())
-            return false;
         return true;
     }
 
     private void enableAllViewElements() {
         ivPlayerImage.setEnabled(true);
         etPlayerName.setEnabled(true);
-        spinnerPlayerSex.setEnabled(true);
-        etPlayerAge.setEnabled(true);
-        spinnerPlayerOcupation.setEnabled(true);
     }
 
     private void disableAllViewElements() {
         ivPlayerImage.setEnabled(false);
         etPlayerName.setEnabled(false);
-        spinnerPlayerSex.setEnabled(false);
-        etPlayerAge.setEnabled(false);
-        spinnerPlayerOcupation.setEnabled(false);
     }
 
     private void deletePlayerData() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
+        builder.setMessage(getResources().getString(R.string.are_you_sure_text)+"?")
+                .setPositiveButton(R.string.yes_text, dialogClickListener)
+                .setNegativeButton(R.string.no_text, dialogClickListener)
+                .show();
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -234,7 +203,7 @@ public class PlayerProfileActivity extends Activity {
                     playerData.delete();
                     SinglePlayerGameResult.deleteAllData(getApplicationContext());
                     MultiPlayerGameResult.deleteAllData(getApplicationContext());
-                    Toast.makeText(getApplication(), "Player deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), R.string.player_deleted_text, Toast.LENGTH_SHORT).show();
                     finish();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE: break;

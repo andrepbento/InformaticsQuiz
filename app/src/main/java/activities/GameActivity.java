@@ -25,6 +25,7 @@ import models.Game;
 import models.MSG;
 import models.MySharedPreferences;
 import models.MyVibrator;
+import models.PlayerData;
 import models.Question;
 import models.SoundEffect;
 
@@ -42,6 +43,11 @@ public class GameActivity extends Activity {
 
     private Game game;
     private MyCountDownTimer cdt;
+
+    private boolean giveUp = false;
+
+    private PlayerData playerData = null;
+    private int gameMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,12 @@ public class GameActivity extends Activity {
                 game = (Game) receivedIntent.getSerializableExtra("game");
                 if(game.getTimer())
                     startTimer(game.getQuestionTime());
+                if(game.getnPlayers() > 1) {
+                    gameMode = Constants.MP_MODE;
+                    playerData = PlayerData.loadData(this);
+                }
+                else
+                    gameMode = Constants.SP_MODE;
             }
         } else {
             app = (InformaticsQuizApp) getApplication();
@@ -96,7 +108,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(!game.checkEnd()) {
+        if(!game.checkEnd() && !giveUp) {
             app = (InformaticsQuizApp) getApplication();
             app.setGame(game);
             if (game.getTimer()) {
@@ -127,8 +139,14 @@ public class GameActivity extends Activity {
                 break;
         }
 
+        if(gameMode == Constants.MP_MODE) {
+            app = (InformaticsQuizApp) getApplication();
+            app.getLocalClient().sendMsgToServer(new MSG(Constants.MSG_CODE_ANSWER,
+                    getResources().getString(R.string.player_text)+" "+playerData.getName()+" "
+                            +getString(R.string.answered_text)+" "+game.getCurrentQuestionNum()+"/"+game.getnQuestions()));
+        }
+
         final Drawable drawable = button.getBackground();
-        Button buttonToReplace = null;
         if(answerResult) {
             SoundEffect.playRightAnswerSound();
             button.setBackgroundColor(getResources().getColor(R.color.green_soft));
@@ -193,6 +211,7 @@ public class GameActivity extends Activity {
 
     public void onButtonGiveUp(View view) {
         stopTimer();
+        giveUp = true;
         if(game.getGameMode() == Constants.SP_MODE)
             setSinglePlayerGameResult();
         else if(game.getGameMode() == Constants.MP_MODE)
@@ -211,6 +230,8 @@ public class GameActivity extends Activity {
     }
 
     private void setSinglePlayerGameResult() {
+        app = (InformaticsQuizApp)getApplication();
+        app.setInBackground(false);
         Intent gameResultIntent = new Intent(GameActivity.this, SinglePlayerResultActivity.class);
         gameResultIntent.putExtra("game", game);
         startActivity(gameResultIntent);
@@ -218,7 +239,8 @@ public class GameActivity extends Activity {
 
     private void setMultiPlayerGameResult() {
         app = (InformaticsQuizApp) getApplication();
-        app.getLocalClient().sendDataToServer(new MSG(Constants.MSG_CODE_GAME, game));
+        app.setInBackground(false);
+        app.getLocalClient().sendMsgToServer(new MSG(Constants.MSG_CODE_GAME, game));
     }
 
     public class MyCountDownTimer extends CountDownTimer {
@@ -251,7 +273,7 @@ public class GameActivity extends Activity {
             cdt.cancel();
             tvQuestionTimer.setTextColor(Color.RED);
             tvQuestionTimer.setText(getString(R.string.time_text)+": 00");
-            Toast.makeText(getApplication(), "Times over!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication(), R.string.times_over_text, Toast.LENGTH_SHORT).show();
             SoundEffect.playWrongAnswerSound();
             new Handler().postDelayed(new Runnable() {
                 @Override

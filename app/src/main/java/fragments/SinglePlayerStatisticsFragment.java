@@ -69,6 +69,12 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        update();
+    }
+
+    @Override
     public void update() {
         data = new ArrayList<>();
 
@@ -96,15 +102,6 @@ public class SinglePlayerStatisticsFragment extends Fragment implements Updateab
         lvSinglePlayerDetails = (ListView) rootView.findViewById(R.id.lv_single_player_details);
 
         lvSinglePlayerDetails.setAdapter(new SinglePlayerDetailsAdapter());
-
-        /*
-        lvSinglePlayerDetails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "Clicked on element n." + i, Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
     }
 
     class SinglePlayerDetailsAdapter extends BaseAdapter {

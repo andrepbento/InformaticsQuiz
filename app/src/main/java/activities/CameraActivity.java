@@ -151,7 +151,7 @@ public class CameraActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         stopCamera();
         super.onDestroy();
     }

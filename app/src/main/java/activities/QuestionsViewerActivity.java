@@ -2,6 +2,7 @@ package activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,9 @@ public class QuestionsViewerActivity extends Activity {
     private static String DIFFICULTY = "DIFFICULTY";
 
     ArrayList<HashMap<String, Object>> data;
+
+    List<Question> questionsList;
+    ListView listView;
 
     private InformaticsQuizHelper dbI;
 
@@ -84,7 +88,7 @@ public class QuestionsViewerActivity extends Activity {
         dbI.create();
 
         if(dbI.open()) {
-            List<Question> questionsList = dbI.getAllQuestions();
+            questionsList = dbI.getAllQuestions();
 
             for (int i = 0; i < questionsList.size(); i++)
                     addValuesToAdapter(questionsList.get(i).getQuestionDesc(),
@@ -95,18 +99,23 @@ public class QuestionsViewerActivity extends Activity {
                             questionsList.get(i).getRightAnswerLeter(),
                             questionsList.get(i).getQuestionDif());
 
-            ListView listView = (ListView) findViewById(R.id.listView);
+            listView = (ListView) findViewById(R.id.listView);
             listView.setAdapter(new QuestionsListAdapter());
+            listView.setItemsCanFocus(true);
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getApplicationContext(), "Clicked on element n." + position+1,
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            listView.setOnItemClickListener(myListViewClicked);
         }
     }
+
+    AdapterView.OnItemClickListener myListViewClicked = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.e("Questions","Item clicked");
+            Toast.makeText(QuestionsViewerActivity.this, getString(R.string.right_answer_text)+": "
+                    +questionsList.get(position).getRightAnswer(), Toast.LENGTH_SHORT).show();
+
+        }
+    };
 
     class QuestionsListAdapter extends BaseAdapter {
 

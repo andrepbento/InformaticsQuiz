@@ -1,3 +1,95 @@
 <resources>
     <string name="app_name">Informatics Quiz</string>
+
+    <!-- AboutTheAppActivity -->
+    <string name="about_the_app_text">About the app</string>
+    <string name="credits_text">Credits</string>
+    <string name="amov_1415_text">Mobile architectures 16/17</string>
+    <string name="about_the_app_programador_text">Programmer and designer:\n\tAndré Bento nº21240008</string>
+
+    <!-- CameraActivity -->
+    <string name="camera_text">Camera</string>
+
+    <!-- CreateGameActivity -->
+    <string name="game_config_text">Game configuration</string>
+    <string name="difficulty_text">Difficulty</string>
+    <string name="tv_questions_number_text">Number of questions</string>
+    <string name="number_of_players_text">Number of players</string>
+
+    <!-- GameActivity -->
+    <string name="time_text">Time</string>
+    <string name="times_over_text">Times over!</string>
+    <string name="give_up_text">Surrender</string>
+    <string name="answered_text">has answered</string>
+
+    <!-- HowToPlayActivity -->
+    <string name="how_to_play_text">How to play?</string>
+
+    <!-- MainMenuActivity -->
+    <string name="single_player_text">Single-Player</string>
+    <string name="multi_player_text">Multi-Player</string>
+    <string name="results_text">Results</string>
+    <string name="create_new_game_text">Create new game</string>
+    <string name="enter_game_text">Joing created game</string>
+    <string name="join_using_text">Joing game using</string>
+    <string name="server_ip_text">Server IP</string>
+    <string name="insert_server_ip_text">Insert Server IP</string>
+    <string name="connect_text">Connect</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="waiting_for_other_players_text">Esperando por outros jogadores...</string>
+
+    <!-- MultiPlayerResultActivity -->
+    <string name="multi_player_game_result_text">Resultado do jogo Multi-Player</string>
+    <string name="position_text">Position</string>
+    <string name="players_text">players</string>
+
+    <!-- PlayerProfileActivity -->
+    <string name="my_player_profile_text">My profile</string>
+    <string name="create_player_profile_text">Create new account</string>
+    <string name="error_receiving_photo_text">Error receiving photo</string>
+    <string name="error_taking_photo">Error taking photo</string>
+    <string name="all_the_fields_must_be_filled_text">All the fields must be filled</string>
+    <string name="are_you_sure_text">Are you sure</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
+    <string name="player_deleted_text">Player deleted</string>
+    <string name="tv_course_text">Couse</string>
+    <string name="tv_profession_text">Profession</string>
+    <string name="tv_other_text">Other</string>
+    <string name="tv_name">Name:</string>
+    <string name="tv_gender">Gender:</string>
+    <string name="tv_age">Age:</string>
+    <string name="tv_ocupation">Ocupation:</string>
+
+    <!-- PlayerResultsActivity -->
+    <string name="player_text">Player</string>
+
+    <!-- QRCodeActivity -->
+    <string name="qrcode_text">QRCode</string>
+    <string name="players_connected_text">Players connected</string>
+    <string name="ip_text">IP</string>
+    <string name="qrcode_reading_error_text">QRCode reading error</string>
+
+    <!-- QuestionsViewerActivity -->
+    <string name="questions_text">Questions</string>
+    <string name="right_answer_text">Right answer</string>
+
+    <!-- SettingsActivity -->
+    <string name="preferences_text">Settings</string>
+    <string name="regist_time_text">Regist time</string>
+    <string name="theme_text">Theme</string>
+
+    <!-- SinglePlayerResultActivity -->
+    <string name="single_player_game_result_text">Single-Player result</string>
+    <string name="you_passed_text">You win! Congratulations</string>
+    <string name="you_failed_text">You failed! You have to try harder...</string>
+    <string name="tv_difficulty">Difficulty:</string>
+    <string name="tv_n_questions">Number of questions:</string>
+    <string name="tv_wrong_answers">Wrong answers:</string>
+    <string name="tv_right_answers">Right answers:</string>
+    <string name="tv_score">Score:</string>
+
+    <!-- fragment_player_statistics -->
+    <string name="tv_details">Details</string>
+
 </resources>

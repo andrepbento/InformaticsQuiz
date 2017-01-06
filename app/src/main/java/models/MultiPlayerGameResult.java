@@ -23,7 +23,7 @@ import interfaces.Constants;
  */
 
 public class MultiPlayerGameResult extends GameResult implements Serializable {
-    static final long serialVersionUID = 1010L;
+    static final long serialVersionUID = 1011L;
 
     private long multiPlayerGameResultID;
     private List<PlayerResult> multiPlayerGameResultTable;
@@ -100,6 +100,39 @@ public class MultiPlayerGameResult extends GameResult implements Serializable {
             }
 
         return multiPlayerGameResultList;
+    }
+
+    public static MultiPlayerGameResult loadData(Context context, long multiPlayerGameResultID) {
+        MultiPlayerGameResult multiPlayerGameResult = null;
+
+        String directoryName = Constants.multiPlayerPath;
+
+        File directory = new File(context.getFilesDir(), directoryName);
+        if(!directory.exists())
+            return multiPlayerGameResult;
+
+        for(final File fileEntry : directory.listFiles())
+            if(fileEntry.isFile()) {
+                String[] fileNameSplitted = fileEntry.getName().split("\\.");
+                String fileName = fileNameSplitted[0];
+                if(fileName.equals(String.valueOf(multiPlayerGameResultID))) {
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(fileEntry);
+                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                        multiPlayerGameResult = (MultiPlayerGameResult) objectInputStream.readObject();
+                        objectInputStream.close();
+                        fileInputStream.close();
+                    } catch (FileNotFoundException e) {
+                        Log.e("MPGR_loadAllData", e.toString());
+                    } catch (IOException e) {
+                        Log.e("MPGR_loadAllData", e.toString());
+                    } catch (ClassNotFoundException e) {
+                        Log.e("MPGR_loadAllData", e.toString());
+                    }
+                }
+            }
+
+        return multiPlayerGameResult;
     }
 
     public static boolean deleteAllData(Context context) {

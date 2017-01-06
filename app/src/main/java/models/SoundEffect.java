@@ -14,7 +14,6 @@ import activities.GameActivity;
  */
 
 public class SoundEffect {
-
     private SoundPool.Builder soundPoolBuilder;
     private AudioAttributes atributes;
     private AudioAttributes.Builder atributesBuilder;

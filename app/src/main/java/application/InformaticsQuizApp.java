@@ -13,6 +13,7 @@ import network.Server;
 
 public class InformaticsQuizApp extends Application {
     private boolean inBackground = false;
+    private boolean preferencesChanged = false;
 
     private Game game;
     private GameActivity.MyCountDownTimer myCountDownTimer;
@@ -32,6 +33,14 @@ public class InformaticsQuizApp extends Application {
 
     public void setInBackground(boolean inBackground) {
         this.inBackground = inBackground;
+    }
+
+    public boolean isPreferencesChanged() {
+        return preferencesChanged;
+    }
+
+    public void setPreferencesChanged(boolean preferencesChanged) {
+        this.preferencesChanged = preferencesChanged;
     }
 
     public Game getGame() {

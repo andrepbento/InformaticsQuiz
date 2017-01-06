@@ -8,7 +8,6 @@ import android.os.Vibrator;
  */
 
 public class MyVibrator {
-
     private Context mContext;
     private Vibrator mVibrator;
 

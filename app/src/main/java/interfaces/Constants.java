@@ -48,6 +48,8 @@ public interface Constants {
     int MSG_CODE_PLAYER_DATA = 1;
     int MSG_CODE_GAME = 2;
     int MSG_CODE_MULTI_PLAYER_GAME_RESULT = 3;
+    int MSG_CODE_ANSWER = 4;
+    int MSG_CODE_INFO = 5;
 
     // ABOUT APP
     String URL_FACEBOOK_PROGRAMER_PROFILE = "https://www.facebook.com/andrebento16";

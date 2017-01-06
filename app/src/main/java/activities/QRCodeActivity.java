@@ -16,7 +16,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import application.InformaticsQuizApp;
-import interfaces.Constants;
 import models.Game;
 import models.MySharedPreferences;
 import network.Client;
@@ -61,7 +60,7 @@ public class QRCodeActivity extends Activity {
         // create thread to avoid ANR Exception
         new Thread(new Runnable() {
             public void run() {
-                qrCodeData = server.getLocalIpAddress();
+                qrCodeData = server.getLocalIpAddress()+" "+server.getServerPort();
                     synchronized (this) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -71,12 +70,14 @@ public class QRCodeActivity extends Activity {
                                 bitmap = encodeAsBitmap(qrCodeData);
                                 ivQRCode.setImageBitmap(bitmap);
 
-                                tvServerDetails.setText("IP: " + server.getLocalIpAddress());
+                                tvServerDetails.setText(getString(R.string.ip_text)+": " + server.getLocalIpAddress()
+                                        +" Port: "+server.getServerPort());
 
-                                tvPlayersConnected.setText("Players connected: 0/" + server.getnPlayers());
+                                tvPlayersConnected.setText(R.string.players_connected_text+": "
+                                        +server.getPlayersConnected()+"/"+server.getnPlayers());
 
                                 Client client = new Client(QRCodeActivity.this, server.getLocalIpAddress(),
-                                        Constants.serverListeningPort);
+                                        server.getServerPort());
                                 client.start();
                                 app.setLocalClient(client);
                             }

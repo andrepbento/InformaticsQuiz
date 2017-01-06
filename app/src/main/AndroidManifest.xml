@@ -33,7 +33,6 @@
         <activity android:name="activities.PlayerProfileActivity" />
         <activity android:name="activities.CameraActivity" />
         <activity android:name="activities.PlayerResultsActivity" />
-        <activity android:name="activities.HowToPlayActivity" />
         <activity android:name="activities.AboutTheAppActivity" />
         <activity android:name="activities.QRCodeActivity" />
         <activity android:name="activities.SettingsActivity" />

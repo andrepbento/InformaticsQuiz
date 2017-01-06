@@ -20,6 +20,7 @@ import activities.MultiPlayerResultActivity;
 import interfaces.Constants;
 import models.Game;
 import models.MSG;
+import models.MultiPlayerGameResult;
 import models.PlayerData;
 
 /**
@@ -36,7 +37,9 @@ public class Client extends Thread {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    boolean running;
+    private boolean running;
+
+    private MSG msg = null;
 
     public Client(Activity activity, String serverIp, int serverPort) {
         this.activity = activity;
@@ -69,10 +72,10 @@ public class Client extends Thread {
 
             in = new ObjectInputStream(socket.getInputStream());
 
-            sendDataToServer(new MSG(Constants.MSG_CODE_PLAYER_DATA, PlayerData.loadData(activity)));
+            sendMsgToServer(new MSG(Constants.MSG_CODE_PLAYER_DATA, PlayerData.loadData(activity)));
 
             while (running) {
-                MSG msg = (MSG)in.readObject();
+                msg = (MSG)in.readObject();
                 switch (msg.getMsgCode()) {
                     case Constants.MSG_CODE_GAME:
                         Game game = msg.getGame();
@@ -82,9 +85,20 @@ public class Client extends Thread {
                         break;
                     case Constants.MSG_CODE_MULTI_PLAYER_GAME_RESULT:
                         Intent multiPlayerResultActivityIntent = new Intent(activity, MultiPlayerResultActivity.class);
-                        multiPlayerResultActivityIntent.putExtra("multiPlayerGameResult",  msg.getMultiPlayerGameResult());
+                        MultiPlayerGameResult multiPlayerGameResult = msg.getMultiPlayerGameResult();
+                        multiPlayerResultActivityIntent.putExtra("multiPlayerGameResultID",
+                                multiPlayerGameResult.getMultiPlayerGameResultID());
+                        multiPlayerGameResult.save(activity);
                         activity.startActivity(multiPlayerResultActivityIntent);
-                        stopReceiving();
+                        break;
+                    case Constants.MSG_CODE_INFO:
+                        final String receivedMsg = msg.getMsg();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, receivedMsg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                 }
             }
@@ -95,6 +109,8 @@ public class Client extends Thread {
             Log.e("Client", e.toString());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch(Exception e) {
+            Log.e("Client", e.toString());
         } finally {
             closeSocket();
         }
@@ -118,7 +134,7 @@ public class Client extends Thread {
         closeSocket();
     }
 
-    public void sendDataToServer(final MSG msg) {
+    public void sendMsgToServer(final MSG msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {

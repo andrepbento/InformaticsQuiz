@@ -47,8 +47,6 @@ public class Server extends AsyncTask<Void, Void, Void> {
     private Map<Integer, Game> gameResults;
     private MultiPlayerGameResult multiPlayerGameResult;
 
-    private Thread checkConnections;
-
     public Server(Activity activity, Game game) {
         if (!Connection.checkNetworkConnection(activity)) {
             Toast.makeText(activity, "No network connection!", Toast.LENGTH_SHORT).show();
@@ -57,7 +55,7 @@ public class Server extends AsyncTask<Void, Void, Void> {
         }
 
         try {
-            this.serverSocket = new ServerSocket(Constants.serverListeningPort);
+            this.serverSocket = new ServerSocket(0);
         } catch (IOException e) {
             Log.e("Server", e.toString());
             closeSocket();
@@ -105,6 +103,14 @@ public class Server extends AsyncTask<Void, Void, Void> {
             Log.e("Server", e.toString());
         }
         return "";
+    }
+
+    public int getServerPort() {
+        return serverSocket.getLocalPort();
+    }
+
+    public int getPlayersConnected() {
+        return playersCounter;
     }
 
     public int getnPlayers() {
@@ -187,6 +193,8 @@ public class Server extends AsyncTask<Void, Void, Void> {
         private boolean running;
         private int playerIndex;
 
+        private MSG msg = null;
+
         public MultiPlayerGameConnection(int playerIndex, Socket socket) {
             gameConnections.add(this);
             this.running = true;
@@ -203,7 +211,7 @@ public class Server extends AsyncTask<Void, Void, Void> {
                 out.flush();
 
                 while(running) {
-                    MSG msg = (MSG)in.readObject();
+                    msg = (MSG)in.readObject();
                     switch(msg.getMsgCode()) {
                         case Constants.MSG_CODE_PLAYER_DATA:
                             final PlayerData playerData = msg.getPlayerData();
@@ -221,6 +229,10 @@ public class Server extends AsyncTask<Void, Void, Void> {
                         case Constants.MSG_CODE_GAME:
                             gameResults.put(playerIndex, msg.getGame());
                             checkReceivedAllGames();
+                            break;
+                        case Constants.MSG_CODE_ANSWER:
+                            MSG msgTmp = msg;
+                            sendMSGToOtherClients(new MSG(Constants.MSG_CODE_INFO, msgTmp.getMsg()));
                             break;
                     }
                 }
@@ -263,6 +275,12 @@ public class Server extends AsyncTask<Void, Void, Void> {
                     }
                 }
             }).start();
+        }
+
+        public void sendMSGToOtherClients(final MSG msg) {
+            for(MultiPlayerGameConnection multiPlayerGameConnection : gameConnections)
+                if(!multiPlayerGameConnection.equals(this))
+                    multiPlayerGameConnection.sendMSGToClient(msg);
         }
     }
 }

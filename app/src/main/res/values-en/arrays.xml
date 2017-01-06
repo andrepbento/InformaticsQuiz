@@ -6,9 +6,32 @@
         <item>Hard</item>
     </string-array>
 
-    <string-array name="ocupation">
-        <item>Student</item>
-        <item>Employer</item>
-        <item>Other</item>
+    <string-array name="sex">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="registTime">
+        <item>1 day</item>
+        <item>5 days</item>
+        <item>15 days</item>
+        <item>1 month</item>
+        <item>3 months</item>
+    </string-array>
+
+    <string-array name="theme">
+        <item>Black Theme</item>
+        <item>Red Theme</item>
+        <item>Blue Theme</item>
+        <item>Pink Theme</item>
+        <item>Yellow Theme</item>
+    </string-array>
+
+    <string-array name="valuesArray">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </string-array>
 </resources>

@@ -1,47 +1,95 @@
 <resources>
     <string name="app_name">Informatics Quiz</string>
 
-    <string name="questions_text">Perguntas</string>
+    <!-- AboutTheAppActivity -->
+    <string name="about_the_app_text">Acerca de</string>
+    <string name="credits_text">Créditos</string>
+    <string name="amov_1415_text">Arquiteturas Móveis 16/17</string>
+    <string name="about_the_app_programador_text">Programador e designer:\n\tAndré Bento nº21240008</string>
+
+    <!-- CameraActivity -->
+    <string name="camera_text">Câmera</string>
+
+    <!-- CreateGameActivity -->
     <string name="game_config_text">Configuração do jogo</string>
-    <string name="single_player_text">Single-Player</string>
-    <string name="player_text">Jogador</string>
-    <string name="multi_player_text">Multi-Player</string>
-    <string name="results_text">Resultados</string>
     <string name="difficulty_text">Dificuldade</string>
     <string name="tv_questions_number_text">Número de perguntas</string>
-    <string name="tv_question_number_text">Pergunta número</string>
-    <string name="tv_course_text">"Curso"</string>
-    <string name="tv_profession_text">"Profissão"</string>
-    <string name="tv_other_text">"Outro"</string>
-
-    <string name="how_to_play_text">Como jogar?</string>
-    <string name="preferences_text">Preferências</string>
-    <string name="about_the_app_text">Acerca de</string>
-
-    <string name="qrcode_text">QRCode</string>
-
-    <string name="single_player_game_result_text">Resultado do jogo Single-Player</string>
-
-    <string name="multi_player_game_result_text">Resultado do jogo Multi-Player</string>
-
-    <string name="my_player_profile_text">Meu perfil</string>
-    <string name="create_player_profile_text">Criar conta</string>
-
-    <string name="credits_text">Créditos</string>
-    <string name="amov_1415_text">Arquiteturas Móveis 14/15</string>
-    <string name="about_the_app_programador_text">Programador e Designer:\n\tAndré Bento nº21240008</string>
-    <string name="about_the_app_images_text">Imagens: Google</string>
-    <string name="camera_text">Câmera</string>
     <string name="number_of_players_text">Número de jogadores</string>
-    <string name="create_game_text">Criar novo jogo</string>
+
+    <!-- GameActivity -->
+    <string name="time_text">Tempo</string>
+    <string name="times_over_text">O tempo acabou!</string>
+    <string name="give_up_text">Desistir</string>
+    <string name="answered_text">respondeu a</string>
+
+    <!-- HowToPlayActivity -->
+    <string name="how_to_play_text">Como jogar?</string>
+
+    <!-- MainMenuActivity -->
+    <string name="single_player_text">Single-Player</string>
+    <string name="multi_player_text">Multi-Player</string>
+    <string name="results_text">Resultados</string>
+    <string name="create_new_game_text">Criar novo jogo</string>
     <string name="enter_game_text">Entrar em jogo criado</string>
-    <string name="join_using_text">Entrar em jogo usando</string>
+    <string name="join_using_text">Entrar usando</string>
     <string name="server_ip_text">IP do Servidor</string>
-    <string name="insert_server_ip_text">Insere o IP do Servidor</string>
+    <string name="insert_server_ip_text">Inserir IP do Servidor</string>
     <string name="connect_text">Ligar</string>
     <string name="cancel_text">Cancelar</string>
-    <string name="time_text">"Tempo"</string>
-    <string name="theme_text">Tema</string>
+    <string name="waiting_for_other_players_text">Esperando por outros jogadores...</string>
+
+    <!-- MultiPlayerResultActivity -->
+    <string name="multi_player_game_result_text">Resultado do jogo Multi-Player</string>
+    <string name="position_text">Posição</string>
+    <string name="players_text">jogadores</string>
+
+    <!-- PlayerProfileActivity -->
+    <string name="my_player_profile_text">Meu perfil</string>
+    <string name="create_player_profile_text">Criar nova conta</string>
+    <string name="error_receiving_photo_text">Erro ao ler foto</string>
+    <string name="error_taking_photo">Erro ao tirar foto</string>
+    <string name="all_the_fields_must_be_filled_text">Todos os campos têm que ser preenchidos</string>
+    <string name="are_you_sure_text">Tens a certeza</string>
+    <string name="yes_text">Sim</string>
+    <string name="no_text">Não</string>
+    <string name="player_deleted_text">Jogador apagado</string>
+    <string name="tv_course_text">Curso</string>
+    <string name="tv_profession_text">Profissão</string>
+    <string name="tv_other_text">Outro</string>
+    <string name="tv_name">Nome:</string>
+    <string name="tv_gender">Género:</string>
+    <string name="tv_age">Idade:</string>
+    <string name="tv_ocupation">Ocupação:</string>
+
+    <!-- PlayerResultsActivity -->
+    <string name="player_text">Jogador</string>
+
+    <!-- QRCodeActivity -->
+    <string name="qrcode_text">QRCode</string>
+    <string name="players_connected_text">Jogadores conectados</string>
+    <string name="ip_text">IP</string>
+    <string name="qrcode_reading_error_text">Erro na leitura do QRCode</string>
+
+    <!-- QuestionsViewerActivity -->
+    <string name="questions_text">Perguntas</string>
+    <string name="right_answer_text">Resposta certa</string>
+
+    <!-- SettingsActivity -->
+    <string name="preferences_text">Opções</string>
     <string name="regist_time_text">Tempo de registo</string>
+    <string name="theme_text">Tema</string>
+
+    <!-- SinglePlayerResultActivity -->
+    <string name="single_player_game_result_text">Resultado Single-Player</string>
+    <string name="you_passed_text">Passas-te! Parabéns</string>
+    <string name="you_failed_text">Chumbas-te! Tens que te esforçar mais...</string>
+    <string name="tv_difficulty">Dificuldade:</string>
+    <string name="tv_n_questions">Número de perguntas:</string>
+    <string name="tv_wrong_answers">Respostas erradas:</string>
+    <string name="tv_right_answers">Respostas certas:</string>
+    <string name="tv_score">Pontuação:</string>
+
+    <!-- fragment_player_statistics -->
+    <string name="tv_details">Detalhes</string>
 
 </resources>

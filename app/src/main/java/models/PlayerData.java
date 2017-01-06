@@ -26,26 +26,20 @@ public class PlayerData implements Serializable {
     private long playerID;
     private byte[] photoData;
     private String name;
-    private int sexId;
-    private String sex;
-    private int age;
-    private int ocupation;
     private int singlePlayerPontuation;
     private int multiPlayerPontuation;
     private int totalAnswers;
     private int nRightAnswers;
+    private int nWrongAnswers;
 
-    public PlayerData(Bitmap photo, String name, int sexId, String sex, int age, int ocupation) {
+    public PlayerData(Bitmap photo, String name) {
         this.playerID = new Date().getTime();
         setPhoto(photo);
         this.name = name;
-        this.sexId = sexId;
-        this.sex = sex;
-        this.age = age;
-        this.ocupation = ocupation;
         this.singlePlayerPontuation = 0;
         this.multiPlayerPontuation = 0;
         this.nRightAnswers = 0;
+        this.nWrongAnswers = 0;
         this.totalAnswers = 0;
     }
 
@@ -69,22 +63,6 @@ public class PlayerData implements Serializable {
         return name;
     }
 
-    public int getSexId() {
-        return sexId;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public int getOcupation() {
-        return ocupation;
-    }
-
     public void setPhoto(Bitmap photo) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -93,22 +71,6 @@ public class PlayerData implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setSexId(int sexId) {
-        this.sexId = sexId;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setOcupation(int ocupation) {
-        this.ocupation = ocupation;
     }
 
     public int getSinglePlayerPontuation() {
@@ -142,8 +104,10 @@ public class PlayerData implements Serializable {
     }
 
     public int getnWrongAnswers() {
-        return totalAnswers - nRightAnswers;
+        return nWrongAnswers;
     }
+
+    public void setnWrongAnswers(int nWrongAnswers) { this.nWrongAnswers = nWrongAnswers; }
 
     public int getTotalAnswers() {
         return totalAnswers;

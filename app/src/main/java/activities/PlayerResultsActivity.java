@@ -26,7 +26,6 @@ import utils.InformaticsQuizHelper;
  */
 
 public class PlayerResultsActivity extends FragmentActivity implements ActionBar.TabListener {
-
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
@@ -100,7 +99,7 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
                 menu.findItem(R.id.item_clear_data).setVisible(false);
                 break;
             case 2:
-                if(MultiPlayerStatisticsFragment.data.isEmpty())
+                if(MultiPlayerStatisticsFragment.firstListViewData.isEmpty())
                     menu.findItem(R.id.item_clear_data).setVisible(false);
                 else
                     menu.findItem(R.id.item_clear_data).setVisible(true);
@@ -152,16 +151,16 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
     private void deleteSinglePlayerData(final MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.are_you_sure_text)+"?")
+                .setPositiveButton(R.string.yes_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SinglePlayerGameResult.deleteAllData(getApplicationContext());
-                        //MultiPlayerGameResult.deleteAllData();
+                        MultiPlayerGameResult.deleteAllData(getApplicationContext());
                         mAdapter.notifyDataSetChanged();
                         item.setVisible(false);
                     }})
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }})
@@ -170,15 +169,15 @@ public class PlayerResultsActivity extends FragmentActivity implements ActionBar
 
     private void deleteMultiPlayerData(final MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.are_you_sure_text)+"?")
+                .setPositiveButton(R.string.yes_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MultiPlayerGameResult.deleteAllData(getApplicationContext());
                         mAdapter.notifyDataSetChanged();
                         item.setVisible(false);
                     }})
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }})

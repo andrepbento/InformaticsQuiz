@@ -5,12 +5,6 @@
         <item>Moderado</item>
         <item>Difícil</item>
     </string-array>
-    
-    <string-array name="ocupation">
-        <item>Estudante</item>
-        <item>Trabalhador</item>
-        <item>Outro</item>
-    </string-array>
 
     <string-array name="sex">
         <item>Masculino</item>

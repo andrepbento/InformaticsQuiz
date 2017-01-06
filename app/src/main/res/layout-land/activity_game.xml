@@ -127,14 +127,15 @@
 
         </LinearLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_weight="0.1"
             android:layout_marginTop="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Desistir"
+            android:text="@string/give_up_text"
+            android:src="@drawable/drawable_surrender"
             android:textColor="@color/white"
             android:background="@color/red"
             android:layout_gravity="center"
